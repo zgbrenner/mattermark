@@ -38,7 +38,7 @@ scope (§3.5) — is therefore the core of the product, not an accessory.
 ## Naming
 
 The repository and product are **Mattermark**; the marking/detection engine
-inside it is **Tolaria**. Same pattern as Sonomos / Locke / Spliicer.
+inside it is **MarkItYours**.
 
 Two things to settle before this gets any traction:
 
@@ -54,9 +54,8 @@ Two things to settle before this gets any traction:
 - **The licence is MIT and the repo is public.** For a leak-attribution engine
   that means anyone can fork it commercially, and any recipient of a marked
   document can read `src/codecs/` and strip the mark. That may be the right
-  call — open review is worth a lot for a security primitive, and it matches
-  the AgentCounsel / PrivacyQuant posture. It is a different call from Spliicer.
-  Decide deliberately; git history is permanent.
+  call — open review is worth a lot for a security primitive — but it is a
+  deliberate one. Decide it deliberately; git history is permanent.
 
 ## Layout
 
@@ -231,8 +230,8 @@ the search-safe stack makes zero. Choose per matter, with the cost in view.
 ## Roadmap
 
 - **Slice 2** — DOCX/PDF extract-mark-reinject (python-docx / PyMuPDF, or Rust
-  equivalents for the Locke core). *(The real corpus for the harness has landed
-  — see [`corpus/`](corpus/README.md) and `npm run matrix`.)*
+  equivalents). *(The real corpus for the harness has landed — see
+  [`corpus/`](corpus/README.md) and `npm run matrix`.)*
 - **Slice 3** — SQLite-backed registry with encryption at rest; Rekor or
   OpenTimestamps anchoring so the protected-copy hash is provably prior.
 - **Slice 4 (research)** — linguistic layer for Tier-4 resistance. Note the
