@@ -51,7 +51,7 @@ export function newCopyIdentity(
 /** Canonical, stable serialisation. Order matters — never reorder these. */
 export function canonicalCopyId(id: CopyIdentity): string {
   return [
-    'sonomos.tolaria.v1',
+    'mattermark.markityours.v1',
     id.matterRef,
     id.recipientId,
     id.version,
@@ -89,7 +89,7 @@ export interface EdKeyPair {
 
 /** Deterministic derivation from org key material (RFC 8032 seed = 32 bytes). */
 export function deriveEd25519(orgKey: Buffer): EdKeyPair {
-  const seed = createHash('sha256').update(orgKey).update('tolaria-ed25519-v1').digest();
+  const seed = createHash('sha256').update(orgKey).update('markityours-ed25519-v1').digest();
   // PKCS#8 wrapper for a raw Ed25519 seed.
   const pkcs8 = Buffer.concat([
     Buffer.from('302e020100300506032b657004220420', 'hex'),

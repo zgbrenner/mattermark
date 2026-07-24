@@ -13,7 +13,7 @@
     "demo": "tsx src/demo.ts",
     "matrix": "tsx src/matrix.ts",
     "typecheck": "tsc --noEmit",
-    "test": "npm run typecheck && npm run demo && npm run matrix"
+    "test": "npm run typecheck && node --import tsx --test test/*.test.ts"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

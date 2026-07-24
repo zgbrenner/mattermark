@@ -26,6 +26,12 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      # Unit + integration tests (node:test, zero deps): framing, crypto, the
+      # three codecs, the composition guard incl. the search-safe opt-out, the
+      # transform taxonomy, the registry, and the corpus loader.
+      - name: Tests
+        run: node --import tsx --test test/*.test.ts
+
       # The demo exercises minting, all three codecs, the composition guard,
       # the full transform taxonomy, excerpt recovery, and registry attribution
       # end to end on the reference memo.
