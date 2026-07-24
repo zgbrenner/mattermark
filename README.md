@@ -16,10 +16,11 @@ only. Runs entirely on-device.
 
 ```bash
 npm install
-npm run demo       # full walkthrough: mint -> mark -> transform -> attribute
-npm run matrix     # survival matrix across the real 16-document corpus/
-npm run docx-demo  # Slice 2: build a real DOCX, mark it, attribute it back
-npm test           # typecheck + the node:test suite
+npm run demo         # full walkthrough: mint -> mark -> transform -> attribute
+npm run matrix       # survival matrix across the real 16-document corpus/
+npm run docx-demo    # Slice 2: mark a real DOCX/PDF, attribute it back
+npm run ledger-demo  # Slice 3: encrypted, tamper-evident, anchored registry
+npm test             # typecheck + the node:test suite
 ```
 
 Read [`SECURITY.md`](SECURITY.md) before deploying this against anything real.
@@ -67,13 +68,15 @@ Two things to settle before this gets any traction:
 | `src/codecs/*.ts` | WS / ZW / HG codecs behind one swappable interface |
 | `src/orchestrator.ts` | Composition guard, per-channel payload sizing, `mark()` / `detect()` |
 | `src/transforms.ts` | Transport-transform taxonomy T01–T11 and composite chains |
-| `src/registry.ts` | Attribution ledger and evidence schema |
+| `src/registry.ts` | Attribution ledger and evidence schema (prototype JSON store) |
 | `src/harness.ts` | Survival matrix engine (`runMatrix`) |
 | `src/corpus.ts` | Corpus manifest and loader |
 | `src/matrix.ts` | Runs the survival matrix across `corpus/` |
 | `src/formats/zip.ts` | Zero-dependency ZIP reader/writer (`node:zlib` + CRC-32) |
-| `src/formats/docx.ts` | DOCX text extract / reinject and a minimal-DOCX builder |
+| `src/formats/docx.ts` | DOCX text extract / reinject across all text-bearing parts |
+| `src/formats/pdf.ts` | PDF text extraction for detection + a demo PDF writer |
 | `src/formats/index.ts` | `markDocx()` / `detectDocx()` — the Slice 2 document API |
+| `src/ledger/*.ts` | Slice 3: encrypted, hash-chained, anchored `SecureRegistry` |
 | `corpus/` | 16 synthetic legal documents, 200 → 55k chars ([corpus/README.md](corpus/README.md)) |
 
 ## Three deliberate deviations from the paper
@@ -247,33 +250,85 @@ const found = detectDocx(recoveredBuffer, ['WS', 'ZW', 'HG']);
 - A DOCX is a ZIP of OOXML parts. `src/formats/zip.ts` reads and writes ZIP with
   **no dependencies** — Node's built-in `zlib` for DEFLATE and a hand-rolled
   CRC-32 — so the "Node built-ins only" promise still holds.
-- Only `word/document.xml`'s run text changes; every other part is preserved
-  byte-for-byte. The marked text is distributed back across the original `<w:t>`
-  runs losslessly, accounting for the zero-width codec's inserted characters.
+- **Every text-bearing part is marked** — body, footnotes, endnotes, headers,
+  footers, comments. Their text is concatenated in a fixed order, marked as one
+  payload, and redistributed back across all their runs; all non-text parts are
+  preserved byte-for-byte. The redistribution is lossless, accounting for the
+  zero-width codec's inserted characters.
 - `npm run docx-demo` builds DOCX copies of the memo and the 40-page appellate
   brief, marks them, and attributes them back — surviving Tier 1–2 and deep
   excerpting, exactly as the plain-text harness measures.
 
-**Scope, stated plainly.** Only the body text of `word/document.xml` is marked
-and scanned today. Text that Word stores in *separate* parts — footnotes,
-endnotes, headers, footers, comments, text boxes — is not yet marked, so a leak
-consisting solely of, say, a footnotes section would not attribute. Extending
-the same extract/reinject pass to those parts is mechanical follow-up; it is
-called out here rather than left as a silent gap.
+**PDF: detection yes, marking no — and that split is not a shortcut.** A PDF
+cannot be *marked* in place with these codecs: a PDF positions glyphs, so a
+zero-width insertion, a wider space, or a confusable with different metrics needs
+the glyph to exist in the (usually subsetted) embedded font and shifts the
+visible layout. That is a font/layout problem, a separate slice. But a document
+marked as text (or as a DOCX) and then *exported* to PDF keeps its marks in the
+PDF's text layer, so a leaked PDF is still attributable:
 
-**PDF is deliberately not done yet.** Faithful PDF reinjection is a *layout*
-problem, not a text problem: a PDF positions glyphs, so inserting a zero-width
-marker or swapping a letter for a differently-metric'd confusable can shift the
-visible layout. That needs a real PDF engine and is its own slice — shipping a
-broken one would violate this repo's "report what we measured" rule.
+```ts
+import { detectPdf } from './src/formats/pdf.js';
+const found = detectPdf(recoveredPdfBuffer, ['WS', 'ZW', 'HG']);
+```
+
+`src/formats/pdf.ts` reads the common, well-defined subset — classic `xref`
+objects, FlateDecode or unfiltered content streams, and text shown with Tj/TJ
+decoded through the font's ToUnicode CMap (Latin-1 fallback). **Out of
+envelope, and reported rather than silently mangled:** object-stream / xref-stream
+full-compression (PDF 1.5+), encryption, and scanned image PDFs with no text
+layer. It is validated against spec-compliant PDFs, not the full wild variety;
+`npm run docx-demo` shows a marked memo carried through a PDF text layer and
+recovered.
+
+## Registry: encrypted, tamper-evident, anchored (Slice 3)
+
+`src/registry.ts` is the plaintext prototype store. `src/ledger/` is the durable
+version — a single file, encrypted at rest, append-only and tamper-evident, with
+a Merkle root you can anchor:
+
+```ts
+import { SecureRegistry, localAttestationAnchor } from './src/ledger/index.js';
+
+const reg = SecureRegistry.openOrCreate('matter.reg', passphrase);
+reg.add(protectedCopy);                       // appends a hash-chained event, re-seals the file
+reg.recordInvestigation(tokenHex, event);     // append-only; the copy row's hash never changes
+const proof = reg.anchor(localAttestationAnchor(orgKeyPair));
+```
+
+- **Encryption at rest** — AES-256-GCM under a scrypt-derived key. GCM's auth tag
+  doubles as an integrity check: a wrong passphrase or a flipped byte fails to
+  open rather than decrypting to garbage. Nothing (recipient, matter, token)
+  sits on disk in plaintext.
+- **Tamper-evident** — every event (a copy, or an investigation) commits to the
+  previous event's hash. An insider who has the passphrase, edits a past row, and
+  re-encrypts is still caught: recomputing the chain no longer reproduces the
+  stored head. State (rows, short-id index, investigations) is *replayed* from
+  the immutable event log.
+- **Anchoring, honestly** — the chain proves order and integrity *within* the
+  ledger. Proving a row is prior to a date *to a skeptic* needs a timestamp from
+  a party they trust. The `Anchor` interface is where OpenTimestamps, Rekor, or
+  an RFC 3161 TSA plug in; the built-in `localAttestationAnchor` signs the Merkle
+  root with the org key (non-repudiable as to the org, but `thirdPartyTime:
+  false` — its timestamp is self-asserted). Swap the anchor to change the trust
+  root; the mechanism is identical.
+
+**On SQLite:** the roadmap named SQLite. A real SQLite backend needs a native
+dependency or `node:sqlite` (Node 22.5+), both of which break the
+zero-dependency + Node-20 stance. The store is a sealed single file today, and
+the interface is narrow enough that a SQLite backend slots in behind it unchanged
+when those constraints relax — what SQLite was wanted for (a durable, single-file,
+encrypted, evidentiary store) is delivered.
 
 ## Roadmap
 
-- **Slice 2 (DOCX: done)** — DOCX extract-mark-reinject has landed
-  (`src/formats/`, `npm run docx-demo`). Remaining: **PDF** extract-mark-reinject
-  (PyMuPDF or a Rust equivalent), which is a layout problem as noted above.
-- **Slice 3** — SQLite-backed registry with encryption at rest; Rekor or
-  OpenTimestamps anchoring so the protected-copy hash is provably prior.
+- **Slice 2 (done)** — DOCX extract-mark-reinject across all text-bearing parts,
+  plus PDF *detection* via text extraction (`src/formats/`, `npm run docx-demo`).
+  Remaining, and genuinely hard: PDF *marking*, a glyph-layout problem as above.
+- **Slice 3 (done)** — encrypted, tamper-evident, anchored `SecureRegistry`
+  (`src/ledger/`, `npm run ledger-demo`). Remaining: an external anchor
+  integration (OpenTimestamps / Rekor) behind the `Anchor` interface, and a
+  SQLite backend once the dependency constraints allow.
 - **Slice 4 (research)** — linguistic layer for Tier-4 resistance. Note the
   paper's own constraint: encoder and decoder must run an *identical* model,
   and their choice of GPT-2 124M was for portability, not quality. This is a

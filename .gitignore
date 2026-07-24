@@ -4,9 +4,11 @@ dist/
 *.log
 
 # Registry files contain recipient identities, matter references, and token
-# material. They are evidence, not source. Never commit one.
+# material. They are evidence, not source. Never commit one. (*.reg is the
+# encrypted SecureRegistry file; still evidence — keep it out of the repo.)
 *.registry.json
 registry.json
+*.reg
 /data/
 
 # Key material. Obvious, but this repo mints HMAC and Ed25519 keys.

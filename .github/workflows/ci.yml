@@ -45,7 +45,11 @@ jobs:
       - name: Survival matrix (corpus)
         run: npm run matrix
 
-      # Slice 2: builds a real DOCX, marks it, and attributes it back, proving
-      # the zero-dependency zip + OOXML extract/reinject round-trip end to end.
-      - name: DOCX pipeline (demo)
+      # Slice 2: builds a real DOCX, marks it across all text-bearing parts,
+      # attributes it back, and shows PDF detection via text extraction.
+      - name: Document pipeline (demo)
         run: npm run docx-demo
+
+      # Slice 3: encrypted, tamper-evident, anchored registry end to end.
+      - name: Registry pipeline (demo)
+        run: npm run ledger-demo
