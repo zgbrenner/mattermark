@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/zgbrenner/mattermark/actions/workflows/ci.yml/badge.svg)](https://github.com/zgbrenner/mattermark/actions/workflows/ci.yml)
 
-**Recipient attribution and work-product fingerprinting. Slice 1: the Tolaria engine.**
+**Recipient attribution and work-product fingerprinting. Slice 1: the engine.**
 
 Local-first work-product fingerprinting. Marks a per-recipient copy of a
 document with a cryptographically derived identifier embedded across
