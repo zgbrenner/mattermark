@@ -1,0 +1,339 @@
+                    UNITED STATES DISTRICT COURT
+                   FOR THE DISTRICT OF COLORADO
+
+
+HALVERSON RIDGE CAPITAL PARTNERS, LLC,       )
+a Delaware limited liability company,        )
+                                              )
+                    Plaintiff,               )
+                                              )
+        v.                                   )  Civil Action No. 1:26-cv-01983
+                                              )
+DUNMORE LATTICE TECHNOLOGIES, INC.,          )
+a Colorado corporation, and                  )
+WENDELL A. PRICHARD,                         )
+an individual,                               )
+                                              )
+                    Defendants.              )
+                                              )
+
+
+              COMPLAINT AND DEMAND FOR JURY TRIAL
+
+     Plaintiff Halverson Ridge Capital Partners, LLC ("Halverson
+Ridge") sues Defendants Dunmore Lattice Technologies, Inc.
+("Dunmore Lattice") and Wendell A. Prichard ("Prichard," with
+Dunmore Lattice, "Defendants") and alleges as follows:
+
+                          INTRODUCTION
+
+     This action arises from Defendants' breach of a $4,200,000
+convertible note financing and related misrepresentations that
+induced Plaintiff's investment in Dunmore Lattice, a Boulder,
+Colorado manufacturer of data-center cooling lattices. Defendants
+misrepresented the company's revenue backlog, concealed senior
+secured debt, diverted restricted proceeds, and breached
+contractual and fiduciary duties, causing damages exceeding
+$5,000,000.
+
+                             PARTIES
+
+     1.   Plaintiff Halverson Ridge Capital Partners, LLC is a
+Delaware limited liability company with its principal place of
+business in Denver, Colorado. Its sole member is domiciled in
+New York.
+
+     2.   Defendant Dunmore Lattice Technologies, Inc. is a
+Colorado corporation with its principal place of business in
+Boulder, Colorado.
+
+     3.   Defendant Wendell A. Prichard is, upon information and
+belief, a citizen of Colorado residing in Boulder County, and at
+all relevant times was CEO and a director of Dunmore Lattice.
+
+     4.   Prichard acted both individually and as an officer and
+agent of Dunmore Lattice, and his acts below were within his
+authority and ratified by the company.
+
+                    JURISDICTION AND VENUE
+
+     5.   This Court has jurisdiction under 28 U.S.C. Section
+1332(a)(1) because the parties are completely diverse and the
+amount in controversy exceeds $75,000.
+
+     6.   This Court additionally has jurisdiction under 28
+U.S.C. Section 1331 to the extent any claim arises under federal
+law.
+
+     7.   This Court has personal jurisdiction over Defendants
+because Dunmore Lattice is incorporated and headquartered in
+Colorado, Prichard resides in Colorado, and the alleged conduct
+occurred substantially in Colorado.
+
+     8.   Venue is proper under 28 U.S.C. Section 1391(b)(1) and
+(b)(2) because Defendants reside in this District and a
+substantial part of the events alleged, including execution of
+the Note Purchase Agreement described below, occurred here.
+
+                     FACTUAL ALLEGATIONS
+
+     9.   Halverson Ridge is a private fund making growth-stage
+debt and equity investments in industrial technology companies.
+
+     10.  In January 2025, Prichard approached Halverson Ridge on
+behalf of Dunmore Lattice seeking growth capital.
+
+     11.  From January to March 2025, Prichard held numerous
+calls and meetings with Halverson Ridge, presenting financial
+projections and backlog data.
+
+     12.  On February 11, 2025, Prichard provided a "Confidential
+Investor Summary" representing a signed customer backlog of
+$18,400,000 for fiscal year 2025.
+
+     13.  The Investor Summary also represented a trailing
+twelve-month gross margin of 41% and no debt senior to the
+proposed note.
+
+     14.  In reasonable reliance on paragraphs 12 and 13,
+Halverson Ridge agreed to finance Dunmore Lattice.
+
+     15.  On March 24, 2025, the parties executed a Note Purchase
+Agreement under which Halverson Ridge purchased a convertible
+note in the principal amount of $4,200,000 (the "Note").
+
+     16.  Prichard executed the Note Purchase Agreement for
+Dunmore Lattice and separately executed a Founder Support and
+Representations Agreement (the "Support Agreement") personally
+reaffirming the Investor Summary.
+
+     17.  Section 3.2 of the Note Purchase Agreement restricts
+use of proceeds to working capital, equipment, and general
+corporate purposes in the board-approved budget.
+
+     18.  Section 4.6 warrants a signed backlog "not less than
+$16,000,000" and "no Senior Indebtedness other than as disclosed
+on Schedule 4.6." Schedule 4.6 disclosed none.
+
+     19.  Section 5.1 of the Support Agreement requires Prichard
+to promptly disclose any event rendering a representation
+inaccurate.
+
+     20.  Section 6.4 obligates Prichard to provide accurate
+quarterly reporting to Halverson Ridge's board observer.
+
+     21.  In April 2025, Dunmore Lattice received the $4,200,000
+Note proceeds.
+
+     22.  Beginning in May 2025, board observer Corinne Vasquez
+received monthly financial packages reflecting a backlog of
+$17,900,000, then $17,200,000 in June.
+
+     23.  In July 2025, Ms. Vasquez requested supporting purchase
+orders under Section 7.3; Dunmore Lattice did not produce them in
+July or August 2025.
+
+     24.  On September 9, 2025, at Prichard's direction, the
+controller produced purchase orders totaling only approximately
+$6,100,000, roughly $10,300,000 less than represented.
+
+     25.  Halverson Ridge learned much of the reported backlog
+consisted of non-binding letters of intent, not signed orders.
+
+     26.  Prichard knew, or was reckless in not knowing, that the
+reported backlog included non-binding letters of intent when he
+made the representations above.
+
+     27.  In September 2025, a UCC search revealed Dunmore
+Lattice granted a security interest in substantially all its
+assets to Meridian Commercial Lending Corp. in February 2025.
+
+     28.  The Meridian interest was not disclosed on Schedule 4.6
+or otherwise before closing, secures a $2,750,000 loan, and is
+senior to the Note by its terms.
+
+     29.  Halverson Ridge's Note is therefore structurally
+subordinated to debt Defendants represented did not exist.
+
+     30.  On October 3, 2025, Halverson Ridge demanded a written
+accounting of the use of the Note proceeds.
+
+     31.  On October 21, 2025, Dunmore Lattice's partial
+accounting showed approximately $1,650,000 transferred to
+Prichard Family Holdings LLC, an entity Prichard, upon
+information and belief, wholly owns and controls.
+
+     32.  The transfers were not for working capital, equipment,
+or any purpose in the board-approved budget.
+
+     33.  Upon information and belief, Prichard used part of the
+transferred funds for personal debts unrelated to Dunmore
+Lattice.
+
+     34.  The accounting did not address the remaining
+approximately $840,000 of Note proceeds.
+
+     35.  On November 12, 2025, Halverson Ridge sent written
+notice of default under Section 8.1, demanding cure within the
+thirty-day period under Section 8.3.
+
+     36.  Defendants did not cure the defaults within that period
+or at any time thereafter.
+
+     37.  On December 15, 2025, Halverson Ridge accelerated the
+Note under Section 8.4, declaring the full $4,200,000 principal,
+plus accrued interest, immediately due and payable.
+
+     38.  Dunmore Lattice has not repaid any portion of the
+accelerated Note.
+
+     39.  As a direct and proximate result of Defendants'
+conduct, Halverson Ridge has been damaged in an amount to be
+proven at trial, believed to exceed $5,000,000.
+
+     40.  Halverson Ridge performed all conditions and
+obligations required of it under the Note Purchase Agreement and
+the Support Agreement, except as excused by Defendants' breaches.
+
+     41.  As an officer, director, and personal reaffirming party
+under the Support Agreement, Prichard owed Halverson Ridge duties
+of honesty, good faith, and fair dealing.
+
+     42.  Prichard breached those duties by causing the
+misrepresentations above, authorizing the undisclosed Meridian
+interest, and directing diversion of Note proceeds to Prichard
+Family Holdings LLC for his personal benefit.
+
+     43.  Dunmore Lattice's board did not approve the transfers
+to Prichard Family Holdings LLC described in paragraphs 31
+through 33.
+
+                              COUNT I
+                       BREACH OF CONTRACT
+                    (Against Dunmore Lattice)
+
+     44.  Halverson Ridge realleges paragraphs 1 through 43 as if
+fully set forth herein.
+
+     45.  The Note Purchase Agreement is a valid, enforceable
+contract, and Halverson Ridge performed by funding the full
+$4,200,000 Note.
+
+     46.  Dunmore Lattice breached Sections 3.2, 4.6, 7.3, and
+8.1 by misrepresenting its backlog and debt position, failing to
+produce documentation, misusing proceeds, and failing to cure
+after notice.
+
+     47.  As a direct and proximate result, Halverson Ridge has
+suffered damages of not less than $4,200,000 in unpaid principal,
+plus accrued interest and consequential damages.
+
+     48.  Halverson Ridge is entitled to its damages, pre- and
+post-judgment interest, costs, and, under Section 9.7 of the Note
+Purchase Agreement, its reasonable attorneys' fees.
+
+                             COUNT II
+                                FRAUD
+                     (Against All Defendants)
+
+     49.  Halverson Ridge realleges paragraphs 1 through 48 as if
+fully set forth herein.
+
+     50.  Defendants made material misrepresentations of existing
+fact, including as to Dunmore Lattice's signed backlog and the
+absence of senior debt.
+
+     51.  Those representations were false when made, and
+Defendants knew they were false or made them with reckless
+disregard for their truth.
+
+     52.  Defendants intended Halverson Ridge to rely on the
+representations in deciding to provide the financing, and
+Halverson Ridge reasonably and justifiably did so.
+
+     53.  As a direct and proximate result, Halverson Ridge has
+suffered damages believed to exceed $5,000,000, entitling it to
+compensatory damages plus punitive damages sufficient to punish
+and deter Defendants' willful conduct.
+
+                             COUNT III
+                  BREACH OF FIDUCIARY DUTY
+                        (Against Prichard)
+
+     54.  Halverson Ridge realleges paragraphs 1 through 53 as if
+fully set forth herein.
+
+     55.  As alleged in paragraph 41, Prichard owed fiduciary and
+related duties of honesty, loyalty, and fair dealing to Halverson
+Ridge.
+
+     56.  Prichard breached those duties by causing the
+misrepresentations, authorizing the undisclosed Meridian
+interest, and diverting at least $1,650,000 in restricted Note
+proceeds to Prichard Family Holdings LLC for his own benefit, in
+violation of Section 3.2.
+
+     57.  Prichard's breaches were not the result of good faith
+business judgment but were undertaken for his personal benefit to
+the detriment of Dunmore Lattice and Halverson Ridge.
+
+     58.  As a direct and proximate result, Halverson Ridge has
+suffered damages believed to exceed $1,650,000, plus consequential
+damages from the resulting impairment of its Note.
+
+     59.  Prichard's conduct was willful, malicious, and in
+conscious disregard of Halverson Ridge's rights, entitling
+Halverson Ridge to punitive damages.
+
+                       PRAYER FOR RELIEF
+
+     WHEREFORE, Plaintiff Halverson Ridge Capital Partners, LLC
+respectfully requests that the Court enter judgment against
+Defendants and grant the following relief:
+
+     a.   Compensatory damages against Dunmore Lattice on Count I
+          of not less than $4,200,000, plus pre- and
+          post-judgment interest;
+
+     b.   Compensatory damages against all Defendants on Count II
+          believed to exceed $5,000,000;
+
+     c.   Punitive damages against all Defendants on Count II;
+
+     d.   Compensatory damages against Prichard on Count III
+          believed to exceed $1,650,000;
+
+     e.   Punitive damages against Prichard on Count III;
+
+     f.   Reasonable attorneys' fees and costs of suit to the
+          extent permitted by the Note Purchase Agreement or
+          applicable law;
+
+     g.   Pre-judgment and post-judgment interest at the maximum
+          rate allowed by law; and
+
+     h.   Such other and further relief as the Court deems just
+          and proper.
+
+                          JURY DEMAND
+
+     Plaintiff demands a trial by jury on all issues so triable
+under Rule 38 of the Federal Rules of Civil Procedure.
+
+
+Dated: February 2, 2026                Respectfully submitted,
+
+
+                                        /s/ Isabelle R. Castellano
+                                        Isabelle R. Castellano
+                                        Colorado Bar No. 44215
+                                        CASTELLANO WREN LLP
+                                        1801 California Street,
+                                        Suite 2200
+                                        Denver, Colorado 80202
+                                        Telephone: (303) 555-0148
+                                        icastellano@castellanowren.com
+
+                                        Attorneys for Plaintiff
+                                        Halverson Ridge Capital
+                                        Partners, LLC

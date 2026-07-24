@@ -1,0 +1,219 @@
+MASTER SERVICES AGREEMENT
+
+This Master Services Agreement (this "Agreement") is entered into as of March 2, 2026 (the "Effective Date"), by and between Northfield Data Systems, Inc., a Delaware corporation with its principal place of business at 4410 Whitmore Parkway, Suite 300, Overton, Delaware 19801 ("Vendor"), and Cascadia Retail Holdings, LLC, a Washington limited liability company with its principal place of business at 1288 Bramwell Avenue, Portage, Washington 98115 ("Customer"). Vendor and Customer are each a "Party" and together the "Parties."
+
+RECITALS
+
+WHEREAS, Vendor provides data processing, analytics, and managed hosting services described herein and in one or more Statements of Work entered into under this Agreement;
+
+WHEREAS, Customer desires to procure such services upon the terms set forth in this Agreement; and
+
+WHEREAS, the Parties intend that this Agreement shall govern all Statements of Work executed from time to time unless a Statement of Work expressly states otherwise;
+
+NOW, THEREFORE, in consideration of the mutual covenants contained herein, the Parties agree as follows.
+
+ARTICLE 1. DEFINITIONS
+
+Section 1.1 "Affiliate" means, with respect to a Party, any entity that directly or indirectly controls, is controlled by, or is under common control with such Party.
+
+Section 1.2 "Authorized User" means an employee, contractor, or agent of Customer granted access to the Services and bound by confidentiality obligations no less protective than Article 5.
+
+Section 1.3 "Confidential Information" has the meaning set forth in Section 5.1.
+
+Section 1.4 "Deliverables" means work product, reports, code, configurations, or other materials Vendor is expressly required to deliver under a Statement of Work, as further described in Exhibit A.
+
+Section 1.5 "Documentation" means the user manuals and technical specifications describing use of the Services, as updated by Vendor from time to time.
+
+Section 1.6 "Fees" means the amounts payable by Customer to Vendor for the Services, as set forth in Article 3 and the applicable Statement of Work.
+
+Section 1.7 "Intellectual Property Rights" means all patent, copyright, trademark, trade secret, and other intellectual property rights recognized in any jurisdiction.
+
+Section 1.8 "Order Form" means an ordering document referencing this Agreement and specifying the Services purchased.
+
+Section 1.9 "Service Levels" means the performance standards set forth in Section 2.5.
+
+Section 1.10 "Services" means the data processing, analytics, hosting, and related services provided under this Agreement, as further defined in Section 2.1.
+
+Section 1.11 "Statement of Work" or "SOW" means a document, substantially in the form of Exhibit A, describing specific Services, Deliverables, fees, and timelines, incorporated into and governed by this Agreement.
+
+Section 1.12 "Term" has the meaning set forth in Section 4.1.
+
+Section 1.13 "Vendor Materials" means software, tools, templates, and know-how owned or developed by Vendor independent of this Agreement, as described in Section 6.2.
+
+Section 1.14 "Customer Data" means data or content submitted by Customer or an Authorized User to the Services, excluding Vendor Materials.
+
+Section 1.15 "Subcontractor" means any third party engaged by Vendor to perform a portion of the Services, subject to Section 9.4.
+
+ARTICLE 2. SERVICES
+
+Section 2.1 Scope of Services. Vendor shall provide the Services described in each Statement of Work, substantially in the form attached as Exhibit A. Each SOW shall specify the scope, timeline, Deliverables, and Fees and is governed by this Agreement unless the SOW expressly states otherwise.
+
+Section 2.2 Change Orders. Either Party may propose changes to a Statement of Work by written change order describing the modification and any adjustment to Fees or timelines. No change order is binding unless signed by both Parties.
+
+Section 2.3 Vendor Personnel. Vendor shall assign qualified personnel and use commercially reasonable efforts to maintain continuity of key personnel, subject to Vendor's ordinary personnel practices.
+
+Section 2.4 Cooperation. Customer shall provide timely access to Customer Data, personnel, and facilities reasonably necessary for Vendor's performance. Vendor's obligations, including the Service Levels, are conditioned on Customer's cooperation under this Section 2.4.
+
+Section 2.5 Service Levels. Vendor shall use commercially reasonable efforts to achieve the following service levels (the "Service Levels") for the hosted Services. Service credits are Customer's sole and exclusive remedy for a missed Service Level, subject to Section 8.2.
+
+    Metric                          Target              Credit
+    ------------------------------  ------------------  -------------------
+    Monthly Uptime Percentage       99.90%               5% of monthly Fees
+    Critical Incident Response      30 minutes           5% of monthly Fees
+    High Priority Incident Response 2 hours              3% of monthly Fees
+    Standard Support Response       1 business day        2% of monthly Fees
+    Scheduled Maintenance Window    4 hours per month     No credit
+    Data Restoration Time           8 hours               10% of monthly Fees
+
+Section 2.6 Service Level Exclusions. The Service Levels do not apply to unavailability caused by (a) scheduled maintenance within the window above, (b) Customer's breach, (c) force majeure under Section 11.8, or (d) third-party services outside Vendor's reasonable control.
+
+Section 2.7 Credit Requests. Customer must request a service credit in writing within thirty (30) days after the month in which the failure occurred. Credits apply to the next invoice and are not redeemable for cash.
+
+ARTICLE 3. FEES AND PAYMENT
+
+Section 3.1 Fees. Customer shall pay the Fees set forth in the applicable Statement of Work and the pricing table below, based on the Service Tier selected in the applicable Order Form.
+
+    Service Tier      Monthly Fee     Included Units     Overage Rate
+    ----------------  --------------  -----------------  ---------------
+    Starter           $2,500.00       50,000 records     $0.045 / record
+    Growth             $7,500.00       250,000 records    $0.032 / record
+    Professional       $18,000.00      750,000 records    $0.024 / record
+    Enterprise         $42,000.00      2,500,000 records  $0.016 / record
+    Enterprise Plus    Custom Quote    Custom              Custom
+
+Section 3.2 Invoicing. Vendor shall invoice monthly in arrears, including overage calculated per Section 3.1. Invoices are due within thirty (30) days ("Net 30").
+
+Section 3.3 Late Payments. Overdue amounts accrue interest at the lesser of 1.5% per month or the maximum rate permitted by law, and Vendor may suspend Services on ten (10) business days' notice if payment remains outstanding, subject to Section 4.3.
+
+Section 3.4 Taxes. Fees exclude applicable sales, use, and value-added taxes, which are Customer's responsibility, excluding taxes on Vendor's net income.
+
+Section 3.5 Disputed Charges. Customer must notify Vendor of a disputed charge within sixty (60) days of the invoice date. The Parties shall cooperate in good faith to resolve the dispute within thirty (30) days.
+
+Section 3.6 Annual Fee Adjustments. Vendor may increase Fees under Section 3.1 on each anniversary upon sixty (60) days' notice, not to exceed the greater of 5% or the change in the Consumer Price Index for the preceding twelve months.
+
+ARTICLE 4. TERM AND TERMINATION
+
+Section 4.1 Term. This Agreement commences on the Effective Date and continues for an initial term of thirty-six (36) months (the "Initial Term"), renewing for successive twelve (12) month periods (each a "Renewal Term," with the Initial Term, the "Term") unless either Party gives notice of non-renewal at least ninety (90) days before the then-current Term ends.
+
+Section 4.2 Termination for Convenience. Customer may terminate this Agreement or an SOW for convenience on ninety (90) days' notice, subject to payment of Fees accrued through termination and any early termination fee in the applicable SOW.
+
+Section 4.3 Termination for Cause. Either Party may terminate if the other materially breaches this Agreement and fails to cure within thirty (30) days after notice.
+
+Section 4.4 Termination for Insolvency. Either Party may terminate immediately if the other becomes insolvent, assigns for creditors' benefit, or is subject to a bankruptcy proceeding not dismissed within sixty (60) days.
+
+Section 4.5 Effect of Termination. Upon termination, (a) Customer shall pay all accrued Fees, (b) each Party shall return or destroy the other's Confidential Information per Section 5.4, and (c) Vendor shall make Customer Data available for export for thirty (30) days before deletion.
+
+Section 4.6 Survival. Articles 1, 5, 6, 7, 8, 9, 10, and 11, and accrued payment obligations, survive termination.
+
+ARTICLE 5. CONFIDENTIALITY
+
+Section 5.1 Definition. "Confidential Information" means non-public information disclosed by one Party (the "Disclosing Party") to the other (the "Receiving Party") that is designated confidential or that a reasonable person would understand to be confidential, including Customer Data, pricing, and Vendor Materials.
+
+Section 5.2 Exclusions. Confidential Information excludes information that (a) becomes publicly available through no fault of the Receiving Party, (b) was already known to the Receiving Party, (c) is rightfully received from a third party, or (d) is independently developed.
+
+Section 5.3 Obligations. The Receiving Party shall (a) use Confidential Information solely to perform this Agreement, (b) protect it with at least reasonable care, and (c) disclose it only to personnel and Subcontractors with a need to know who are bound by obligations no less protective than this Article 5.
+
+Section 5.4 Return or Destruction. On request or termination under Section 4.5, the Receiving Party shall promptly return or destroy the Disclosing Party's Confidential Information, except as required by law or a document retention policy, in which case confidentiality continues to apply.
+
+Section 5.5 Compelled Disclosure. If compelled by law to disclose Confidential Information, the Receiving Party shall give prompt notice so the Disclosing Party may seek a protective order.
+
+ARTICLE 6. INTELLECTUAL PROPERTY
+
+Section 6.1 Customer Data. Customer owns all right, title, and interest in Customer Data and grants Vendor a non-exclusive, worldwide, royalty-free license to use it solely to perform the Services.
+
+Section 6.2 Vendor Materials. Vendor owns all right, title, and interest in the Vendor Materials, including improvements. Nothing herein transfers ownership of Vendor Materials to Customer.
+
+Section 6.3 Deliverables. Subject to full payment of applicable Fees, Vendor assigns to Customer all right, title, and interest in Deliverables identified as "Customer-Owned" in the applicable SOW, excluding incorporated Vendor Materials, subject to Section 6.4.
+
+Section 6.4 License to Incorporated Vendor Materials. Vendor grants Customer a perpetual, non-exclusive, royalty-free license to use Vendor Materials as incorporated into a Deliverable.
+
+Section 6.5 Feedback. Vendor may use any suggestions or feedback provided by Customer without restriction or obligation.
+
+ARTICLE 7. WARRANTIES
+
+Section 7.1 Mutual Warranties. Each Party represents that (a) it has full authority to enter into this Agreement, and (b) doing so does not conflict with any other agreement.
+
+Section 7.2 Vendor Warranties. Vendor warrants that (a) the Services will be performed in a professional manner consistent with industry standards, and (b) the Services will materially conform to the Documentation. Customer's sole remedy for breach of this Section 7.2 is re-performance or, if not feasible, a refund of Fees paid for the deficient Services, subject to Section 8.2.
+
+Section 7.3 Disclaimer. EXCEPT AS EXPRESSLY SET FORTH IN THIS ARTICLE 7, THE SERVICES AND DELIVERABLES ARE PROVIDED "AS IS," AND VENDOR DISCLAIMS ALL OTHER WARRANTIES, EXPRESS, IMPLIED, OR STATUTORY, INCLUDING MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE, AND NON-INFRINGEMENT.
+
+ARTICLE 8. LIMITATION OF LIABILITY
+
+Section 8.1 Exclusion of Consequential Damages. EXCEPT FOR A BREACH OF ARTICLE 5, INDEMNIFICATION UNDER ARTICLE 9, OR GROSS NEGLIGENCE OR WILLFUL MISCONDUCT, NEITHER PARTY IS LIABLE FOR INDIRECT, INCIDENTAL, CONSEQUENTIAL, SPECIAL, OR PUNITIVE DAMAGES, OR LOST PROFITS, REVENUE, OR DATA.
+
+Section 8.2 Liability Cap. EXCEPT FOR A BREACH OF ARTICLE 5, INDEMNIFICATION UNDER ARTICLE 9, CUSTOMER'S PAYMENT OBLIGATIONS UNDER ARTICLE 3, OR GROSS NEGLIGENCE OR WILLFUL MISCONDUCT, EACH PARTY'S TOTAL LIABILITY SHALL NOT EXCEED THE FEES PAID UNDER THE APPLICABLE SOW DURING THE TWELVE (12) MONTHS PRECEDING THE EVENT GIVING RISE TO LIABILITY.
+
+Section 8.3 Basis of the Bargain. The Parties acknowledge that this Article 8 is an essential basis of the bargain and that Vendor would not enter into this Agreement without it.
+
+ARTICLE 9. INDEMNIFICATION
+
+Section 9.1 Vendor Indemnification. Vendor shall defend and indemnify Customer against third-party claims alleging that the Services, used as permitted, infringe a third party's Intellectual Property Rights, subject to Section 8.2.
+
+Section 9.2 Customer Indemnification. Customer shall defend and indemnify Vendor against third-party claims arising from (a) Customer Data, or (b) Customer's use of the Services in violation of this Agreement or applicable law.
+
+Section 9.3 Indemnification Procedure. The indemnified Party shall (a) promptly notify the indemnifying Party of any claim, (b) grant it sole control of the defense and settlement, and (c) provide reasonable cooperation at its expense.
+
+Section 9.4 Subcontractors. Vendor remains responsible for its Subcontractors' performance, and its indemnification obligations under Section 9.1 extend to their acts and omissions.
+
+ARTICLE 10. GOVERNING LAW
+
+Section 10.1 Governing Law. This Agreement is governed by the laws of the State of Delaware, without regard to conflict of laws principles.
+
+Section 10.2 Venue. The Parties consent to the exclusive jurisdiction of the state and federal courts in New Castle County, Delaware, for disputes not resolved under Section 10.3.
+
+Section 10.3 Dispute Resolution. Before filing an action, the Parties shall attempt in good faith to resolve any dispute through negotiation between senior executives for at least thirty (30) days.
+
+ARTICLE 11. GENERAL PROVISIONS
+
+Section 11.1 Independent Contractors. The Parties are independent contractors, and this Agreement creates no partnership, joint venture, agency, or employment relationship.
+
+Section 11.2 Assignment. Neither Party may assign this Agreement without the other's consent, except in connection with a merger, acquisition, or sale of substantially all assets, provided the assignee agrees to be bound.
+
+Section 11.3 Notices. Notices shall be in writing and delivered by email with confirmation, courier, or certified mail to the addresses in the preamble or as otherwise designated.
+
+Section 11.4 Entire Agreement. This Agreement, with all Statements of Work, Order Forms, and exhibits, constitutes the entire agreement and supersedes all prior agreements, written or oral.
+
+Section 11.5 Amendment. This Agreement may be amended only by a written instrument signed by both Parties.
+
+Section 11.6 Waiver. No waiver is effective unless in writing, and no waiver of one provision waives any other provision or occasion.
+
+Section 11.7 Severability. If any provision is held invalid, the remaining provisions continue in effect, and the invalid provision is modified to the minimum extent necessary.
+
+Section 11.8 Force Majeure. Neither Party is liable for delay caused by events beyond its reasonable control, including acts of God, natural disaster, war, or governmental action, provided it gives prompt notice and uses reasonable efforts to mitigate.
+
+Section 11.9 Publicity. Neither Party shall issue a press release referencing the other without prior consent, except Vendor may list Customer as a customer with Customer's consent, not unreasonably withheld.
+
+Section 11.10 Counterparts. This Agreement may be executed in counterparts, each an original, and electronic signatures are deemed original.
+
+EXHIBIT A - STATEMENT OF WORK
+
+This Statement of Work No. SOW-2026-014 (this "SOW") is entered into as of March 9, 2026, pursuant to and incorporated into the Master Services Agreement dated March 2, 2026 (the "Agreement") between Northfield Data Systems, Inc. and Cascadia Retail Holdings, LLC. Capitalized terms not defined herein have the meanings given in the Agreement, as defined in Section 1.4 and elsewhere in Article 1.
+
+1. Scope of Services. Vendor shall provide data ingestion, transformation, and analytics dashboard services for Customer's regional retail inventory data, consisting of:
+   (a) Migration of Customer's inventory records into Vendor's hosted platform;
+   (b) Configuration of automated daily synchronization from Customer's point-of-sale systems;
+   (c) Development of three (3) custom analytics dashboards per the project charter in Schedule 1; and
+   (d) Ongoing managed hosting at the Professional Service Tier identified in Section 3.1 of the Agreement.
+
+2. Deliverables. The Deliverables consist of the migrated data environment, the synchronization pipeline, and the three analytics dashboards, each deemed "Customer-Owned" under Section 6.3 of the Agreement upon full payment for the applicable milestone.
+
+3. Timeline. Services shall be performed per the following milestones, subject to Section 2.4 of the Agreement regarding Customer's cooperation:
+   (a) Kickoff and data discovery: March 16, 2026;
+   (b) Migration environment complete: April 20, 2026;
+   (c) Dashboard development complete: May 25, 2026; and
+   (d) Go-live and acceptance: June 8, 2026.
+
+4. Fees. Customer shall pay the Professional Service Tier monthly Fee under Section 3.1 of the Agreement, plus a one-time implementation fee of $36,000.00, payable in three equal installments upon completion of milestones 3(a) through 3(c).
+
+5. Acceptance. Customer has ten (10) business days after delivery of each Deliverable to notify Vendor in writing of any material non-conformance. Absent such notice, the Deliverable is deemed accepted.
+
+6. Project Contacts. Vendor's project lead is Marguerite Oyelaran, Director of Client Delivery. Customer's project lead is Desmond Achterberg, VP of Data Operations.
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date first written above.
+
+NORTHFIELD DATA SYSTEMS, INC.               CASCADIA RETAIL HOLDINGS, LLC
+
+By: /s/ Rosalind T. Kavanagh                By: /s/ Desmond N. Achterberg
+Name: Rosalind T. Kavanagh                  Name: Desmond N. Achterberg
+Title: Chief Executive Officer              Title: Vice President, Operations
+Date: March 2, 2026                         Date: March 2, 2026

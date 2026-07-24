@@ -1,0 +1,16 @@
+node_modules/
+dist/
+*.tsbuildinfo
+*.log
+
+# Registry files contain recipient identities, matter references, and token
+# material. They are evidence, not source. Never commit one.
+*.registry.json
+registry.json
+/data/
+
+# Key material. Obvious, but this repo mints HMAC and Ed25519 keys.
+*.key
+*.pem
+.env
+.env.*

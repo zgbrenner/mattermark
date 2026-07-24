@@ -1,0 +1,215 @@
+July 20, 2026
+
+Consumer Product Safety Commission
+Office of the Secretary
+4330 East-West Highway
+Bethesda, Maryland 20814
+
+RE: CPSC Docket No. CPSC-2026-0058
+    Advance Notice of Proposed Rulemaking: Consumer Product
+    Warnings and Labeling Requirements for Personal Protective Equipment
+    (Safety Notices Required by June 15, 2026 - Request for Comments)
+
+
+Dear Secretary of the Commission,
+
+The Precision Equipment and Safety Alliance (PESA) hereby submits its
+comments in response to the Advance Notice of Proposed Rulemaking (ANPRM)
+regarding Consumer Product Warnings and Labeling Requirements for Personal
+Protective Equipment, published by the Consumer Product Safety Commission
+(CPSC) in the Federal Register on April 10, 2026.
+
+PESA is a national trade association representing over 340 manufacturers,
+distributors, and retailers of personal protective equipment and safety
+supplies. Our membership includes small businesses with annual revenues of
+less than $5 million as well as major manufacturers with national
+distribution networks. We have been actively engaged in product safety
+compliance for more than twenty years and maintain close working
+relationships with multiple federal agencies, including CPSC, OSHA, and
+the National Institute for Occupational Safety and Health.
+
+PESA has reviewed the ANPRM carefully and offers the following comments
+in the interest of promoting product safety while recognizing the
+operational realities facing manufacturers and distributors across the
+United States.
+
+
+1. PROPOSED STANDARDIZED WARNING FORMATS
+
+PESA supports the Commission's effort to create a more standardized
+format for product warnings and safety notices on PPE. Consistency across
+product categories will help consumers more quickly identify and
+understand critical safety information. We agree that a hierarchical
+labeling structure with warning severity levels (DANGER, WARNING, CAUTION)
+can effectively communicate risk information.
+
+However, PESA recommends that the Commission consider the practical
+constraints of PPE labeling. Many PPE items have limited label surface
+area due to their small size. Requiring extensive warning text could
+necessitate either significant redesign of products or reliance on
+reference labels and user manuals. We propose that the final rule include
+size and surface area exemptions for products with inherent spatial
+constraints.
+
+The proposed rule should specify that manufacturers may use QR codes or
+augmented reality links to provide extended warning information, provided
+that the primary warning statement appears in text form on the physical
+product.
+
+
+2. MULTILINGUAL LABELING REQUIREMENTS
+
+The ANPRM suggests that warnings be provided in English and Spanish as a
+minimum standard. PESA strongly supports this approach as it reflects the
+demographics of the American workforce and will enhance safety outcomes
+for a broad segment of users.
+
+However, PESA recommends that the Commission clarify the definition of
+"primary point of sale" for purposes of determining where multilingual
+labels are required. For products sold through e-commerce channels,
+printed catalogs, and physical retail locations, different labeling
+strategies may be appropriate. We ask that the Commission provide
+flexibility for manufacturers to meet multilingual requirements through a
+combination of on-package labeling, point-of-sale signage, and digital
+resources.
+
+
+3. COMPLIANCE COSTS AND IMPLEMENTATION TIMELINE
+
+PESA conducted a survey of our membership to assess the estimated costs of
+bringing products into compliance with the proposed standards. The results
+vary significantly based on company size and product portfolio.
+
+The following table summarizes the estimated one-time compliance costs
+reported by survey respondents:
+
+
+                    Estimated One-Time Compliance Costs
+
+Company Size         Count    Cost Range       Estimated Total Costs
+(by Revenue)         Resp.    Per Company      (All Companies)
+
+Under $2M             28      $5K-$15K         $280K-$420K
+$2M-$10M              56      $12K-$40K        $672K-$2.24M
+$10M-$50M             34      $25K-$75K        $850K-$2.55M
+$50M-$200M            18      $50K-$150K       $900K-$2.7M
+Over $200M            12      $100K-$300K      $1.2M-$3.6M
+
+Totals:              148                       $3.9M-$11.5M
+
+
+The significant range in estimated costs reflects the diversity of our
+membership and the variability in product redesign requirements. PESA
+respectfully urges the Commission to provide a reasonable implementation
+timeline of no less than 24 months from publication of the final rule.
+This period will allow manufacturers to incorporate label changes into
+their routine product update and repackaging cycles, reducing unnecessary
+waste and minimizing costs to consumers.
+
+For companies with existing inventory, a phase-in period for compliance
+would be appropriate. We recommend that the Commission permit the sale of
+pre-compliance stock for a reasonable period following the effective date,
+provided that such stock is clearly marked in accordance with transition
+rules established in the final rule.
+
+
+4. INTERACTION WITH EXISTING REGULATIONS
+
+PESA is concerned that the proposed warning format standards may overlap
+with existing requirements under ANSI (American National Standards
+Institute) standards and OSHA regulations. We recommend that the Commission
+coordinate with OSHA and relevant standards-setting bodies to ensure that
+the final rule does not impose conflicting or duplicative requirements.
+
+In particular, for products subject to ANSI Z535 standards, manufacturers
+are currently required to follow specific label formats and color schemes.
+If the CPSC rule prescribes different formats or colors, compliance costs
+will increase substantially, and manufacturers may face legal exposure
+for failure to comply with one regulatory body while attempting to comply
+with another.
+
+PESA urges the Commission to harmonize the proposed rule with existing
+OSHA requirements and ANSI standards to the greatest extent possible.
+
+
+5. SMALL BUSINESS CONSIDERATIONS
+
+PESA notes that the ANPRM does not contain a detailed regulatory impact
+analysis examining the effects on small businesses. In response to the
+Regulatory Flexibility Act, PESA urges the Commission to perform a thorough
+small business impact analysis and to consider tailored compliance
+requirements for manufacturers with annual revenues below $10 million.
+
+Small manufacturers often lack the in-house resources to redesign packaging
+or modify labeling systems. They may be unable to absorb significant
+compliance costs and may choose to exit certain product categories
+altogether, reducing consumer choice and market competition. The Commission
+should consider scaled compliance options, such as provisional compliance
+pathways or technical assistance programs for small entities.
+
+
+RECOMMENDATIONS
+
+Based on the foregoing analysis, PESA submits the following recommendations
+for the Commission's consideration:
+
+1. Adopt a hierarchical warning format standard (DANGER, WARNING, CAUTION)
+   while permitting flexibility in label placement and size to accommodate
+   product-specific constraints.
+
+2. Specify that multilingual labeling requirements may be satisfied through
+   a combination of on-package, point-of-sale, and digital resources, with
+   flexibility for e-commerce distribution channels.
+
+3. Establish a minimum 24-month implementation period from publication of
+   the final rule, with a phase-in period for existing inventory.
+
+4. Coordinate with OSHA and ANSI to ensure that the final rule harmonizes
+   with existing regulatory standards and does not impose conflicting
+   requirements.
+
+5. Conduct a comprehensive regulatory impact analysis under the Regulatory
+   Flexibility Act and establish scaled compliance options for small
+   manufacturers.
+
+6. Establish a technical assistance program to help small and medium-sized
+   manufacturers understand and implement the new labeling requirements.
+
+7. Permit the use of QR codes and digital labeling platforms as
+   supplementary means of providing extended warning information, provided
+   that primary warnings remain in text form on the physical product.
+
+PESA appreciates the Commission's consideration of these comments and
+welcomes the opportunity to discuss them further. We are committed to
+working with the Commission to develop practical and effective labeling
+standards that promote consumer safety while recognizing the operational
+constraints facing manufacturers across the nation.
+
+Please contact the undersigned if you have questions regarding these
+comments or if you wish to schedule a meeting with PESA representatives
+to discuss these issues in greater detail.
+
+
+Respectfully submitted,
+
+
+PRECISION EQUIPMENT AND SAFETY ALLIANCE
+
+By: _________________________________
+
+James P. Mitchell
+Director of Government Affairs
+Precision Equipment and Safety Alliance
+2847 North Riverside Avenue
+Suite 440
+Denver, Colorado 80221
+
+Telephone: (303) 555-0174
+Email: jmitchell@pesaonline.org
+
+
+Enclosures: (1) PESA Membership Survey Results - Summary Report
+            (2) PESA Small Business Impact Analysis
+            (3) Comparison Chart: Proposed CPSC Standards and Existing
+                ANSI Z535 Requirements
+
