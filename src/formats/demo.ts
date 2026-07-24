@@ -8,8 +8,9 @@
 
 import { randomBytes } from 'node:crypto';
 import { textToDocx, markDocx, detectDocx, readDocxText } from './index.js';
+import { buildTextPdf, extractPdfText, detectPdf } from './pdf.js';
 import { readZip } from './zip.js';
-import { detect } from '../orchestrator.js';
+import { detect, mark } from '../orchestrator.js';
 import { newCopyIdentity, ed25519Issuer, deriveEd25519 } from '../crypto.js';
 import { foldConfusables } from '../codecs/homoglyph.js';
 import { CHAINS, applyChain, excerpt } from '../transforms.js';
@@ -96,5 +97,23 @@ rule('SEARCH-SAFE DOCX (no homoglyph substitution)');
   line(`  every visible letter intact (keyword search preserved): ${foldConfusables(text) === text}`);
   line(`  warnings:`);
   for (const w of result.warnings) line('    ! ' + w.replace(/\s+/g, ' '));
+}
+
+rule('PDF: attribute a leaked PDF by its text layer');
+line('  PDF cannot be MARKED in place (positioned glyphs / embedded-font problem),');
+line('  but a document marked as text and exported to a PDF keeps its marks in the');
+line('  text layer, so a leaked PDF is still attributable. Here the marked memo text');
+line('  is carried through a spec-compliant PDF (classic xref, FlateDecode, ToUnicode)');
+line('  and recovered by extraction.');
+{
+  const doc = corpus.find((d) => d.label === 'priv-memo')!;
+  const identity = newCopyIdentity('MATTER-2026-0417', 'opposing.counsel@example.com', 'v3');
+  const res = mark(doc.text, identity, ed25519Issuer(kp, orgKey), { codecs: ['WS', 'ZW', 'HG'] });
+  const pdf = buildTextPdf(res.text);
+  const extracted = extractPdfText(pdf);
+  line(`  PDF bytes: ${pdf.length}  text layer === marked text: ${extracted === res.text}`);
+  const det = detectPdf(pdf, ['WS', 'ZW', 'HG']);
+  const hit = det.tokens.find((t) => t.tokenHex === res.tokenHex || t.tokenHex === res.shortIdHex);
+  line(`  ATTRIBUTED from PDF: ${Boolean(hit)}  (channels: ${hit?.channels.join(', ') ?? '-'})`);
 }
 line();

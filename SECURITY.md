@@ -46,8 +46,15 @@ known limitation, not a solved problem.
 ## Operational cautions
 
 - **Registry files are evidence.** They contain recipient identities, matter
-  references, and token material. `.gitignore` excludes them. Encrypt at rest.
-  Append investigation events; never mutate rows in place.
+  references, and token material. `.gitignore` excludes them. `src/registry.ts`
+  is a plaintext prototype store — do not deploy it against real matters. Use
+  `SecureRegistry` (`src/ledger/`): a single file, encrypted at rest with
+  AES-256-GCM under a scrypt-derived key, and append-only via a hash chain so an
+  edited or reordered row is detectable by recomputation. Keep appending
+  investigation events; never mutate rows in place. Note the honest anchoring
+  limit: the built-in local attestation is non-repudiable as to the org but its
+  timestamp is self-asserted — provable-prior-to-a-skeptic needs an external
+  anchor (OpenTimestamps / Rekor / RFC 3161) behind the `Anchor` interface.
 - **Homoglyph marking breaks exact-match search, and it is optional.** Cyrillic
   substitutions replace Latin letters in place: they defeat Ctrl-F, spellcheck,
   and some e-discovery keyword indexing while looking identical on screen. For

@@ -13,6 +13,7 @@
     "demo": "tsx src/demo.ts",
     "matrix": "tsx src/matrix.ts",
     "docx-demo": "tsx src/formats/demo.ts",
+    "ledger-demo": "tsx src/ledger/demo.ts",
     "typecheck": "tsc --noEmit",
     "test": "npm run typecheck && node --import tsx --test test/*.test.ts"
   },
