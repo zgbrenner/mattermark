@@ -1,0 +1,131 @@
+UNITED STATES DISTRICT COURT
+FOR THE NORTHERN DISTRICT OF WESTBROOK
+
+NORTHFIELD CAPITAL PARTNERS, LLC,                )
+                                                   )
+                         Plaintiff,               )
+                                                   )
+          v.                                      )    Civil Action No. 3:26-cv-04471-KDM
+                                                   )
+STRATTON RIDGE MANUFACTURING, INC.,               )
+                                                   )
+                         Defendant.               )
+                                                   )
+
+       DEFENDANT STRATTON RIDGE MANUFACTURING, INC.'S MEMORANDUM OF
+        LAW IN SUPPORT OF ITS MOTION TO DISMISS THE COMPLAINT PURSUANT
+                  TO FEDERAL RULE OF CIVIL PROCEDURE 12(b)(6)
+
+PRELIMINARY STATEMENT
+
+Defendant Stratton Ridge Manufacturing, Inc. ("Stratton Ridge") respectfully moves to dismiss the Complaint of Plaintiff Northfield Capital Partners, LLC ("Northfield") in its entirety, with prejudice, under Federal Rule of Civil Procedure 12(b)(6).
+
+Stripped of rhetoric, the Complaint describes a failed negotiation, not an actionable wrong. Northfield alleges that it and Stratton Ridge exchanged term sheets in the fall of 2024 regarding a possible exclusive arrangement to supply turbine housings to Northfield's portfolio company, Bellwood Turbine Systems, Inc. ("Bellwood"). See Compl. PP 14-22.[1] Those talks never produced a signed, integrated agreement containing the definite terms Northfield now asks this Court to enforce. Even so, the four-count Complaint asks the Court to (i) treat an unsigned, non-binding term sheet as a contract (Count I); (ii) treat negotiating optimism as fraud without a particularized misrepresentation (Count II); (iii) award quasi-contractual relief for conduct also pleaded as a breach (Count III); and (iv) hold Stratton Ridge liable for interfering with a relationship the Complaint never identifies (Count IV).
+
+Each count suffers an independent, dispositive defect, as set forth below. Applying Bell Atlantic Corp. v. Twombly, 550 U.S. 544 (2007), and Ashcroft v. Iqbal, 556 U.S. 662 (2009), the Complaint should be dismissed.
+
+STATEMENT OF FACTS[2]
+
+The following is drawn from the Complaint and accepted as true solely for this motion; Defendant does not concede its accuracy and reserves all rights to contest it.
+
+Northfield is a Westbrook-based fund holding a controlling stake in Bellwood, a manufacturer of small-scale turbine assemblies. Compl. P 9. Stratton Ridge fabricates turbine housings for industrial customers. Compl. P 10. In September 2024 the parties began discussing an arrangement under which Stratton Ridge would become Bellwood's exclusive housing supplier for a three-year term. Compl. P 14.
+
+On October 3, 2024, the parties exchanged a "Term Sheet - Proposed Exclusive Supply Arrangement." Compl. P 16; Compl. Ex. A. The Term Sheet lists a proposed price range, minimum volume, and effective date, but states in bold on page one: "This Term Sheet is intended solely as a basis for continued discussion. It does not constitute a binding offer or agreement, and no party shall have any obligation to the other unless and until a definitive written agreement is executed by both parties." Compl. Ex. A at 1. It further states that "pricing, volume, and delivery terms remain subject to further negotiation and engineering review." Id. at 2.
+
+The Complaint alleges that between October 2024 and January 2025, Stratton Ridge's Vice President of Sales, identified only as "Individual A," told Northfield's managing director, Ilana Voss, that Stratton Ridge "was confident it could meet Bellwood's production timeline" and that a "final agreement was basically a formality." Compl. PP 24-27. No specific dates, locations, or verbatim statements are alleged beyond those characterizations. See Compl. PP 24-31.
+
+Northfield alleges it caused Bellwood to commit $4.2 million to a joint marketing and pre-production campaign, and that Northfield separately incurred roughly $310,000 in consulting fees. Compl. PP 33-36. On February 11, 2025, Stratton Ridge notified Northfield it would not proceed, citing capacity constraints from an unrelated third-party contract. Compl. P 40.
+
+The Complaint further alleges, without elaboration, that the withdrawal "interfered with Northfield's prospective business relationship with an unidentified downstream turbine assembly customer that Bellwood had been cultivating." Compl. P 58. No such customer is named anywhere in the Complaint. See Compl. PP 55-61.
+
+The Complaint asserts four claims: (I) breach of contract; (II) fraudulent inducement; (III) unjust enrichment; and (IV) tortious interference with prospective business relations. Compl. PP 62-89.
+
+LEGAL STANDARD
+
+To survive a Rule 12(b)(6) motion, a complaint must plead "sufficient factual matter, accepted as true, to 'state a claim to relief that is plausible on its face.'" Iqbal, 556 U.S. at 678 (quoting Twombly, 550 U.S. at 570). A claim is plausible "when the plaintiff pleads factual content that allows the court to draw the reasonable inference that the defendant is liable for the misconduct alleged." Id. Plausibility "asks for more than a sheer possibility that a defendant has acted unlawfully." Id.
+
+The Court accepts well-pleaded facts as true, but that tenet "is inapplicable to legal conclusions." Id.; see also Papasan v. Allain, 478 U.S. 265, 286 (1986) (courts need not "accept as true a legal conclusion couched as a factual allegation"). "Threadbare recitals of the elements of a cause of action, supported by mere conclusory statements, do not suffice." Iqbal, 556 U.S. at 678. Nor is it enough that allegations are merely "consistent with" liability; where the facts permit no more than the "mere possibility of misconduct," the complaint has alleged - but not "shown" - entitlement to relief. Id. at 679 (quoting Fed. R. Civ. P. 8(a)(2)).
+
+Plausibility review is "a context-specific task that requires the reviewing court to draw on its judicial experience and common sense." Id. Courts may also consider documents attached to, incorporated by reference in, or integral to the complaint without converting the motion into one for summary judgment.[3] Where such a document contradicts the complaint's characterization, the document controls. See, e.g., In re Century Aluminum Co. Sec. Litig., 729 F.3d 1104, 1108 (9th Cir. 2013).
+
+Where a claim sounds in fraud, Rule 9(b) requires a party to "state with particularity the circumstances constituting fraud." Fed. R. Civ. P. 9(b). That heightened standard applies regardless of how the claim is labeled where fraud is its gravamen. See, e.g., Vess v. Ciba-Geigy Corp. USA, 317 F.3d 1097, 1103-04 (9th Cir. 2003).
+
+ARGUMENT
+
+I. COUNT I MUST BE DISMISSED BECAUSE THE COMPLAINT DOES NOT PLAUSIBLY ALLEGE AN ENFORCEABLE CONTRACT
+
+     A. The Term Sheet Is Not Enforceable on Its Face
+
+A document that expressly disclaims present contractual obligation and conditions any binding commitment on a future definitive agreement does not itself create a contract.[4] See Restatement (Second) of Contracts Section 26 (1981) (no offer where the addressee has reason to know the offeror "does not intend to conclude a bargain until he has made a further manifestation of assent"); see also Joseph Martin, Jr., Delicatessen, Inc. v. Schumacher, 52 N.Y.2d 105, 109 (1981) ("[A] mere agreement to agree, in which a material term is left for future negotiations, is unenforceable.").
+
+The Term Sheet states in bold that it "does not constitute a binding offer or agreement" absent execution of "a definitive written agreement." Compl. Ex. A at 1. Northfield's own pleading confirms no such agreement was ever executed. See Compl. PP 16-22, 40. Where the document underlying the complaint disclaims the very obligation plaintiff seeks to enforce, plaintiff's contrary characterization is not entitled to a presumption of truth. Cf. Iqbal, 556 U.S. at 678-79.
+
+     B. The Term Sheet Also Lacks the Definiteness Required for Enforcement
+
+          1. The Alleged Terms Are Indefinite as a Matter of Law
+
+Even ignoring the disclaimer, Count I fails because no definite, agreed terms are alleged. "[A]n offer must be definite and certain, so that the promises and performances to be rendered by each party are reasonably certain." Restatement (Second) of Contracts Section 33 (1981). The Complaint alleges only a "proposed" price range, volume, and effective date, Compl. P 16, and the Term Sheet itself leaves "pricing, volume, and delivery terms" subject to "further negotiation," Compl. Ex. A at 2. Terms both sides agree remain open for future negotiation are not the "definite and certain" terms Section 33 requires.[5]
+
+          2. No Specific Breached Term Is Identified
+
+Count I independently fails because the Complaint never identifies which specific term Stratton Ridge breached. See Compl. PP 62-68. The conclusory assertion that "Defendant breached the Term Sheet," Compl. P 66, does not satisfy Twombly; it requires factual content identifying what performance was promised and withheld. See Iqbal, 556 U.S. at 678.
+
+II. COUNT II MUST BE DISMISSED FOR FAILURE TO SATISFY RULE 9(b) OR TWOMBLY/IQBAL
+
+     A. The Complaint Does Not Plead the Circumstances of the Alleged Fraud with Particularity
+
+Rule 9(b) requires pleading "the who, what, when, where, and how of the misconduct charged." Kearns v. Ford Motor Co., 567 F.3d 1120, 1124 (9th Cir. 2009) (internal quotation marks omitted); accord DiVittorio v. Equidyne Extractive Indus., Inc., 822 F.2d 1242, 1247 (2d Cir. 1987). Count II falls short on every axis. As to "who," the statements are attributed only to an unnamed "Individual A." Compl. P 24. As to "when" and "where," the Complaint alleges only a four-month window with no date, call, or meeting identified. Id. As to "what," it offers only summary characterizations - "confident," "basically a formality," Compl. PP 26-27 - rather than the actual representations made. Statements of that kind are classic non-actionable puffery, not statements of present fact.[6]
+
+     B. The Complaint Does Not Plead Facts Supporting a Plausible Inference of Fraudulent Intent
+
+Count II also fails because no facts support an inference that Stratton Ridge knew its statements were false, or was reckless as to their truth, when made. See Iqbal, 556 U.S. at 678; cf. Tellabs, Inc. v. Makor Issues & Rights, Ltd., 551 U.S. 308, 314 (2007) (inference of scienter must be "cogent and at least as compelling as any opposing inference"). The Complaint's own chronology defeats scienter: Stratton Ridge continued discussions through January 2025 and withdrew only in February 2025, citing capacity constraints tied to an unrelated contract. Compl. PP 24, 40. That sequence is at least as consistent with a good-faith negotiation that fell through as with a scheme to defraud. See Twombly, 550 U.S. at 567 (allegations must "nudge[ ]" a claim "across the line from conceivable to plausible"). Because the facts are equally consistent with ordinary commercial disappointment, Count II does not clear the plausibility threshold. See id. at 570.
+
+III. COUNTS III AND IV MUST BE DISMISSED FOR INDEPENDENT, DISPOSITIVE REASONS
+
+     A. Unjust Enrichment (Count III) Is Foreclosed by the Alleged Contract
+
+Count III seeks quasi-contractual relief for the same $4.2 million and $310,000 that Count I alleges were spent in reliance on the same Term Sheet. Compare Compl. PP 33-36, 62-68 with Compl. PP 70-76. A plaintiff may not recover in quasi-contract for conduct governed by an agreement between the same parties on the same subject matter. See Clark-Fitzpatrick, Inc. v. Long Island R.R. Co., 70 N.Y.2d 382, 388 (1987) ("[T]he existence of a valid and enforceable written contract governing a particular subject matter ordinarily precludes recovery in quasi contract for events arising out of the same subject matter."). Northfield cannot allege, for Count I, that a binding contract existed and was breached while alleging, for Count III, that no contract existed and equity requires restitution instead. See Fed. R. Civ. P. 8(d)(2)-(3) (alternative pleading does not cure independent plausibility defects). Count III is duplicative of Count I and fails to state a claim.
+
+     B. Tortious Interference (Count IV) Identifies No Specific Relationship or Improper Conduct
+
+A tortious interference claim requires a specific business relationship with an identifiable third party, defendant's knowledge of it, and improper conduct directed at it. See Restatement (Second) of Torts Section 766B (1979). Count IV alleges only that the withdrawal "interfered with Northfield's prospective business relationship with an unidentified downstream turbine assembly customer." Compl. P 58 (emphasis added). An unnamed customer is not a "third person" under Section 766B; it is, at most, a hypothetical market opportunity.[7] A complaint that never identifies the relationship allegedly interfered with pleads only "a sheer possibility" of unlawful conduct, which Iqbal makes insufficient. 556 U.S. at 678.
+
+Nor does the Complaint allege any conduct directed at a third party at all - only Stratton Ridge's decision to withdraw from its own negotiations with Northfield. See Compl. PP 55-61. Declining to proceed with one's own prospective counterparty is not, without more, "improper" interference with that counterparty's separate relationships. See id. Count IV should be dismissed.[8]
+
+CONCLUSION
+
+For the foregoing reasons, Defendant Stratton Ridge Manufacturing, Inc. respectfully requests that the Court grant its motion and dismiss the Complaint in its entirety, with prejudice, pursuant to Federal Rule of Civil Procedure 12(b)(6).
+
+Dated: July 22, 2026
+       Harmon City, Westbrook
+
+                                        Respectfully submitted,
+
+                                        /s/ Priscilla A. Denholm
+                                        Priscilla A. Denholm (Bar No. 48213)
+                                        DENHOLM & ASHWORTH LLP
+                                        1180 Cumberland Avenue, Suite 2200
+                                        Harmon City, Westbrook 08841
+                                        Telephone: (555) 219-4470
+                                        Email: pdenholm@denholmashworth.com
+
+                                        Attorneys for Defendant
+                                        Stratton Ridge Manufacturing, Inc.
+
+---- Footnotes ----
+
+1. "Compl." refers to Plaintiff's Complaint, filed May 4, 2026 (ECF No. 1). "P" and "PP" refer to paragraph and paragraphs, and "Ex." refers to the exhibits attached to the Complaint.
+
+2. This section recites the Complaint's allegations for purposes of this motion only. See Iqbal, 556 U.S. at 678; Erickson v. Pardus, 551 U.S. 89, 94 (2007) (per curiam) (factual allegations must be accepted as true at the pleading stage).
+
+3. See, e.g., Tellabs, 551 U.S. at 322 (courts may consider documents incorporated by reference); see also In re Century Aluminum, 729 F.3d at 1108 (collecting cases); cf. Chambers v. Time Warner, Inc., 282 F.3d 147, 153 (2d Cir. 2002) (a complaint includes documents integral to it).
+
+4. The Term Sheet's choice-of-law clause selects Westbrook law. Compl. Ex. A at 3. Because Westbrook case law on contract formation is sparse, this brief cites the Restatement and out-of-jurisdiction decisions as persuasive authority, consistent with Westbrook courts' own practice on questions of first impression. See, e.g., Harrowgate Mut. Ins. Co. v. Belden, 214 Westbrook 118, 124 (Westbrook Ct. App. 2019).
+
+5. See also E. Allan Farnsworth, Farnsworth on Contracts Section 3.10, at 300-04 (3d ed. 2004) (indefiniteness is an independent ground for unenforceability distinct from lack of mutual assent).
+
+6. See, e.g., Nagler v. Admiral Corp., 248 F.2d 319, 322 (2d Cir. 1957) (general statements of confidence and optimism are non-actionable puffery); accord In re Century Aluminum, 729 F.3d at 1110.
+
+7. Cf. Twombly, 550 U.S. at 555 (a formulaic recitation of an element's bare legal conclusion will not do); see also Papasan, 478 U.S. at 286.
+
+8. Because each count fails independently, the Court need not reach Defendant's alternative futility argument, raised in the notice of motion but not briefed here. Defendant does not oppose one opportunity to replead any curable defect the Court identifies, consistent with Fed. R. Civ. P. 15(a) and Foman v. Davis, 371 U.S. 178, 182 (1962).

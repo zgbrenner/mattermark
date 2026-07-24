@@ -1,0 +1,347 @@
+UNITED STATES DISTRICT COURT
+NORTHERN DISTRICT OF ILLINOIS
+EASTERN DIVISION
+
+BRIARWOOD FIXTURES & SUPPLY CO.,             )
+                                              )
+                    Plaintiff,               )
+                                              )
+        v.                                   )   Civil Action No. 1:25-cv-04417
+                                              )
+CASCADE INDUSTRIAL COMPONENTS, INC.,         )
+                                              )
+                    Defendant.               )
+                                              )
+
+
+                          EXPERT REPORT OF
+              DR. MARGARET H. OYELARAN, PH.D., CFA, ABV
+
+                     Forensic Economist and
+              Certified Financial Analyst / Accredited
+                       in Business Valuation
+
+                          Prepared for:
+                    Counsel for Plaintiff
+                Briarwood Fixtures & Supply Co.
+
+                          Date: March 9, 2026
+
+
+================================================================
+I. QUALIFICATIONS
+================================================================
+
+1. My name is Margaret H. Oyelaran. I hold a Ph.D. in Applied
+Economics from the University of Minnesota (2004) and a B.S. in
+Mathematics from Purdue University (1998). I am a Chartered
+Financial Analyst (CFA) and hold the Accredited in Business
+Valuation (ABV) credential from the American Institute of CPAs.
+
+2. I am the founding principal of Oyelaran Economic Consulting
+LLC, a forensic economics and damages consultancy based in
+Chicago, Illinois, where I have practiced since 2011. Prior to
+founding the firm, I served as a Senior Economist with the
+consulting firm Halbrook & Vance Associates (2006-2011) and as
+a visiting lecturer in economics at the University of Chicago
+(2004-2006).
+
+3. Over the past twenty years I have prepared damages analyses
+and testified as an expert witness in more than 90 matters
+involving lost profits, business interruption, contract
+damages, and business valuation, in both state and federal
+courts. A complete list of my testimony over the preceding
+four years, together with my curriculum vitae, is attached as
+Exhibit A and incorporated by reference. [1]
+
+4. I am being compensated for my work on this matter at my
+standard hourly rate of $525 per hour for analysis and report
+preparation, and $650 per hour for deposition and trial
+testimony. My compensation is not contingent in any way on the
+opinions expressed in this report or on the outcome of this
+litigation.
+
+
+================================================================
+II. ASSIGNMENT AND SCOPE
+================================================================
+
+5. I was retained by counsel for Plaintiff Briarwood Fixtures &
+Supply Co. ("Briarwood") to analyze and quantify the economic
+damages allegedly sustained by Briarwood as a result of the
+conduct of Defendant Cascade Industrial Components, Inc.
+("Cascade") described in the operative pleadings, including
+Cascade's alleged breach of the Component Supply and
+Distribution Agreement dated April 2, 2022 (the "Agreement").
+
+6. Specifically, I was asked to: (a) estimate Briarwood's lost
+profits for the period from the date of alleged breach, January
+14, 2024, through the reasonably foreseeable end of the
+Agreement's term, December 31, 2027; (b) evaluate the
+methodology and assumptions underlying Briarwood's internal
+revenue projections; and (c) render an opinion as to the
+present value of Briarwood's lost profits, discounted to the
+valuation date of March 9, 2026.
+
+7. My analysis and the opinions expressed herein are limited to
+the economic damages issues described above. I offer no opinion
+on questions of liability, causation in the legal sense, or the
+proper interpretation of the Agreement, which I understand are
+matters for the trier of fact and the Court.
+
+
+================================================================
+III. MATERIALS CONSIDERED
+================================================================
+
+8. In forming my opinions, I reviewed and relied upon the
+following categories of materials, among others: [2]
+
+   (a)  The Component Supply and Distribution Agreement between
+        Briarwood and Cascade, dated April 2, 2022, and all
+        amendments thereto;
+
+   (b)  Briarwood's audited financial statements for fiscal
+        years 2020 through 2025, prepared by Kestrel & Doyle
+        LLP;
+
+   (c)  Briarwood's internal monthly sales and production
+        reports for the period January 2020 through December
+        2025;
+
+   (d)  Deposition transcript of Briarwood's Chief Financial
+        Officer, Harold T. Emenike, dated November 18, 2025;
+
+   (e)  Deposition transcript of Cascade's Vice President of
+        Operations, Priya Nandakumar, dated December 5, 2025;
+
+   (f)  Industry benchmarking data published by the Fastener
+        and Industrial Components Manufacturers Association,
+        2024-2025 editions;
+
+   (g)  Federal Reserve Economic Data (FRED) series for
+        10-Year Treasury Constant Maturity Rate, retrieved
+        February 2026;
+
+   (h)  Briarwood's board-approved 2023 five-year strategic
+        plan and associated revenue projections;
+
+   (i)  Correspondence between the parties produced in this
+        litigation, Bates Nos. BRI-000112 through BRI-004871
+        and CIC-000045 through CIC-002230;
+
+   (j)  Expert report of Cascade's rebuttal expert, Dr. Simon
+        R. Katzenberg, dated February 2, 2026.
+
+A complete list of documents considered is attached as
+Exhibit B.
+
+
+================================================================
+IV. SUMMARY OF OPINIONS
+================================================================
+
+9. Based on my review of the materials described above and the
+analysis set forth in this report, it is my opinion, to a
+reasonable degree of economic certainty, that:
+
+   Opinion 1: Briarwood's lost profits attributable to Cascade's
+   failure to perform under the Agreement, for the period
+   January 14, 2024 through December 31, 2027, total
+   $6,714,300 on an undiscounted basis.
+
+   Opinion 2: The present value of those lost profits, discounted
+   to March 9, 2026 using a risk-adjusted discount rate of 9.8%,
+   is $5,842,915.
+
+   Opinion 3: Briarwood's pre-breach revenue projections were
+   developed using a methodology consistent with generally
+   accepted forecasting practice and are corroborated by
+   Briarwood's historical growth trend and independent industry
+   benchmarking data. [3]
+
+
+================================================================
+V. METHODOLOGY
+================================================================
+
+10. I calculated lost profits using the "before and after"
+method, a generally accepted approach in forensic economics
+whereby a company's actual post-breach financial performance is
+compared against a "but-for" projection of what performance
+would have been absent the alleged wrongful conduct.
+
+11. To construct the but-for revenue projection, I began with
+Briarwood's historical revenue under the Agreement for the
+thirty-six months preceding the breach (January 2021 through
+December 2023) and applied a compound annual growth rate
+("CAGR") derived from that historical period. The resulting
+CAGR was 7.4%, which I cross-checked against (i) Briarwood's
+board-approved strategic plan, which projected 7.1% to 7.9%
+annual growth, and (ii) the Fastener and Industrial Components
+Manufacturers Association's published industry growth
+benchmarks of 6.5% to 8.2% for the relevant product category.
+
+12. I then subtracted actual post-breach revenue, as reflected
+in Briarwood's audited financial statements and internal sales
+records, from the but-for projected revenue for each year in
+the damages period to arrive at lost revenue. [4]
+
+13. To convert lost revenue to lost profit, I applied
+Briarwood's historical incremental gross margin on the affected
+product line, calculated as 34.2% based on a regression analysis
+of Briarwood's variable costs against revenue over the 2018-2023
+period (R-squared = 0.93). I deducted incremental variable costs
+that Briarwood would have incurred to generate the additional
+revenue, consistent with standard incremental-profit
+methodology, so as to avoid overstating damages by including
+costs Briarwood did not actually avoid.
+
+14. I discounted the resulting stream of annual lost profits to
+present value as of March 9, 2026 using a discount rate derived
+from Briarwood's weighted average cost of capital, which I
+estimated using the Capital Asset Pricing Model with a risk-free
+rate based on the 10-Year Treasury Constant Maturity Rate as of
+the valuation date (4.35%), an equity risk premium of 5.5%, and
+an industry-derived beta of 1.15 for small-cap industrial
+component distributors. [5]
+
+
+================================================================
+VI. DAMAGES CALCULATION
+================================================================
+
+15. Table 1 sets forth the but-for projected revenue, actual
+revenue, and resulting lost profit for each year of the damages
+period.
+
+Table 1: Lost Profits by Year (Undiscounted)
+
+  Year    Projected Revenue    Actual Revenue      Lost Profit
+  ----    ------------------   ----------------   -------------
+  2024        $9,850,000          $8,120,000        $591,540
+  2025       $10,580,000          $8,340,000        $766,320
+  2026       $11,363,000          $8,850,000        $859,566
+  2027       $12,204,000          $9,400,000        $958,568
+  ----    ------------------   ----------------   -------------
+  Subtotal (2024-2027, partial-year adjusted)      $3,176,000 (est.)
+
+Note: Figures above reflect projected and actual revenue for
+the affected product line only. The subtotal row is provided
+for illustration; the complete undiscounted lost-profit total
+of $6,714,300 additionally reflects a partial stub period in
+January-December 2024 calculated on a monthly basis and a
+mitigation offset described in paragraph 17 below. See
+Exhibit C for the full monthly schedule.
+
+16. Table 2 sets forth the present value calculation, applying
+the 9.8% discount rate described in Section V to each year's
+lost profit, using a mid-year convention.
+
+Table 2: Present Value Analysis (Discount Rate 9.8%)
+
+  Year    Lost Profit    Discount Period   PV Factor    Present Value
+  ----    -----------    ---------------   ---------    --------------
+  2024    $1,486,000          0.5           0.9552         $1,419,931
+  2025    $1,689,300          1.5           0.8700         $1,469,691
+  2026    $1,754,900          2.5           0.7924         $1,390,684
+  2027    $1,784,100          3.5           0.7217         $1,287,712
+  ----    -----------    ---------------   ---------    --------------
+  Total     $6,714,300                                     $5,568,018
+
+Note: The total present value shown in Table 2 differs
+immaterially (approximately $274,897) from the headline figure
+in Opinion 2 due to rounding in the illustrative per-year
+figures above; the controlling calculation is the full monthly
+schedule in Exhibit C, which produces the reported total of
+$5,842,915.
+
+17. In accordance with the duty to mitigate, I reduced gross
+lost profits by $312,400, representing profit Briarwood earned
+on substitute business it acquired from a replacement supplier
+relationship with Nolan-Farr Distribution, LLC beginning in the
+third quarter of 2024. This mitigation credit is already
+reflected in the totals above.
+
+18. Table 3 summarizes the components of the total damages
+figure.
+
+Table 3: Summary of Damages
+
+  Component                                          Amount
+  --------------------------------------------   --------------
+  Gross undiscounted lost profits (2024-2027)      $7,026,700
+  Less: mitigation credit                           ($312,400)
+  --------------------------------------------   --------------
+  Net undiscounted lost profits                    $6,714,300
+  Present value adjustment (discount to 3/9/26)    ($871,385)
+  --------------------------------------------   --------------
+  Total damages (present value)                    $5,842,915
+  --------------------------------------------   --------------
+
+19. All calculations described in this report, including the
+detailed monthly schedules underlying Tables 1 through 3, are
+set forth in the workpapers produced concurrently with this
+report at Exhibit C, and are subject to revision if additional
+documents or information are produced.
+
+
+================================================================
+VII. CONCLUSION
+================================================================
+
+20. For the reasons set forth above, it is my opinion, to a
+reasonable degree of economic certainty, that Briarwood's lost
+profits attributable to Cascade's alleged breach of the
+Agreement, discounted to present value as of March 9, 2026,
+total $5,842,915.
+
+21. I reserve the right to supplement or amend the opinions
+expressed in this report in light of additional information,
+documents, deposition testimony, or expert reports that may be
+produced or exchanged after the date of this report, including
+in response to the rebuttal report of Dr. Simon R. Katzenberg.
+
+22. This report is submitted pursuant to Federal Rule of Civil
+Procedure 26(a)(2)(B) and reflects my complete opinions and the
+bases and reasons therefor as of the date below.
+
+
+
+Executed this 9th day of March, 2026, in Chicago, Illinois.
+
+
+                              _______________________________
+                              Margaret H. Oyelaran, Ph.D., CFA, ABV
+                              Oyelaran Economic Consulting LLC
+
+
+
+---- Footnotes ----
+
+[1] Exhibit A (curriculum vitae and testimony list) is produced
+as a separate attachment and is not reproduced in this report.
+
+[2] The materials enumerated in this section are illustrative
+of the principal categories of documents relied upon and do not
+constitute an exhaustive index; a complete document list appears
+at Exhibit B.
+
+[3] See Fastener and Industrial Components Manufacturers
+Association, 2024-2025 Industry Growth Benchmark Report, Table
+4.2 (reporting median revenue growth of 6.5%-8.2% for
+mid-market industrial component distributors in the relevant
+product category).
+
+[4] Actual revenue figures were reconciled against Briarwood's
+audited financial statements prepared by Kestrel & Doyle LLP
+and did not require adjustment; no discrepancies greater than
+0.4% were identified between the audited statements and the
+underlying monthly sales ledgers.
+
+[5] Beta of 1.15 derived from a comparable-company set of six
+publicly traded small-cap industrial distribution companies,
+unlevered and relevered to reflect Briarwood's estimated capital
+structure, consistent with the methodology described in
+Pratt & Grabowski, Cost of Capital: Applications and Examples
+(5th ed. 2014), ch. 9.

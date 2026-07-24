@@ -1,0 +1,23 @@
+{
+  "name": "mattermark",
+  "version": "0.1.0",
+  "description": "Local-first recipient attribution and work-product fingerprinting for legal and regulated professionals.",
+  "type": "module",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zgbrenner/mattermark.git"
+  },
+  "engines": { "node": ">=20" },
+  "scripts": {
+    "demo": "tsx src/demo.ts",
+    "matrix": "tsx src/matrix.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "npm run typecheck && npm run demo && npm run matrix"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "tsx": "^4.21.0",
+    "typescript": "^7.0.2"
+  }
+}

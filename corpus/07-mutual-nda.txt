@@ -1,0 +1,90 @@
+MUTUAL NON-DISCLOSURE AGREEMENT
+
+This Mutual Non-Disclosure Agreement (this "Agreement") is made and entered into as of January 15, 2026 (the "Effective Date"), by and between NovaTech Solutions, Inc., a Delaware corporation with principal place of business at 847 Innovation Drive, Boulder, Colorado 80303 ("NovaTech"), and CrescentWave Communications LLC, a California LLC with principal place of business at 3421 Silicon Boulevard, San Francisco, California 94105 ("CrescentWave"). The Parties are referred to collectively as "Parties" and individually as a "Party."
+
+RECITALS
+
+WHEREAS, the Parties wish to explore a potential business relationship and protect confidential information;
+
+NOW, THEREFORE, the Parties agree as follows:
+
+1. DEFINITIONS
+
+1.1 Confidential Information. "Confidential Information" means all information, whether oral, written, electronic, or otherwise, disclosed by one Party (the "Discloser") to the other Party (the "Recipient") in connection with the Purpose, including technical data, trade secrets, business plans, financial information, customer lists, marketing strategies, software code, and similar information marked as confidential or reasonably understood to be confidential.
+
+1.2 Discloser. "Discloser" means the Party disclosing Confidential Information.
+
+1.3 Recipient. "Recipient" means the Party receiving Confidential Information.
+
+2. PURPOSE
+
+The Parties are exploring a potential collaboration regarding telecommunications infrastructure and data analytics. Confidential Information will be disclosed solely for evaluating and negotiating this business relationship. Any other use requires prior written consent of the Discloser.
+
+3. OBLIGATIONS OF THE RECIPIENT
+
+3.1 Nondisclosure. The Recipient shall maintain confidentiality and not disclose Confidential Information to third parties without prior written consent of the Discloser.
+
+3.2 Limited Use. The Recipient shall use Confidential Information solely for the Purpose without express authorization from the Discloser.
+
+3.3 Standard of Care. The Recipient shall protect Confidential Information using reasonable care, consistent with its own confidential information.
+
+3.4 Permitted Disclosures. The Recipient may disclose Confidential Information to its employees and advisors who have a legitimate need to know and who are bound by confidentiality obligations at least as restrictive as those herein.
+
+4. EXCLUSIONS
+
+The obligations shall not apply to information that:
+
+4.1 becomes publicly available through no breach by the Recipient;
+
+4.2 was known to the Recipient prior to disclosure, as evidenced by written records;
+
+4.3 is independently developed by the Recipient without use of the Confidential Information;
+
+4.4 is rightfully received from a third party without confidentiality obligations; or
+
+4.5 is required to be disclosed by law, provided that the Recipient promptly notifies the Discloser to seek protective measures.
+
+5. TERM
+
+This Agreement commences on the Effective Date and continues for three (3) years, unless terminated by either Party upon thirty (30) days' written notice. Obligations regarding Confidential Information survive termination for three (3) years.
+
+6. RETURN OF MATERIALS
+
+Upon request or termination, the Recipient shall return or certify destruction of all Confidential Information within thirty (30) days, except the Recipient may retain one copy for legal files.
+
+7. NO LICENSE
+
+Nothing in this Agreement grants to the Recipient any license, right, or interest in any of the Discloser's Confidential Information, intellectual property, or other proprietary rights, except as expressly provided herein.
+
+8. GOVERNING LAW
+
+This Agreement shall be governed by Colorado law. The Parties consent to exclusive jurisdiction of Colorado courts in Denver.
+
+9. MISCELLANEOUS
+
+9.1 Entire Agreement. This Agreement constitutes the entire agreement between the Parties and supersedes all prior negotiations and agreements, whether written or oral.
+
+9.2 Amendment. This Agreement may not be amended except by written instrument signed by both Parties.
+
+9.3 Severability. If any provision is determined invalid, the remaining provisions shall remain in full force and effect.
+
+9.4 Waiver. No waiver of any provision shall be effective unless in writing and signed by the Party against whom the waiver is sought.
+
+9.5 Counterparts. This Agreement may be executed in counterparts, each deemed an original.
+
+9.6 No Partnership. Nothing herein creates a partnership, joint venture, or agency relationship.
+
+
+IN WITNESS WHEREOF, the Parties have executed this Agreement as of the Effective Date.
+
+
+NOVATECH SOLUTIONS, INC.             CRESCENTWAVE COMMUNICATIONS LLC
+
+
+By: ____________________________      By: ____________________________
+
+Name: __________________________      Name: __________________________
+
+Title: _________________________      Title: _________________________
+
+Date: __________________________      Date: __________________________

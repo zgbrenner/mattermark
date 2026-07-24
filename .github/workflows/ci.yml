@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: ['20', '22', '24']
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Install
+        run: npm ci
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      # The demo exercises minting, all three codecs, the composition guard,
+      # the full transform taxonomy, excerpt recovery, and registry attribution
+      # end to end on the reference memo.
+      - name: Survival harness (demo)
+        run: npm run demo
+
+      # The matrix runs the same measurement across the real 16-document corpus
+      # (corpus/), so the survival numbers reflect briefs, contracts, and a
+      # 40-page appellate brief, not just one 1.5k memo. It fails loudly if a
+      # corpus file is missing.
+      - name: Survival matrix (corpus)
+        run: npm run matrix

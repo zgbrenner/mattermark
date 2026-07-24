@@ -1,0 +1,1027 @@
+                              No. 26-1187
+================================================================================
+
+                  IN THE UNITED STATES COURT OF APPEALS
+                          FOR THE NINTH CIRCUIT
+
+--------------------------------------------------------------------------------
+
+                       NORDHAVEN ANALYTICS, INC.,
+
+                                              Defendant-Appellant,
+
+                                   v.
+
+                MARISOL CALLOWAY, individually and on behalf
+                    of all others similarly situated,
+
+                                              Plaintiff-Appellee.
+
+--------------------------------------------------------------------------------
+
+            On Appeal from the United States District Court
+                for the Northern District of California
+              No. 3:24-cv-06621-JLS, Hon. Jordan L. Sato
+
+--------------------------------------------------------------------------------
+
+                        BRIEF FOR APPELLANT
+
+--------------------------------------------------------------------------------
+
+                                        Adrienne P. Vance
+                                        Theodore K. Marsh
+                                        HALLORAN VANCE & REED LLP
+                                        1900 Continental Plaza
+                                        San Francisco, CA 94104
+                                        (415) 555-0142
+                                        avance@hvrlaw.example
+
+                                        Counsel for Defendant-Appellant
+                                        Nordhaven Analytics, Inc.
+
+================================================================================
+
+
+                          TABLE OF CONTENTS
+
+                                                                          Page
+
+TABLE OF AUTHORITIES ......................................................  ii
+
+STATEMENT OF JURISDICTION .................................................   1
+
+STATEMENT OF THE ISSUES ..................................................    1
+
+STATEMENT OF THE CASE ....................................................    2
+
+STATEMENT OF FACTS .......................................................    4
+
+  A.  Nordhaven's data-integrity business ...............................    4
+
+  B.  The Verified Ledger product and its audit records .................    5
+
+  C.  The named plaintiff and the disputed record .......................    7
+
+  D.  Proceedings below ..................................................    9
+
+SUMMARY OF THE ARGUMENT .................................................    11
+
+STANDARD OF REVIEW ......................................................    14
+
+ARGUMENT ................................................................    15
+
+  I.   PLAINTIFF LACKS ARTICLE III STANDING BECAUSE A BARE
+       STATUTORY VIOLATION, WITHOUT CONCRETE HARM, IS NOT AN
+       INJURY IN FACT ...................................................    15
+
+       A.  Article III requires a concrete injury, and a statutory
+           violation does not supply one automatically ..................    16
+
+       B.  The asserted informational and risk-based injuries are not
+           concrete under TransUnion ....................................    20
+
+       C.  Standing must be proved for every class member, not just
+           the named plaintiff ..........................................    25
+
+  II.  THE CLASS WAS IMPROPERLY CERTIFIED BECAUSE INDIVIDUAL
+       ISSUES PREDOMINATE OVER COMMON ONES ..............................    29
+
+       A.  Rule 23(b)(3) predominance requires a rigorous analysis
+           the district court did not perform ...........................    30
+
+       B.  Injury and causation turn on individualized proof ............    34
+
+       C.  The damages model does not match the liability theory
+           and cannot be measured classwide .............................    38
+
+  III. THE DISTRICT COURT MISCONSTRUED THE CDPA TO IMPOSE
+       STRICT LIABILITY AND THAT CONSTRUCTION IS PREEMPTED ..............    42
+
+       A.  The statute's text requires a knowing violation .............     43
+
+       B.  The district court's construction conflicts with federal
+           law and is preempted .........................................    47
+
+CONCLUSION ..............................................................    50
+
+CERTIFICATE OF COMPLIANCE ...............................................    51
+
+CERTIFICATE OF SERVICE ..................................................    52
+
+
+                                     i
+
+================================================================================
+
+
+                        TABLE OF AUTHORITIES
+
+                                                                          Page
+
+Cases
+
+Amchem Products, Inc. v. Windsor,
+   521 U.S. 591 (1997) ......................................... 30, 33, 39
+
+Ashcroft v. Iqbal,
+   556 U.S. 662 (2009) ............................................... 15
+
+Bell Atlantic Corp. v. Twombly,
+   550 U.S. 544 (2007) ............................................... 15
+
+Clapper v. Amnesty International USA,
+   568 U.S. 398 (2013) ........................................... 21, 23
+
+Comcast Corp. v. Behrend,
+   569 U.S. 27 (2013) ........................................ passim
+
+DaimlerChrysler Corp. v. Cuno,
+   547 U.S. 332 (2006) ............................................... 16
+
+Erica P. John Fund, Inc. v. Halliburton Co.,
+   563 U.S. 804 (2011) ............................................... 35
+
+Frank v. Gaos,
+   586 U.S. 485 (2019) ............................................... 26
+
+Gates v. Rohm & Haas Co.,
+   655 F.3d 255 (3d Cir. 2011) ....................................... 37
+
+Geier v. American Honda Motor Co.,
+   529 U.S. 861 (2000) ........................................... 47, 49
+
+Hughes v. Talen Energy Marketing, LLC,
+   578 U.S. 150 (2016) ............................................... 48
+
+Lujan v. Defenders of Wildlife,
+   504 U.S. 555 (1992) ........................................ passim
+
+Medtronic, Inc. v. Lohr,
+   518 U.S. 470 (1996) ............................................... 47
+
+Ohio v. American Express Co.,
+   585 U.S. 529 (2018) ............................................... 44
+
+Rice v. Santa Fe Elevator Corp.,
+   331 U.S. 218 (1947) ............................................... 47
+
+Spokeo, Inc. v. Robins,
+   578 U.S. 330 (2016) ........................................ passim
+
+Summers v. Earth Island Institute,
+   555 U.S. 488 (2009) ............................................... 25
+
+Tyson Foods, Inc. v. Bouaphakeo,
+   577 U.S. 442 (2016) ........................................... 34, 36
+
+TransUnion LLC v. Ramirez,
+   594 U.S. 413 (2021) ........................................ passim
+
+Wal-Mart Stores, Inc. v. Dukes,
+   564 U.S. 338 (2011) ........................................ passim
+
+Wyeth v. Levine,
+   555 U.S. 555 (2009) ........................................... 47, 49
+
+In re Hydrogen Peroxide Antitrust Litigation,
+   552 F.3d 305 (3d Cir. 2008) ....................................... 31
+
+Olean Wholesale Grocery Cooperative, Inc. v. Bumble Bee Foods LLC,
+   31 F.4th 651 (9th Cir. 2022) (en banc) ........................ 31, 36
+
+Statutes
+
+28 U.S.C. Section 1291 ................................................... 1
+
+28 U.S.C. Section 1331 ................................................... 1
+
+28 U.S.C. Section 1332(d) ............................................... 1
+
+Consumer Data Protection Act,
+   Cal. Civ. Code Section 1799.10 et seq. (fictional) ......... passim
+
+Fair Credit Reporting Act,
+   15 U.S.C. Section 1681 et seq. .............................. 22, 48
+
+Rules
+
+Fed. R. Civ. P. 12(b)(1) ................................................ 9
+
+Fed. R. Civ. P. 12(b)(6) ............................................... 15
+
+Fed. R. Civ. P. 23(a) .................................................. 29
+
+Fed. R. Civ. P. 23(b)(3) .......................................... passim
+
+Fed. R. Civ. P. 23(f) .................................................. 1
+
+Other Authorities
+
+7AA Charles Alan Wright & Arthur R. Miller,
+   Federal Practice and Procedure Section 1778 (3d ed.) ............. 30
+
+Restatement (Second) of Torts Section 559 (1977) ...................... 20
+
+
+                                     ii
+
+================================================================================
+
+
+                     STATEMENT OF JURISDICTION
+
+     The district court had subject-matter jurisdiction under 28 U.S.C.
+Section 1331 because Plaintiff pleaded a claim arising under federal law, and
+under 28 U.S.C. Section 1332(d) because the amount in controversy exceeds
+$5,000,000, the proposed class exceeds 100 members, and minimal diversity is
+satisfied. This Court has appellate jurisdiction over the class-certification
+order under Fed. R. Civ. P. 23(f) and 28 U.S.C. Section 1291. A petition for
+permission to appeal was timely filed within 14 days of the certification
+order, and a motions panel of this Court granted permission on February 3,
+2026. The order under review disposes of the certification question and the
+denial of Nordhaven's motion to dismiss for lack of standing, which the panel
+granted leave to review as inextricably intertwined with certification.
+
+     The certification order was entered on December 18, 2025. (App. 1.) The
+notice of appeal followed the grant of the Rule 23(f) petition. This appeal is
+therefore properly before the Court.
+
+
+                    STATEMENT OF THE ISSUES
+
+     1. Whether a plaintiff who alleges only that a company retained a data
+record longer than a state statute permits, without alleging that anyone ever
+saw the record or that it caused her any concrete harm, has suffered an injury
+in fact sufficient for Article III standing under Spokeo, Inc. v. Robins and
+TransUnion LLC v. Ramirez.
+
+     2. Whether the district court abused its discretion in certifying a
+class under Rule 23(b)(3) where liability turns on whether each member's
+record was disclosed and relied upon, and where the plaintiff's damages model
+measures a harm the liability theory does not establish.
+
+     3. Whether the district court erred in construing the Consumer Data
+Protection Act to impose liability without a knowing violation, and whether
+that construction is preempted to the extent it conflicts with the Fair Credit
+Reporting Act.
+
+
+                                     1
+
+================================================================================
+
+
+                    STATEMENT OF THE CASE
+
+     This is an interlocutory appeal from an order certifying a nationwide
+class of roughly 1.4 million consumers and denying a motion to dismiss for
+lack of standing. The suit rests on a single premise: that Nordhaven
+Analytics, Inc. ("Nordhaven") kept certain audit records in its Verified
+Ledger system for longer than the retention window set by the Consumer Data
+Protection Act ("CDPA"). Plaintiff Marisol Calloway does not allege that any
+record about her was ever disclosed to a third party, that any decision was
+ever made about her on the basis of such a record, or that she suffered any
+out-of-pocket loss. She alleges only that the records existed, and existed too
+long. On that theory, she seeks statutory damages for herself and for
+1.4 million people she has never met and about whom she knows nothing. [1]
+
+     Nordhaven moved to dismiss for lack of Article III standing and, in the
+alternative, for failure to state a claim. The district court denied the
+motion. It held that the CDPA's retention limit creates a substantive right,
+that a violation of that right is itself a concrete injury, and that the risk
+that an over-retained record "could" be disclosed supplies concreteness even
+where no disclosure occurred. (App. 22-31.) The court then certified a
+Rule 23(b)(3) class, reasoning that whether Nordhaven over-retained records is
+a common question capable of classwide proof, and that individualized questions
+of disclosure and reliance go to damages, not liability. (App. 40-58.)
+
+     Both rulings are wrong, and each independently requires reversal. The
+Supreme Court held in TransUnion LLC v. Ramirez, 594 U.S. 413 (2021), that
+"[o]nly those plaintiffs who have been concretely harmed by a defendant's
+statutory violation may sue that private defendant over the violation in
+federal court." Id. at 427. A record that sits unseen in a database harms no
+one. And a class cannot be certified under Rule 23(b)(3) when the very
+elements of liability -- disclosure, causation, and reliance -- must be proved
+person by person. The certification order collapses that inquiry by relabeling
+liability questions as damages questions, contrary to Comcast Corp. v. Behrend,
+569 U.S. 27 (2013), and Wal-Mart Stores, Inc. v. Dukes, 564 U.S. 338 (2011).
+
+     The order should be reversed, the class decertified, and the case
+remanded with instructions to dismiss the claims of any plaintiff who cannot
+show concrete harm.
+
+
+                                     2
+
+================================================================================
+
+
+                       STATEMENT OF FACTS
+
+A.  Nordhaven's data-integrity business
+
+     Nordhaven Analytics is a data-integrity company. It does not sell
+consumer profiles, and it does not make lending, employment, or insurance
+decisions. Its business is narrow: it provides enterprise customers -- banks,
+hospital systems, and logistics firms -- with a tamper-evident audit trail for
+the records those customers already hold. (App. 118.) When a customer's own
+system writes a record, Nordhaven's software computes a cryptographic digest of
+the record and stores that digest, together with a timestamp, in an
+append-only log called the Verified Ledger. (App. 119-120.) The purpose is to
+let the customer later prove that a record has not been altered.
+
+     The record that matters here is not the underlying consumer data, which
+never leaves the customer's control. It is the audit entry: a digest, a
+timestamp, and a reference identifier. (App. 121.) An audit entry cannot be
+run backward to reconstruct the consumer record it describes; it is, by
+design, a one-way fingerprint. [2] Nordhaven's engineers testified without
+contradiction that no human being at Nordhaven ever reads the entries, that
+they are never transmitted to anyone other than the customer that created
+them, and that they are used only when a customer runs an integrity check.
+(App. 122-124.)
+
+     Nordhaven serves 380 enterprise customers. Across those customers, the
+Verified Ledger holds approximately 2.1 billion audit entries. (App. 118.) The
+entries are retained according to schedules the customers set, because the
+customers -- not Nordhaven -- decide how long they must keep their own audit
+trails to satisfy their own regulators. (App. 126.)
+
+B.  The Verified Ledger product and its audit records
+
+     The CDPA, enacted in 2023, imposes a default retention limit on
+"covered records." It provides that a "data intermediary shall not retain a
+covered record for longer than twenty-four months after the record's last use,
+unless a longer period is required by law or authorized by the consumer." Cal.
+Civ. Code Section 1799.14 (fictional). The statute defines a "covered record"
+as "information that identifies or is linked to a particular consumer." Id.
+Section 1799.11. It creates a private right of action and provides for
+statutory damages of "not less than $100 and not more than $750 per consumer
+per incident," or actual damages, whichever is greater. Id. Section 1799.31.
+
+     Nordhaven built retention controls into the Verified Ledger. Each audit
+entry carries a "last use" timestamp, and a nightly job purges entries whose
+last use exceeds the applicable schedule. (App. 129.) The dispute in this case
+arises from a defect in that job. For a period of about eleven weeks in early
+2024, a configuration error caused the purge job to skip entries belonging to
+a subset of customers whose schedules had been migrated to a new format.
+(App. 131-133.) During those eleven weeks, roughly 1.4 million audit entries
+that should have been purged remained in the ledger. When Nordhaven discovered
+the error, it corrected the configuration, purged the affected entries, and
+notified the affected customers. (App. 134.) No entry was disclosed to anyone
+outside the customer that created it, and no customer reported any downstream
+consequence. (App. 135.)
+
+     The plaintiff's theory treats every one of those 1.4 million entries as a
+separate CDPA violation, and seeks the statutory minimum of $100 for each --
+roughly $140 million -- without regard to whether any consumer was ever
+affected in any way. [3]
+
+C.  The named plaintiff and the disputed record
+
+     Marisol Calloway is a customer of Brightline Credit Union, one of
+Nordhaven's enterprise customers. (App. 141.) In 2021, Ms. Calloway applied
+for and received an auto loan from Brightline. As part of servicing that loan,
+Brightline wrote records to its own systems, and Nordhaven's software computed
+audit entries for some of those records. (App. 142.) One of Ms. Calloway's
+audit entries was among the 1.4 million that the purge defect failed to remove
+on schedule; it remained in the ledger for approximately nine weeks longer
+than the twenty-four-month window allowed. (App. 144.)
+
+     Ms. Calloway learned of the entry only when she received Brightline's
+notice. (App. 146.) She does not contend that the entry was ever disclosed to
+anyone, that anyone ever read it, that it was used to make any decision about
+her, or that it affected her credit, her finances, or anything else. (App.
+147-149.) Asked at her deposition whether she could identify any way in which
+the over-retained entry had harmed her, she answered: "I just don't like that
+they kept it." (App. 151.) She testified that she had not lost sleep, had not
+sought any professional help, had not changed any financial arrangement, and
+had incurred no expense. (App. 151-153.)
+
+     Nordhaven does not minimize the retention error; it corrected it and
+disclosed it. But the question in this Court is not whether Nordhaven made a
+mistake. It is whether a person who cannot identify any effect of that mistake
+on her life may nonetheless invoke the power of a federal court, and may drag
+1.4 million absent class members -- about whom even less is known -- along with
+her.
+
+D.  Proceedings below
+
+     Nordhaven moved under Rule 12(b)(1) to dismiss for lack of standing and
+under Rule 12(b)(6) for failure to state a claim. (App. 12.) The district
+court denied both motions. On standing, the court reasoned that the CDPA's
+retention limit is a "substantive protection," that its violation is a
+"concrete injury in the eyes of the law," and that the "material risk" of
+future disclosure supplied concreteness independent of any actual disclosure.
+(App. 22-31.) On the merits, the court held that the CDPA imposes liability for
+over-retention regardless of the intermediary's state of mind, reading the
+statute to require no showing that the violation was knowing. (App. 33-38.)
+
+     Plaintiff then moved to certify a nationwide Rule 23(b)(3) class of "all
+persons whose covered records were retained by Nordhaven beyond the period
+permitted by the CDPA." (App. 41.) The district court certified the class. It
+found that the "central question" -- whether Nordhaven over-retained records --
+was common and provable with Nordhaven's own logs, and it treated disclosure,
+causation, and reliance as issues going only to the measure of damages. (App.
+46-53.) On damages, the court accepted the plaintiff's expert's proposal to
+award the statutory minimum per entry, holding that this "arithmetic" model
+satisfied Comcast. (App. 54-57.) The court certified the class and this appeal
+followed.
+
+
+                                     3
+
+================================================================================
+
+
+                    SUMMARY OF THE ARGUMENT
+
+     I. The class should never have reached certification because the named
+plaintiff lacks Article III standing, and so do the vast majority of the
+absent members. Standing requires an injury that is "concrete and
+particularized," Lujan v. Defenders of Wildlife, 504 U.S. 555, 560 (1992), and
+concreteness does not follow automatically from a statutory violation. In
+Spokeo, Inc. v. Robins, 578 U.S. 330 (2016), the Supreme Court held that a
+plaintiff does not "automatically satisf[y] the injury-in-fact requirement
+whenever a statute grants a person a statutory right and purports to authorize
+that person to sue to vindicate that right." Id. at 341. TransUnion made the
+point unmistakable: "No concrete harm, no standing." 594 U.S. at 442.
+
+     Ms. Calloway alleges no concrete harm. She does not allege disclosure,
+misuse, or any decision made about her. Her injury is that a fingerprint of a
+record she already knew about sat in a database nine weeks too long, unseen.
+That is the paradigmatic "bare procedural violation, divorced from any
+concrete harm," that Spokeo holds insufficient. Id. at 341. The district
+court's two theories -- that the violation is itself the injury, and that the
+"risk" of disclosure supplies concreteness -- were both foreclosed by
+TransUnion, which rejected risk-of-future-harm as a basis for standing in a
+suit for damages, 594 U.S. at 436-38, and which reaffirmed that Congress (much
+less a state legislature) cannot "enact an injury into existence," id. at 426
+(quotation marks omitted).
+
+     II. Even if some class members had standing, the class could not be
+certified, because individual questions predominate over common ones.
+Rule 23(b)(3) demands that common questions "predominate over any questions
+affecting only individual members," and the Supreme Court has insisted on a
+"rigorous analysis" that often "overlap[s] with the merits." Comcast, 569 U.S.
+at 33-34; Wal-Mart, 564 U.S. at 351. Here, once standing is taken seriously,
+the questions that decide liability -- was a given member's record disclosed,
+to whom, with what effect -- are irreducibly individual. The district court
+avoided that conclusion only by relabeling those liability questions as
+damages questions. That relabeling cannot survive Comcast, which holds that a
+damages model must "measure only those damages attributable to" the plaintiff's
+theory of liability, 569 U.S. at 35, and Wal-Mart, which forbids certification
+that would decide liability by "Trial by Formula," 564 U.S. at 367.
+
+     The plaintiff's damages model compounds the error. It awards the same
+$100 to every class member regardless of whether that member suffered anything,
+which means it does not measure harm at all; it measures the number of entries.
+A model unmoored from the injury cannot establish predominance. Comcast, 569
+U.S. at 35; Olean Wholesale Grocery Cooperative, Inc. v. Bumble Bee Foods LLC,
+31 F.4th 651, 665-69 (9th Cir. 2022) (en banc).
+
+     III. Finally, the district court misread the CDPA. The statute's operative
+verb -- "shall not retain" -- appears in a section whose enforcement provision
+speaks of a "violation," and the surrounding structure, the statutory damages
+range keyed to culpability, and the ordinary presumption against strict
+liability all show that the legislature required a knowing violation. The
+district court's contrary construction, imposing liability for an inadvertent
+configuration error, is not compelled by the text and produces absurd results.
+And to the extent the CDPA is read to impose strict, classwide liability on a
+data intermediary for retaining audit fingerprints that duplicate records the
+customer keeps under federal law, it conflicts with and is preempted by the
+Fair Credit Reporting Act's calibrated scheme. Geier v. American Honda Motor
+Co., 529 U.S. 861, 873-74 (2000); Wyeth v. Levine, 555 U.S. 555, 563-65 (2009).
+
+     Each of these three grounds independently requires reversal.
+
+
+                                     4
+
+================================================================================
+
+
+                     STANDARD OF REVIEW
+
+     Standing is a question of law reviewed de novo. TransUnion, 594 U.S. at
+430-31. Because standing is jurisdictional, the plaintiff bears the burden of
+establishing it "with the manner and degree of evidence required at the
+successive stages of the litigation," Lujan, 504 U.S. at 561, and "for each
+claim [s]he seeks to press and for each form of relief that is sought,"
+DaimlerChrysler Corp. v. Cuno, 547 U.S. 332, 352 (2006).
+
+     A class-certification order is reviewed for abuse of discretion, but a
+district court "necessarily abuse[s] its discretion if it based its ruling on
+an erroneous view of the law." Comcast, 569 U.S. at 33 n.4 (quotation marks
+omitted). Whether the district court applied the correct legal standard under
+Rule 23 is reviewed de novo. Olean, 31 F.4th at 663. Questions of statutory
+interpretation and preemption are reviewed de novo. Wyeth, 555 U.S. at 563.
+
+
+                                ARGUMENT
+
+I.   PLAINTIFF LACKS ARTICLE III STANDING BECAUSE A BARE STATUTORY VIOLATION,
+     WITHOUT CONCRETE HARM, IS NOT AN INJURY IN FACT.
+
+     The judicial power of the United States extends only to "Cases" and
+"Controversies." U.S. Const. art. III, Section 2. That limitation is enforced
+through the doctrine of standing, whose "irreducible constitutional minimum"
+requires an injury in fact that is "concrete and particularized" and "actual
+or imminent," fairly traceable to the defendant, and redressable. Lujan, 504
+U.S. at 560-61. This case fails at the first and most basic requirement.
+Because the district court's standing ruling rests on legal errors that
+TransUnion squarely forecloses, review is de novo and reversal follows.
+
+A.   Article III requires a concrete injury, and a statutory violation does
+     not supply one automatically.
+
+     The Supreme Court has now twice held, in Spokeo and TransUnion, that a
+plaintiff cannot manufacture standing simply by identifying a statutory
+violation. In Spokeo, a consumer sued under the Fair Credit Reporting Act,
+alleging that a "people search" website had published inaccurate information
+about him. 578 U.S. at 336. The Ninth Circuit had found standing because the
+statutory right was particular to him. The Supreme Court vacated, holding that
+particularization is "necessary" but "not sufficient": a plaintiff must also
+show that the injury is "concrete" -- meaning "de facto," "real," and not
+"abstract." Id. at 340. Crucially, the Court held that "Article III standing
+requires a concrete injury even in the context of a statutory violation," and
+that a plaintiff does not "automatically satisf[y] the injury-in-fact
+requirement whenever a statute grants a person a statutory right and purports
+to authorize that person to sue." Id. at 341. A "bare procedural violation,
+divorced from any concrete harm," will not do. Id.
+
+     TransUnion removed any remaining doubt. There, a class of 8,185 consumers
+sued a credit-reporting agency that had flagged their files as potential
+matches to a government terrorist watchlist. 594 U.S. at 419. For 1,853 class
+members, the misleading reports had been disclosed to third parties; for the
+remaining 6,332, the reports sat in TransUnion's internal files but were never
+disclosed to anyone. Id. at 431-32. The Court held that the first group had
+standing and the second did not. The difference was concrete harm: the
+disclosed reports worked a harm with a "close relationship" to the common-law
+tort of defamation, while the undisclosed reports harmed no one. Id. at 432-34.
+"The mere presence of an inaccuracy in an internal credit file, if it is not
+disclosed to a third party, causes no concrete harm." Id. at 434. The Court's
+now-canonical formulation bears repeating: "No concrete harm, no standing." Id.
+at 442. [4]
+
+     The parallel to this case is exact, and it is fatal to the plaintiff. Like
+the undisclosed credit files in TransUnion, the over-retained audit entries
+here "sat in [Nordhaven's] internal files." Ms. Calloway's entry was never
+disclosed, never read, never used. If the undisclosed files in TransUnion --
+which falsely branded consumers as potential terrorists -- caused "no concrete
+harm," then a correct, unread cryptographic fingerprint that lingered nine
+weeks too long cannot possibly clear the bar. The district court's holding that
+the statutory violation is "itself" the injury is precisely the reasoning
+Spokeo and TransUnion reject.
+
+     The district court leaned on the proposition that legislatures may
+"elevat[e]" previously inadequate harms to the status of legally cognizable
+injuries. See Spokeo, 578 U.S. at 341. But that principle has limits the court
+ignored. A legislature's judgment is "instructive and important," but it is not
+dispositive, because "Article III standing requires a concrete injury even in
+the context of a statutory violation." Id. TransUnion made the limit explicit:
+"Congress may enact legal prohibitions and obligations. But under Article III,
+an injury in law is not an injury in fact. And only those plaintiffs who have
+been concretely harmed by a defendant's statutory violation may sue." 594 U.S.
+at 427. A state legislature has no greater power than Congress to "enact an
+injury into existence." Id. at 426. [5]
+
+B.   The asserted informational and risk-based injuries are not concrete under
+     TransUnion.
+
+     Recognizing that the naked violation cannot support standing, the
+district court offered two fallback theories. Neither survives TransUnion.
+
+     1. The "risk of disclosure" theory. The district court held that the
+"material risk" that an over-retained entry "could" someday be disclosed
+supplied concreteness. (App. 29.) TransUnion forecloses this reasoning in a
+suit for damages. The Court there addressed exactly the argument that exposure
+to a risk of future harm is a present concrete injury, and it held that "the
+mere risk of future harm, standing alone, cannot qualify as a concrete harm --
+at least unless the exposure to the risk of future harm itself causes a
+separate concrete harm." 594 U.S. at 436-37. In a damages action, "the risk of
+future harm on its own does not support Article III standing." Id. at 438. The
+plaintiff seeks damages, not an injunction; the risk theory is therefore
+unavailable as a matter of law. And in all events, the risk here is not
+"material" or "imminent"; it is speculative in the extreme, resting on a chain
+of hypothetical events -- a breach, an exfiltration, a reversal of a one-way
+digest -- that the record affirmatively negates. See Clapper v. Amnesty
+International USA, 568 U.S. 398, 409-14 (2013) (rejecting standing premised on a
+"speculative chain of possibilities").
+
+     2. The "informational injury" theory. The district court also suggested
+that Ms. Calloway suffered an "informational injury" because the CDPA entitled
+her to have the record deleted. (App. 30.) But TransUnion and Spokeo permit an
+informational-injury theory only where the plaintiff was denied information to
+which she was entitled and suffered "downstream consequences" from lacking it.
+TransUnion, 594 U.S. at 441-42. Ms. Calloway was denied no information; she
+received the very notice that told her the entry existed. She points to no
+"downstream consequence" of any kind. The informational-injury cases are the
+opposite of this one: they involve a plaintiff kept in the dark, not a
+plaintiff complaining that a record about her was kept too long in a vault she
+never had to open. [6]
+
+     The absence of any common-law analogue confirms the point. TransUnion
+instructs courts to ask whether the alleged injury bears a "close relationship
+to a harm traditionally recognized as providing a basis for a lawsuit in
+American courts." Id. at 424. Over-retention of an unseen record has no such
+analogue. It is not defamation, because nothing was published. Restatement
+(Second) of Torts Section 559 (1977). It is not intrusion upon seclusion,
+because nothing was intruded upon. It is not conversion, breach of confidence,
+or any recognized dignitary tort. The plaintiff's inability to name a
+traditional harm is not a technicality; it is a signal that no concrete injury
+exists. [7]
+
+C.   Standing must be proved for every class member, not just the named
+     plaintiff.
+
+     The standing defect is not confined to Ms. Calloway. TransUnion holds that
+"[e]very class member must have Article III standing in order to recover
+individual damages." 594 U.S. at 431. A class action "does not relax the
+requirement to establish standing to obtain relief," and the courts have "no
+license to relax that requirement to accommodate the class device." See id. at
+431 & n.6. It follows that a class of persons whose records were merely
+over-retained -- undisclosed and unused -- cannot recover damages, because the
+overwhelming majority of them, like the named plaintiff, suffered no concrete
+harm.
+
+     This principle independently dooms the certified class. The class is
+defined as "all persons whose covered records were retained ... beyond the
+period permitted by the CDPA." (App. 41.) By that definition, membership turns
+on the fact of over-retention, not on any harm. The class therefore
+necessarily "includes both injured and uninjured" persons, and indeed is
+composed almost entirely of uninjured persons. Certifying such a class squarely
+violates TransUnion's command. At a minimum, the class definition sweeps in
+vast numbers of members with no standing, which -- as Part II explains -- also
+means individualized standing inquiries would swamp any common question. See
+Olean, 31 F.4th at 669 & n.14 (a class with "more than a de minimis number" of
+uninjured members raises predominance problems). [8]
+
+     The district court brushed this aside by reasoning that standing could be
+sorted out at the damages phase. (App. 31.) But standing is not a damages
+question. It is the "threshold" question of the court's power to act at all,
+Summers v. Earth Island Institute, 555 U.S. 488, 492-93 (2009), and it must be
+resolved before the merits, not deferred to a later stage where the class
+device has already done its work. Deferring standing until after certification
+inverts the constitutional order of operations and is reversible error.
+
+II.  THE CLASS WAS IMPROPERLY CERTIFIED BECAUSE INDIVIDUAL ISSUES PREDOMINATE
+     OVER COMMON ONES.
+
+     Even setting standing aside, certification was an abuse of discretion. A
+Rule 23(b)(3) class may be certified only if "questions of law or fact common
+to class members predominate over any questions affecting only individual
+members." The predominance inquiry "tests whether proposed classes are
+sufficiently cohesive to warrant adjudication by representation." Amchem
+Products, Inc. v. Windsor, 521 U.S. 591, 623 (1997). It is "far more demanding"
+than Rule 23(a)'s commonality requirement. Id. at 623-24. The district court's
+order fails that demanding test at every step.
+
+A.   Rule 23(b)(3) predominance requires a rigorous analysis the district court
+     did not perform.
+
+     A district court must conduct a "rigorous analysis" before certifying a
+class, and that analysis will "frequently entail overlap with the merits of
+the plaintiff's underlying claim." Comcast, 569 U.S. at 33-34 (quotation marks
+omitted); accord Wal-Mart, 564 U.S. at 351. The court "must resolve" the
+factual and legal disputes bearing on certification, "even if those disputes
+overlap with the merits." Olean, 31 F.4th at 664-65; see also In re Hydrogen
+Peroxide Antitrust Litigation, 552 F.3d 305, 320 (3d Cir. 2008). It is not
+enough to identify a common question; the court must determine whether common
+questions predominate, which requires "weigh[ing]" the common issues against
+the individual ones. Olean, 31 F.4th at 664; 7AA Charles Alan Wright & Arthur
+R. Miller, Federal Practice and Procedure Section 1778 (3d ed.).
+
+     The district court performed no such weighing. It identified a single
+common question -- "did Nordhaven over-retain records" -- and treated its
+answer as dispositive of predominance. (App. 46.) But the existence of one
+common question does not establish predominance; "[w]hat matters to class
+certification ... is not the raising of common questions ... but, rather the
+capacity of a classwide proceeding to generate common answers apt to drive the
+resolution of the litigation." Wal-Mart, 564 U.S. at 350 (quotation marks
+omitted; emphasis in original). The common question the court identified does
+not drive resolution, because over-retention alone does not establish
+liability to any particular plaintiff. What drives resolution -- for Ms.
+Calloway and for every absent member -- is whether that member suffered a
+concrete, compensable injury. And that question, as Part I shows, is
+irreducibly individual. [9]
+
+B.   Injury and causation turn on individualized proof.
+
+     Once standing is taken seriously, the elements that decide who may recover
+are individual, not common. For each of the 1.4 million class members, the
+factfinder would have to determine: whether that member's entry was ever
+disclosed; if so, to whom; whether the disclosure caused any consequence;
+whether the member knew of and relied on anything; and whether the member
+suffered any harm bearing a close relationship to a traditional tort. These are
+precisely the "individualized" questions that predominate over the single
+common question of over-retention. [10]
+
+     TransUnion itself illustrates the problem. There, the class had to be
+sorted into those whose reports were disclosed (who had standing and a harm)
+and those whose reports were not (who did not). That sorting is an individual
+inquiry, member by member. A class defined by over-retention alone forces the
+same sorting on a far larger scale, because the class was not limited to
+persons whose records were disclosed. The district court's response -- that
+disclosure and reliance go only to "damages" -- misunderstands the claim. In a
+suit where the injury IS disclosure-and-effect, disclosure and effect are
+elements of liability, not measures of damages. Relabeling an element of
+liability as a damages question does not make the individual inquiry disappear;
+it merely hides it. Wal-Mart forbids exactly that maneuver, holding that a
+court may not "replace" individualized proof of entitlement with a sampling or
+averaging device that assumes the answer. 564 U.S. at 367 ("Trial by Formula").
+
+     Tyson Foods does not help the plaintiff. There, the Court permitted
+representative statistical proof because each class member could have used the
+same evidence "to establish liability if he or she had brought an individual
+action," and the sample stood in for evidence "each employee" could have
+offered. Tyson Foods, Inc. v. Bouaphakeo, 577 U.S. 442, 455-58 (2016). Here,
+by contrast, no common sample can prove that a particular member's record was
+disclosed and caused harm, because that fact varies from member to member and
+is, for the great majority, simply absent. Tyson Foods expressly reaffirmed
+that representative evidence is impermissible where it "conceal[s]" the absence
+of individualized proof. Id. at 459-60. That is this case. [11]
+
+C.   The damages model does not match the liability theory and cannot be
+     measured classwide.
+
+     Certification independently fails under Comcast because the plaintiff's
+damages model does not correspond to her theory of liability. Comcast holds
+that "a model purporting to serve as evidence of damages ... must measure only
+those damages attributable to that theory" of liability; "[i]f the model does
+not even attempt to do that, it cannot possibly establish that damages are
+susceptible of measurement across the entire class." 569 U.S. at 35. Where the
+model and the theory diverge, "[q]uestions of individual damage calculations
+will inevitably overwhelm questions common to the class." Id.
+
+     The plaintiff's model is to award the statutory minimum of $100 to every
+class member, multiplied by the number of over-retained entries. (App. 54.) The
+district court praised this as simple "arithmetic." But its very simplicity is
+the defect: the model measures the number of entries, not any harm. It assigns
+the same $100 to a member whose record was disclosed and misused and to a
+member -- like Ms. Calloway -- whose record was never seen by anyone. A model
+that awards identical damages regardless of injury is not measuring the injury;
+it is measuring the violation. Under Comcast, that is not a permissible damages
+model, because it does not "measure only those damages attributable to" a
+theory under which harm is the gravamen. Id. [12]
+
+     The plaintiff will respond that the CDPA authorizes statutory damages,
+which need not be proved individually. But statutory damages do not dissolve
+Article III or Rule 23. A statutory-damages remedy still requires a plaintiff
+with a concrete injury (Part I), and a classwide statutory-damages theory still
+requires that the predicate for liability be common (Part II.A-B). The CDPA's
+per-consumer, per-incident structure, keyed to a culpability-graded range of
+$100 to $750, presupposes an individualized assessment of each incident's
+gravity -- the opposite of the flat, classwide multiplication the plaintiff
+proposes. See Section III, infra. The damages model thus fails Comcast twice
+over: it neither matches the liability theory nor reflects the statute's own
+individualized structure. [13]
+
+III. THE DISTRICT COURT MISCONSTRUED THE CDPA TO IMPOSE STRICT LIABILITY AND
+     THAT CONSTRUCTION IS PREEMPTED.
+
+     The certification order also rests on a legal error about the CDPA itself.
+The district court read the statute to impose liability for over-retention
+"regardless of intent," so that an inadvertent configuration error is as
+actionable as a deliberate refusal to delete. (App. 34.) That reading is not
+compelled by the text, is contrary to the statute's structure, and -- if
+adopted -- conflicts with federal law. Because the error infected both the
+merits ruling and the certification analysis (which assumed a strict-liability
+common question), it requires reversal. [14]
+
+A.   The statute's text requires a knowing violation.
+
+     Statutory interpretation begins with the text, read in context. Ohio v.
+American Express Co., 585 U.S. 529, 540 (2018). The CDPA's enforcement
+provision creates a cause of action for "any consumer injured by a violation of
+this title." Cal. Civ. Code Section 1799.31 (fictional). The word "violation,"
+in the context of a statute that grades damages by severity across a range,
+carries a culpability requirement. The damages provision authorizes "not less
+than $100 and not more than $750 per consumer per incident." A graduated
+penalty range keyed to severity makes sense only if the statute contemplates
+that some violations are more culpable than others -- which in turn presupposes
+that culpability is an element. A strict-liability reading renders the range's
+upper reaches meaningless, because an inadvertent, promptly corrected error and
+a willful refusal would be treated identically at the $100 floor the plaintiff
+proposes to apply classwide. [15]
+
+     The presumption against strict liability reinforces the text. Courts do
+not lightly read a statute to impose liability without fault, particularly
+where doing so would expose defendants to crushing, disproportionate penalties
+for innocent conduct. The district court's construction would make every
+transient technical error -- a delayed batch job, a misconfigured schedule -- a
+multimillion-dollar tort, without regard to diligence, notice, or correction.
+That is a result the legislature is presumed not to have intended absent clear
+language, and the CDPA contains none. Reading "violation" to require at least
+knowledge harmonizes the enforcement provision with the graduated-damages
+provision and avoids the absurdity of strict, classwide liability for
+good-faith mistakes. [16]
+
+     The district court's contrary reading drew on the statute's use of the
+mandatory "shall not retain." But the presence of a mandatory obligation does
+not answer the question of the mental state required to be liable in damages
+for breaching it. Many mandatory obligations are enforced only against knowing
+violators. The obligation and the scienter of its enforcement are distinct
+questions, and the court conflated them. [17]
+
+B.   The district court's construction conflicts with federal law and is
+     preempted.
+
+     Finally, to the extent the CDPA is construed to impose strict, classwide
+liability on a data intermediary for retaining audit fingerprints of records
+the customer independently maintains under federal law, it is preempted. The
+Fair Credit Reporting Act comprehensively regulates the accuracy, use, and
+retention of consumer-report information, and it calibrates liability to
+culpability, distinguishing negligent from willful noncompliance. 15 U.S.C.
+Sections 1681n, 1681o. A state rule that imposes flat strict liability on the
+custodian of derivative integrity records, untethered from any use or
+disclosure, "stands as an obstacle to the accomplishment and execution of the
+full purposes and objectives" of that federal scheme. Geier v. American Honda
+Motor Co., 529 U.S. 861, 873 (2000); Hughes v. Talen Energy Marketing, LLC,
+578 U.S. 150, 162-63 (2016). [18]
+
+     The ordinary presumption against preemption, Rice v. Santa Fe Elevator
+Corp., 331 U.S. 218, 230 (1947); Wyeth, 555 U.S. at 565, does not save the
+district court's construction, because the conflict here is direct: federal law
+deliberately ties liability to fault and to actual misuse, and the district
+court's CDPA severs both ties. Where a state-law duty makes it impossible to
+comply with the federal balance, or frustrates its purposes, the state duty
+must yield. Wyeth, 555 U.S. at 563-64; Medtronic, Inc. v. Lohr, 518 U.S. 470,
+485 (1996). At a minimum, the serious preemption question counsels adopting the
+knowing-violation construction under the canon of constitutional avoidance,
+which independently defeats the strict-liability premise on which the class was
+certified. [19]
+
+
+                                CONCLUSION
+
+     The judgment certifying the class and denying dismissal should be
+reversed. The Court should hold that Ms. Calloway and the absent class members
+who allege only over-retention, without disclosure or concrete harm, lack
+Article III standing; that individual questions predominate and preclude
+certification under Rule 23(b)(3); and that the CDPA requires a knowing
+violation. The case should be remanded with instructions to dismiss the claims
+of all plaintiffs who cannot establish concrete harm.
+
+                                        Respectfully submitted,
+
+                                        /s/ Adrienne P. Vance
+                                        Adrienne P. Vance
+                                        Theodore K. Marsh
+                                        HALLORAN VANCE & REED LLP
+                                        1900 Continental Plaza
+                                        San Francisco, CA 94104
+                                        (415) 555-0142
+                                        avance@hvrlaw.example
+
+                                        Counsel for Defendant-Appellant
+
+
+                                     5
+
+================================================================================
+
+
+---- Footnotes ----
+
+1. Nordhaven uses "record" throughout to mean the audit entry -- a digest and
+timestamp -- not the underlying consumer data, which never leaves the
+customer's systems. The distinction is developed in the Statement of Facts and
+matters to every issue on appeal.
+
+2. The one-way property is undisputed. Plaintiff's own expert conceded at
+deposition that the digest "cannot be inverted to recover the source record."
+(App. 208.) The district court nonetheless treated the entry as if it were the
+consumer's data itself.
+
+3. The plaintiff's damages demand is set out at App. 55. The $140 million
+figure reflects the statutory minimum multiplied by the number of
+over-retained entries, without any discount for entries that were never
+disclosed -- which is to say, all of them.
+
+4. The Court reiterated the point in several formulations: "an injury in law is
+not an injury in fact," id. at 427; "a plaintiff's inability to allege a
+concrete injury is not cured by the existence of a statutory prohibition," id.
+at 426-27; and "courts should assess whether the alleged injury ... has a close
+relationship to a harm traditionally recognized as providing a basis for a
+lawsuit," id. at 424 (quotation marks omitted).
+
+5. Although Spokeo and TransUnion arose under federal statutes, their
+constitutional holding applies with equal or greater force to a state statute:
+Article III limits the power of federal courts regardless of which sovereign
+created the underlying right. A state legislature cannot expand the "Cases" and
+"Controversies" a federal court may hear.
+
+6. The leading informational-injury cases involve a denial of access to
+information the plaintiff needed and was entitled to receive. Here, Ms.
+Calloway received the notice, and she identifies no decision she would have made
+differently had the entry been deleted nine weeks earlier.
+
+7. Nordhaven does not contend that a plaintiff must always plead a perfectly
+analogous common-law tort. TransUnion requires only a "close relationship," not
+"an exact duplicate." 594 U.S. at 424. But some traditional analogue must
+exist, and here none does.
+
+8. This Court in Olean declined to adopt a bright-line rule barring
+certification of any class containing uninjured members, but it held that the
+number of uninjured members bears directly on predominance, and that a class
+containing more than a "de minimis" number of uninjured members may not be
+certifiable. 31 F.4th at 669 & n.14. A class that is almost entirely uninjured
+is the strongest possible case for that limitation.
+
+9. The district court's reliance on the "common answer" of over-retention
+proves too much. In any statutory-violation class, the fact of the violation
+will be common. If that sufficed, Comcast and Wal-Mart would be dead letters,
+because every regulatory-violation class would satisfy predominance by
+definition. The doctrine requires more: the common answer must "drive the
+resolution," and here it does not.
+
+10. Reliance is an element wherever the plaintiff's theory sounds in the effect
+of information on the plaintiff's decisions. See Erica P. John Fund, Inc. v.
+Halliburton Co., 563 U.S. 804, 810-11 (2011) (reliance is "[t]he traditional ...
+element" that "ensures that there is a proper connection between a defendant's
+misrepresentation and a plaintiff's injury"). No classwide presumption of
+reliance is available on these facts.
+
+11. The distinction between Tyson Foods and Wal-Mart is the distinction between
+representative evidence that stands in for proof each member could have offered
+individually, and a formula that substitutes for proof that does not exist. The
+plaintiff's model is the latter.
+
+12. That the model is "mechanical" is not a virtue. Comcast rejected a damages
+model precisely because it did not isolate the damages attributable to the sole
+surviving theory of liability, even though the model was itself a
+straightforward regression. The vice is mismatch, not complexity.
+
+13. Nordhaven does not argue that the mere need for individualized damages
+calculations always defeats certification; it does not. The point is narrower
+and controlled by Comcast: where the damages model measures something other
+than the harm the liability theory makes actionable, the model cannot show that
+damages are provable on a classwide basis.
+
+14. The interpretive error and the certification error are linked. The district
+court's predominance analysis assumed that liability could be established
+classwide by proof of over-retention alone. That assumption depends on the
+strict-liability reading. If the CDPA requires a knowing violation, then state
+of mind is a further individual (or at least contested common) question, and
+predominance is even less tenable.
+
+15. The canon against surplusage supports Nordhaven's reading. A construction
+that gives independent work to both the floor and the ceiling of the damages
+range is preferable to one that, in practice, collapses every case to the
+floor.
+
+16. Nordhaven's promptly corrective conduct -- discovery, remediation, and
+notice within a single quarter -- is the paradigm of the good-faith error that
+a strict-liability regime would punish as severely as bad faith. The
+legislature's graduated range shows it did not intend that result.
+
+17. The district court cited the statute's remedial purpose. But remedial
+statutes are still construed according to their text, and a remedial purpose
+does not authorize a court to read a scienter requirement out of a graduated
+penalty scheme.
+
+18. Nordhaven preserves, but does not repeat here, its argument that the audit
+entries are not "covered records" at all, because a one-way digest is not
+"information that identifies or is linked to a particular consumer" within the
+meaning of Section 1799.11. That statutory argument, fully briefed below (App.
+72-79), provides an alternative ground for reversal.
+
+19. The constitutional-avoidance canon applies to serious statutory questions,
+including serious preemption questions. Because the knowing-violation
+construction is at least "fairly possible," the Court should adopt it to avoid
+the preemption difficulty the strict-liability reading creates.
+
+
+                            CERTIFICATE OF COMPLIANCE
+
+     I certify that this brief complies with the type-volume limitation of Fed.
+R. App. P. 32(a)(7)(B) because it contains 13,984 words, excluding the parts
+exempted by Fed. R. App. P. 32(f). I further certify that this brief complies
+with the typeface and type-style requirements of Fed. R. App. P. 32(a)(5) and
+(6) because it was prepared in a proportionally spaced typeface using a 14-point
+serif font.
+
+                                        /s/ Adrienne P. Vance
+                                        Adrienne P. Vance
+
+
+                                     6
+
+================================================================================
+
+
+                            CERTIFICATE OF SERVICE
+
+     I certify that on March 10, 2026, I electronically filed the foregoing
+Brief for Appellant with the Clerk of the Court for the United States Court of
+Appeals for the Ninth Circuit using the appellate CM/ECF system. I further
+certify that all participants in the case are registered CM/ECF users and that
+service will be accomplished by the appellate CM/ECF system.
+
+                                        /s/ Adrienne P. Vance
+                                        Adrienne P. Vance
+                                        Counsel for Defendant-Appellant
+
+
+                                     7

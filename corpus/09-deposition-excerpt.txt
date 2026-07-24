@@ -1,0 +1,146 @@
+UNITED STATES DISTRICT COURT
+SOUTHERN DISTRICT OF NEW YORK
+
+Kensington Holdings, Inc.,
+                                                    Plaintiff,
+
+v.                                       Civil Action No. 26-CV-04721
+
+Meridian Supply Chain Solutions, LLC,
+                                                    Defendant.
+
+
+DEPOSITION OF PATRICIA J. RICHARDSON
+
+Taken Pursuant to the Federal Rules of Civil Procedure
+
+Date: July 15, 2026
+Place: 475 Madison Avenue, Conference Room 8B, New York, New York
+Reporter: Karen M. Dulaney, Certified Shorthand Reporter
+
+
+
+                                PAGE 42
+
+ 1         Q.  Ms. Richardson, let me direct your attention to what we
+ 2     marked as Exhibit 12, a contract dated January 10, 2026,
+ 3     between your company and the defendant. Have you reviewed this
+ 4     document?
+ 5         A.  Yes, I have reviewed it multiple times during the
+ 6     discovery process.
+ 7         Q.  And this contract, which you signed on behalf of
+ 8     Kensington Holdings, governed the supply arrangement between
+ 9     Kensington and Meridian, correct?
+10         A.  Yes, that is correct. This was our primary supply
+11     agreement for the fiscal year 2026.
+12         Q.  In your experience, how many supply arrangements of this
+13     nature has Kensington entered into?
+13         A.  Over the past eight years, I would estimate somewhere in
+14     the range of forty to fifty contracts with various suppliers
+15     across the country.
+16         Q.  And Meridian was one of the larger suppliers?
+17         A.  Yes, they were definitely among the top three or four
+18     suppliers we worked with, at least by volume.
+19         Q.  Now, focusing on Section 4.2 of the contract, which deals
+20     with payment terms, can you explain what happened in May of 2026?
+21         A.  Certainly. Meridian failed to deliver approximately
+22     thirty-five percent of the units we had ordered for May pursuant
+23     to the monthly purchase orders.
+24         Q.  And did you notify Meridian of this shortfall?
+25         A.  Yes, I personally called Robert Chen, their regional
+
+
+                                PAGE 43
+
+ 1     director, on May 18, 2026, to discuss the issue.
+ 2         Q.  What did Mr. Chen say?
+ 3         A.  He indicated that there were supply chain disruptions at
+ 4     their warehousing facility and that the delivery schedule would
+ 5     be normalized by mid-June.
+ 5         Q.  Did that occur?
+ 6         A.  No. By June 15, we had still not received the full
+ 7     complement of materials.
+ 8         Q.  And what was the impact on Kensington?
+ 9         A.  We had to source replacement inventory from a secondary
+10     supplier at approximately twelve percent higher cost per unit.
+10         Q.  That secondary supplier being whom?
+11         A.  Northwell Distributors, based in Connecticut.
+12         Q.  And do you have an estimate of the total additional costs
+13     incurred by Kensington as a result of Meridian's failure?
+14         A.  Yes, our finance department prepared a summary. The
+15     additional costs associated with emergency purchases and
+16     expedited shipping came to approximately $47,300 for the May and
+17     June period.
+18         A.  Also, we had to hold a staff meeting to reallocate
+19     personnel to handle the sourcing from Northwell, and there were
+20     internal process disruptions as well.
+21         Q.  Ms. Richardson, after the events of May and June, did
+22     Meridian attempt to remedy the situation or offer any form of
+23     compensation?
+24         A.  No. We requested a meeting with their management in late
+25     June, but they did not respond to our emails or return our calls.
+
+
+                                PAGE 44
+
+ 1         Q.  In fact, did Meridian ever acknowledge in writing that
+ 2     they had breached the contract terms?
+ 3         A.  No.
+ 4         MR. WINTERS: Objection, form. The witness should not be asked
+ 5     to characterize legal conclusions.
+ 5         Q.  Let me rephrase. Did Meridian, in any written
+ 6     communication, acknowledge that they had failed to meet their
+ 7     delivery obligations as specified in the contract?
+ 7         A.  No, they did not. We have copies of all correspondence,
+ 8     and none of it contained such an acknowledgment.
+ 9         Q.  At what point did Kensington determine that it would no
+10     longer do business with Meridian?
+11         A.  That decision was made at a senior management meeting on
+12     July 8, 2026. At that time, we had received informal indication
+12     that Meridian was planning to increase their pricing for the
+13     third quarter by eight percent, effective September 1, 2026.
+14         Q.  So they notified you of a price increase, even though
+15     they had just failed to meet the prior quarter's delivery
+15     obligations?
+16         A.  That is correct, and frankly, that was the final factor
+17     that led to the termination decision.
+18         Q.  Did Kensington provide written notice of termination to
+19     Meridian?
+20         A.  Yes, we sent a letter dated July 9, 2026, via overnight
+21     courier to their main office in Newark, New Jersey, invoking our
+22     right to terminate for material breach under Section 6.1 of the
+23     contract.
+24         Q.  Do you have that letter with you today?
+25         A.  Yes, it is marked as Exhibit 14 in the document binders.
+
+
+                                PAGE 45
+
+ 1         Q.  I see. Now, Ms. Richardson, after the termination letter
+ 2     was sent, how much inventory did Kensington have on hand from
+ 3     Meridian?
+ 4         A.  We had approximately twelve hundred units in our
+ 5     warehouse, representing roughly three weeks of normal supply
+ 6     given our consumption rate.
+ 7         Q.  And what became of that inventory?
+ 8         A.  We have been working through it, but it has become a
+ 9     difficult situation because it takes up valuable warehouse space,
+10     and we have had to reject approximately forty units that did not
+11     meet our quality specifications upon detailed inspection.
+12         Q.  So you are suggesting that Meridian's products also had
+13     quality issues?
+13         A.  I would characterize it as a finding based on our
+14     inspection records, yes.
+15         Q.  Did Kensington ever communicate these quality concerns to
+16     Meridian prior to the termination?
+17         A.  No, this was only discovered upon the deeper inspection
+17     we conducted after the delivery shortfalls occurred.
+18         Q.  I see. Let me ask you about the financial impact one more
+19     time. In your view, what is the total quantum of damages
+20     attributable to Meridian's actions or inactions?
+21         A.  Our estimate is approximately $62,500 when you include the
+22     emergency sourcing costs, the quality control rejections, and the
+22     personnel and logistical overhead we incurred dealing with this
+23     matter.
+24         Q.  Thank you. I have no further questions at this time.
+25
