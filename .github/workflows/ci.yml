@@ -44,3 +44,8 @@ jobs:
       # corpus file is missing.
       - name: Survival matrix (corpus)
         run: npm run matrix
+
+      # Slice 2: builds a real DOCX, marks it, and attributes it back, proving
+      # the zero-dependency zip + OOXML extract/reinject round-trip end to end.
+      - name: DOCX pipeline (demo)
+        run: npm run docx-demo
