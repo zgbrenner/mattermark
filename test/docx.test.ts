@@ -5,6 +5,8 @@ import {
   reinjectText,
   buildDocumentXml,
   containsZeroWidth,
+  isTextPart,
+  sortTextParts,
 } from '../src/formats/docx.js';
 import { textToDocx, markDocx, detectDocx, readDocxText } from '../src/formats/index.js';
 import { readZip, writeZip } from '../src/formats/zip.js';
@@ -101,4 +103,64 @@ test('search-safe DOCX makes zero homoglyph substitutions', () => {
   assert.equal(result.durable, false);
   const text = readDocxText(bytes);
   assert.equal(foldConfusables(text), text); // letters intact
+});
+
+/* ------------------------- multi-part documents -------------------------- */
+
+test('isTextPart recognises body, footnotes, headers, footers, comments', () => {
+  for (const n of ['word/document.xml', 'word/footnotes.xml', 'word/endnotes.xml',
+    'word/header1.xml', 'word/footer2.xml', 'word/comments.xml']) {
+    assert.equal(isTextPart(n), true, n);
+  }
+  for (const n of ['word/styles.xml', 'word/settings.xml', '[Content_Types].xml', 'word/media/x.png']) {
+    assert.equal(isTextPart(n), false, n);
+  }
+});
+
+test('sortTextParts is deterministic', () => {
+  const a = sortTextParts([{ name: 'word/header1.xml' }, { name: 'word/document.xml' }]);
+  const b = sortTextParts([{ name: 'word/document.xml' }, { name: 'word/header1.xml' }]);
+  assert.deepEqual(a.map((x) => x.name), b.map((x) => x.name));
+});
+
+function multiPartDocx(): Buffer {
+  const half = Math.ceil(SAMPLE.length / 2);
+  return writeZip([
+    { name: '[Content_Types].xml', data: Buffer.from('<Types/>') },
+    { name: 'word/document.xml', data: Buffer.from(buildDocumentXml([SAMPLE.slice(0, half)]), 'utf8') },
+    { name: 'word/footnotes.xml', data: Buffer.from(buildDocumentXml([SAMPLE.slice(half)]), 'utf8') },
+    { name: 'word/header1.xml', data: Buffer.from(buildDocumentXml(['CONFIDENTIAL - ATTORNEY WORK PRODUCT']), 'utf8') },
+  ]);
+}
+
+test('marking spans all text-bearing parts and detection recovers the token', () => {
+  const { issuer } = hmacSetup();
+  const docx = multiPartDocx();
+  const { bytes, result, markedParts } = markDocx(docx, IDENTITY(), issuer, { codecs: ['WS', 'ZW', 'HG'] });
+  assert.deepEqual(markedParts, ['word/document.xml', 'word/footnotes.xml', 'word/header1.xml']);
+
+  const before = readZip(docx);
+  const after = readZip(bytes);
+  for (const name of markedParts) {
+    const b = before.find((e) => e.name === name)!;
+    const a = after.find((e) => e.name === name)!;
+    assert.ok(!a.data.equals(b.data), `${name} changed`);
+  }
+  // Content_Types (not a text part) is untouched.
+  assert.ok(
+    after.find((e) => e.name === '[Content_Types].xml')!.data.equals(
+      before.find((e) => e.name === '[Content_Types].xml')!.data,
+    ),
+  );
+
+  const det = detectDocx(bytes, ['WS', 'ZW', 'HG']);
+  assert.ok(det.tokens.some((t) => t.tokenHex === result.tokenHex || t.tokenHex === result.shortIdHex));
+});
+
+test('readDocxText concatenates all text parts in canonical order', () => {
+  const docx = multiPartDocx();
+  const half = Math.ceil(SAMPLE.length / 2);
+  // canonical order is by name: document, footnotes, header1
+  const expected = SAMPLE.slice(0, half) + SAMPLE.slice(half) + 'CONFIDENTIAL - ATTORNEY WORK PRODUCT';
+  assert.equal(readDocxText(docx), expected);
 });

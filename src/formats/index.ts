@@ -21,22 +21,32 @@ import type { StegoCodec } from '../codecs/types.js';
 import { readZip, writeZip, ZipEntry } from './zip.js';
 import {
   DOCUMENT_PART,
-  extractText,
-  reinjectText,
   containsZeroWidth,
   buildDocumentXml,
   docxParts,
+  isTextPart,
+  sortTextParts,
+  extractTextParts,
+  reinjectTextParts,
+  TextPart,
 } from './docx.js';
 
-function documentPart(entries: ZipEntry[]): ZipEntry {
-  const part = entries.find((e) => e.name === DOCUMENT_PART);
-  if (!part) throw new Error(`not a DOCX: missing ${DOCUMENT_PART}`);
-  return part;
+/** The text-bearing parts of a DOCX (body, footnotes, endnotes, headers,
+ *  footers, comments), in canonical order. Throws if it is not a DOCX. */
+function textParts(entries: ZipEntry[]): Array<{ entry: ZipEntry; part: TextPart }> {
+  const matched = entries.filter((e) => isTextPart(e.name));
+  if (!matched.some((e) => e.name === DOCUMENT_PART)) {
+    throw new Error(`not a DOCX: missing ${DOCUMENT_PART}`);
+  }
+  return sortTextParts(matched).map((e) => ({
+    entry: e,
+    part: { name: e.name, xml: e.data.toString('utf8') },
+  }));
 }
 
-/** The concatenated visible text of a DOCX. */
+/** The concatenated visible text of a DOCX, across every text-bearing part. */
 export function readDocxText(bytes: Buffer): string {
-  return extractText(documentPart(readZip(bytes)).data.toString('utf8'));
+  return extractTextParts(textParts(readZip(bytes)).map((x) => x.part));
 }
 
 export interface MarkDocxResult {
@@ -44,12 +54,15 @@ export interface MarkDocxResult {
   bytes: Buffer;
   /** the engine's mark result for the extracted text */
   result: MarkResult;
+  /** the text-bearing parts that were marked, in order */
+  markedParts: string[];
 }
 
 /**
- * Mark a DOCX for a recipient. Extracts the document text, marks it, and
- * reinjects the marked text across the original runs, leaving all other parts
- * of the archive untouched.
+ * Mark a DOCX for a recipient. Concatenates the text of every text-bearing part
+ * (body, footnotes, endnotes, headers, footers, comments), marks it as one
+ * payload, and reinjects the marked text back across those parts' runs. All
+ * other parts of the archive are left byte-for-byte untouched.
  */
 export function markDocx(
   bytes: Buffer,
@@ -58,9 +71,8 @@ export function markDocx(
   opts: MarkOptions = {},
 ): MarkDocxResult {
   const entries = readZip(bytes);
-  const part = documentPart(entries);
-  const xml = part.data.toString('utf8');
-  const text = extractText(xml);
+  const tp = textParts(entries);
+  const text = extractTextParts(tp.map((x) => x.part));
 
   const result = mark(text, identity, issuer, opts);
 
@@ -73,11 +85,12 @@ export function markDocx(
     );
   }
 
-  const marked = reinjectText(xml, result.text);
+  const rewritten = reinjectTextParts(tp.map((x) => x.part), result.text);
+  const byName = new Map(rewritten.map((p) => [p.name, p.xml]));
   const out = entries.map((e) =>
-    e.name === DOCUMENT_PART ? { name: e.name, data: Buffer.from(marked, 'utf8') } : e,
+    byName.has(e.name) ? { name: e.name, data: Buffer.from(byName.get(e.name)!, 'utf8') } : e,
   );
-  return { bytes: writeZip(out), result };
+  return { bytes: writeZip(out), result, markedParts: tp.map((x) => x.part.name) };
 }
 
 /** Detect a mark in a DOCX by extracting its text and running the detector. */

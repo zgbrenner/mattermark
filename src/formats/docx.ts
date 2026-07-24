@@ -83,18 +83,67 @@ function distribute(marked: string, lengths: number[]): string[] {
   return out;
 }
 
+/** Rewrite each run's text from a pre-computed list of segments, in run order. */
+function applySegments(documentXml: string, segments: string[]): string {
+  let i = 0;
+  return documentXml.replace(
+    WT_RE,
+    () => `<w:t xml:space="preserve">${escapeXml(segments[i++] ?? '')}</w:t>`,
+  );
+}
+
 /**
  * Replace the document's run text with `markedText`, distributed across the
  * original runs. Forces xml:space="preserve" so substituted spaces are kept.
  * The number of runs is unchanged, so all other structure is preserved exactly.
  */
 export function reinjectText(documentXml: string, markedText: string): string {
-  const segments = distribute(markedText, runLengths(documentXml));
-  let i = 0;
-  return documentXml.replace(WT_RE, () => {
-    const seg = segments[i++] ?? '';
-    return `<w:t xml:space="preserve">${escapeXml(seg)}</w:t>`;
-  });
+  return applySegments(documentXml, distribute(markedText, runLengths(documentXml)));
+}
+
+/* -------------------------- multi-part documents ------------------------- */
+
+/**
+ * A DOCX keeps visible text in several parts, not just the body: footnotes,
+ * endnotes, headers, footers, and comments each live in their own part with
+ * their own `<w:t>` runs. To mark a whole document we concatenate the text of
+ * every text-bearing part in a fixed order, mark that, and redistribute the
+ * marked text back across all of their runs — one payload spanning the document.
+ */
+export interface TextPart {
+  name: string;
+  xml: string;
+}
+
+const TEXT_PART_RE = /^word\/(document|footnotes|endnotes|comments|header\d+|footer\d+)\.xml$/;
+
+/** Is this archive part one whose `<w:t>` run text we mark? */
+export function isTextPart(name: string): boolean {
+  return TEXT_PART_RE.test(name);
+}
+
+/** Canonical, deterministic order so mark and detect concatenate identically. */
+export function sortTextParts<T extends { name: string }>(parts: T[]): T[] {
+  return [...parts].sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
+}
+
+/** Concatenated visible text across all given parts, in the given order. */
+export function extractTextParts(parts: TextPart[]): string {
+  return parts.map((p) => extractText(p.xml)).join('');
+}
+
+/** Distribute one marked string back across the runs of all parts, losslessly. */
+export function reinjectTextParts(parts: TextPart[], markedText: string): TextPart[] {
+  const perPart = parts.map((p) => runLengths(p.xml));
+  const segments = distribute(markedText, perPart.flat());
+  const out: TextPart[] = [];
+  let idx = 0;
+  for (let i = 0; i < parts.length; i++) {
+    const n = perPart[i].length;
+    out.push({ name: parts[i].name, xml: applySegments(parts[i].xml, segments.slice(idx, idx + n)) });
+    idx += n;
+  }
+  return out;
 }
 
 /* ------------------------------ docx builder ----------------------------- */
