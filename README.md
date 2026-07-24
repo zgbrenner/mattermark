@@ -18,7 +18,8 @@ only. Runs entirely on-device.
 npm install
 npm run demo       # full walkthrough: mint -> mark -> transform -> attribute
 npm run matrix     # survival matrix across the real 16-document corpus/
-npm run typecheck
+npm run docx-demo  # Slice 2: build a real DOCX, mark it, attribute it back
+npm test           # typecheck + the node:test suite
 ```
 
 Read [`SECURITY.md`](SECURITY.md) before deploying this against anything real.
@@ -70,6 +71,9 @@ Two things to settle before this gets any traction:
 | `src/harness.ts` | Survival matrix engine (`runMatrix`) |
 | `src/corpus.ts` | Corpus manifest and loader |
 | `src/matrix.ts` | Runs the survival matrix across `corpus/` |
+| `src/formats/zip.ts` | Zero-dependency ZIP reader/writer (`node:zlib` + CRC-32) |
+| `src/formats/docx.ts` | DOCX text extract / reinject and a minimal-DOCX builder |
+| `src/formats/index.ts` | `markDocx()` / `detectDocx()` — the Slice 2 document API |
 | `corpus/` | 16 synthetic legal documents, 200 → 55k chars ([corpus/README.md](corpus/README.md)) |
 
 ## Three deliberate deviations from the paper
@@ -227,11 +231,47 @@ mark(text, id, issuer, { codecs: ['WS', 'ZW'], allowNonDurable: true });
 durable stack makes ~240 homoglyph substitutions and the appellate brief ~8,600;
 the search-safe stack makes zero. Choose per matter, with the cost in view.
 
+## Document formats (Slice 2)
+
+The engine marks strings; legal work product is DOCX. `src/formats/` does the
+extract → mark → reinject round-trip on a real DOCX **in place**:
+
+```ts
+import { markDocx, detectDocx } from './src/formats/index.js';
+
+const { bytes, result } = markDocx(docxBuffer, identity, issuer, { codecs: ['WS', 'ZW', 'HG'] });
+// deliver `bytes`; later, on a recovered copy:
+const found = detectDocx(recoveredBuffer, ['WS', 'ZW', 'HG']);
+```
+
+- A DOCX is a ZIP of OOXML parts. `src/formats/zip.ts` reads and writes ZIP with
+  **no dependencies** — Node's built-in `zlib` for DEFLATE and a hand-rolled
+  CRC-32 — so the "Node built-ins only" promise still holds.
+- Only `word/document.xml`'s run text changes; every other part is preserved
+  byte-for-byte. The marked text is distributed back across the original `<w:t>`
+  runs losslessly, accounting for the zero-width codec's inserted characters.
+- `npm run docx-demo` builds DOCX copies of the memo and the 40-page appellate
+  brief, marks them, and attributes them back — surviving Tier 1–2 and deep
+  excerpting, exactly as the plain-text harness measures.
+
+**Scope, stated plainly.** Only the body text of `word/document.xml` is marked
+and scanned today. Text that Word stores in *separate* parts — footnotes,
+endnotes, headers, footers, comments, text boxes — is not yet marked, so a leak
+consisting solely of, say, a footnotes section would not attribute. Extending
+the same extract/reinject pass to those parts is mechanical follow-up; it is
+called out here rather than left as a silent gap.
+
+**PDF is deliberately not done yet.** Faithful PDF reinjection is a *layout*
+problem, not a text problem: a PDF positions glyphs, so inserting a zero-width
+marker or swapping a letter for a differently-metric'd confusable can shift the
+visible layout. That needs a real PDF engine and is its own slice — shipping a
+broken one would violate this repo's "report what we measured" rule.
+
 ## Roadmap
 
-- **Slice 2** — DOCX/PDF extract-mark-reinject (python-docx / PyMuPDF, or Rust
-  equivalents). *(The real corpus for the harness has landed — see
-  [`corpus/`](corpus/README.md) and `npm run matrix`.)*
+- **Slice 2 (DOCX: done)** — DOCX extract-mark-reinject has landed
+  (`src/formats/`, `npm run docx-demo`). Remaining: **PDF** extract-mark-reinject
+  (PyMuPDF or a Rust equivalent), which is a layout problem as noted above.
 - **Slice 3** — SQLite-backed registry with encryption at rest; Rekor or
   OpenTimestamps anchoring so the protected-copy hash is provably prior.
 - **Slice 4 (research)** — linguistic layer for Tier-4 resistance. Note the
