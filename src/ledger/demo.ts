@@ -91,7 +91,7 @@ try {
     line(`  wrong passphrase       : rejected (${(e as Error).message})`);
   }
   const tampered = Buffer.from(raw);
-  tampered[tampered.length - 3] ^= 0x01; // flip a ciphertext bit
+  tampered[tampered.length - 3] ^= 0x01;
   const tpath = path + '.tampered';
   writeFileSync(tpath, tampered);
   try {
@@ -106,15 +106,17 @@ try {
   rule('5. ANCHOR THE MERKLE ROOT');
   const kp = deriveEd25519(orgKey);
   const anchor = localAttestationAnchor(kp);
-  const proof = reopened.anchor(anchor);
-  line(`  merkle root  : ${reopened.merkleRoot().slice(0, 24)}...`);
+  const checkpoint = reopened.anchorCheckpoint(anchor);
+  line(`  checkpoint   : ${checkpoint.format}`);
+  line(`  event prefix : ${checkpoint.eventCount}`);
+  line(`  merkle root  : ${checkpoint.root.slice(0, 24)}...`);
   line(`  anchor       : ${anchor.name} (third-party time: ${anchor.thirdPartyTime})`);
-  line(`  proof valid  : ${reopened.verifyAnchor(anchor, proof)}`);
+  line(`  proof valid  : ${reopened.verifyAnchorCheckpoint(anchor, checkpoint)}`);
   line();
   line('  HONEST LIMIT: the local attestation is non-repudiable as to the org, but');
-  line('  its timestamp is self-asserted. Provable-prior-to-a-skeptic needs an');
-  line('  external anchor (OpenTimestamps / Rekor / RFC 3161) behind the same');
-  line('  Anchor interface; only the trust root changes.');
+  line('  its timestamp is self-asserted. For independently provable priority, use');
+  line('  openTimestampsCliAnchor(): retain the full checkpoint and pending .ots');
+  line('  proof, then refresh and verify after the Bitcoin attestation confirms.');
   line();
 } finally {
   rmSync(path, { force: true });
