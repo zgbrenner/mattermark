@@ -37,6 +37,21 @@ interface InvestigationPayload {
   event: InvestigationEvent;
 }
 
+/**
+ * Portable evidence package for one anchored ledger prefix. Unlike a bare
+ * current-root proof, a checkpoint remains verifiable after later events are
+ * appended because it records the exact prefix length and chain head.
+ */
+export const ANCHOR_CHECKPOINT_FORMAT = 'mattermark-anchor-checkpoint-v1' as const;
+
+export interface AnchorCheckpoint {
+  format: typeof ANCHOR_CHECKPOINT_FORMAT;
+  eventCount: number;
+  head: string;
+  root: string;
+  proof: AnchorProof;
+}
+
 export class SecureRegistry {
   private events: ChainedEvent[] = [];
   private rows = new Map<string, ProtectedCopy>();
@@ -140,6 +155,53 @@ export class SecureRegistry {
     return proof.digest === this.merkleRoot() && anchor.verify(proof);
   }
 
+  /**
+   * Anchor the current ledger prefix and retain enough local context to verify
+   * that historical proof after the registry grows.
+   */
+  anchorCheckpoint(
+    anchor: Anchor,
+    at = new Date().toISOString(),
+  ): AnchorCheckpoint {
+    const eventCount = this.events.length;
+    const root = merkleRoot(this.events.map((event) => event.hash));
+    const head = eventCount > 0 ? this.events[eventCount - 1].hash : GENESIS;
+    return {
+      format: ANCHOR_CHECKPOINT_FORMAT,
+      eventCount,
+      head,
+      root,
+      proof: anchor.commit(root, at),
+    };
+  }
+
+  /** Verify an anchored historical prefix against the current append-only log. */
+  verifyAnchorCheckpoint(
+    anchor: Anchor,
+    checkpoint: AnchorCheckpoint,
+  ): boolean {
+    if (
+      checkpoint.format !== ANCHOR_CHECKPOINT_FORMAT ||
+      !Number.isSafeInteger(checkpoint.eventCount) ||
+      checkpoint.eventCount < 0 ||
+      checkpoint.eventCount > this.events.length
+    ) {
+      return false;
+    }
+
+    const prefix = this.events.slice(0, checkpoint.eventCount);
+    if (!verifyChain(prefix).ok) return false;
+    const root = merkleRoot(prefix.map((event) => event.hash));
+    const head = prefix.length > 0 ? prefix[prefix.length - 1].hash : GENESIS;
+
+    return (
+      checkpoint.root === root &&
+      checkpoint.head === head &&
+      checkpoint.proof.digest === root &&
+      anchor.verify(checkpoint.proof)
+    );
+  }
+
   /* ------------------------------ internals ------------------------------ */
 
   private append(type: 'copy' | 'investigation', payload: CopyPayload | InvestigationPayload, at: string): void {
@@ -178,5 +240,14 @@ export class SecureRegistry {
   }
 }
 
-export type { Anchor, AnchorProof } from './anchor.js';
-export { localAttestationAnchor } from './anchor.js';
+export type {
+  Anchor,
+  AnchorInspection,
+  AnchorProof,
+  AnchorStatus,
+  OpenTimestampsOptions,
+  OtsCommandResult,
+  OtsRunner,
+  RefreshableAnchor,
+} from './anchor.js';
+export { localAttestationAnchor, openTimestampsCliAnchor } from './anchor.js';
