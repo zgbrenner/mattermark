@@ -2,353 +2,433 @@
 
 [![CI](https://github.com/zgbrenner/mattermark/actions/workflows/ci.yml/badge.svg)](https://github.com/zgbrenner/mattermark/actions/workflows/ci.yml)
 
-**Recipient attribution and work-product fingerprinting. Slice 1: the engine.**
+**Recipient attribution and work-product fingerprinting.**
 
-Local-first work-product fingerprinting. Marks a per-recipient copy of a
-document with a cryptographically derived identifier embedded across
-independent character surfaces, and attributes a recovered leak back to a
-specific recipient, matter, and version.
+Mattermark marks each recipient's copy of a document with a cryptographically
+derived identifier embedded across independent text surfaces. When a copy
+surfaces where it should not, Mattermark recovers the identifier and resolves it
+to the recipient, matter, and version recorded in the registry.
 
-Architecturally anchored to Raz et al., *Safeguarding LLMs Against Misuse and
-AI-Driven Malware Using Steganographic Canaries*, arXiv:2603.28655v1 (NYU
-Tandon, 30 Mar 2026), Mode A. Zero runtime dependencies — Node built-in crypto
-only. Runs entirely on-device.
+The marking and detection engine is **MarkItYours**. The repository and product
+are **Mattermark**.
+
+The design begins with Mode A in Raz et al., *Safeguarding LLMs Against Misuse
+and AI-Driven Malware Using Steganographic Canaries*, arXiv:2603.28655v1, then
+changes the identity, framing, document adapters, and registry for recipient
+attribution. The production package has zero runtime npm dependencies and runs
+locally with Node.js built-ins.
 
 ```bash
 npm install
-npm run demo         # full walkthrough: mint -> mark -> transform -> attribute
-npm run matrix       # survival matrix across the real 16-document corpus/
-npm run docx-demo    # Slice 2: mark a real DOCX/PDF, attribute it back
-npm run ledger-demo  # Slice 3: encrypted, tamper-evident, anchored registry
-npm test             # typecheck + the node:test suite
+npm run demo         # mint -> mark -> transform -> attribute
+npm run matrix       # survival matrix across the 16-document corpus
+npm run docx-demo    # mark and recover DOCX and supported PDF files
+npm run ledger-demo  # encrypted, tamper-evident registry
+npm test             # typecheck + node:test suite
 ```
 
-Read [`SECURITY.md`](SECURITY.md) before deploying this against anything real.
-It states plainly what the marks do and do not survive.
+Read [`SECURITY.md`](SECURITY.md) before using Mattermark against real work
+product. The limitations are part of the product contract.
 
-## What this is not
+## What this is, and what it is not
 
-The paper builds a **vendor-side ingestion tripwire**: a cooperating AI vendor
-runs a pre-ingestion filter and blocks canary-bearing uploads. That requires
-vendor cooperation we do not have.
+The source paper describes a vendor-side ingestion tripwire. A cooperating AI
+vendor detects a canary before training or ingestion. Mattermark does not assume
+that cooperation.
 
-This is the **leak-attribution** repurposing of the same primitives: mark
-outbound copies, and when a document surfaces where it should not, prove which
-recipient's copy it was. The registry — which the paper puts explicitly out of
-scope (§3.5) — is therefore the core of the product, not an accessory.
+Mattermark instead marks outbound copies for **later leak attribution**. The
+registry, which the paper leaves out of scope, is therefore central: a recovered
+full token is cryptographically verified, and a recovered short identifier is
+resolved against the protected-copy ledger.
 
-## Naming
+Mattermark is not digital rights management, a guarantee that a document cannot
+be copied, or a covert channel that survives a knowledgeable adversary. A
+motivated recipient can remove the symbolic marks. The linguistic research track
+is intended to raise that cost, not to make absolute claims.
 
-The repository and product are **Mattermark**; the marking/detection engine
-inside it is **MarkItYours**.
+## Current slices
 
-Two things to settle before this gets any traction:
+| Slice | Status | Result |
+|---|---|---|
+| 1. Marking engine | Implemented | WS, ZW, and HG channels; framed recipient tokens; excerpt resynchronization |
+| 2. Document formats | Implemented for a conservative envelope | DOCX extract/mark/reinject; PDF invisible incremental carrier; PDF detection |
+| 3. Evidentiary registry | Implemented | Encrypted single-file store, append-only hash chain, versioned anchor checkpoints, local and OpenTimestamps anchors |
+| 4. Linguistic layer | Research scaffold | Versioned model manifests, deterministic hashing, fail-closed compatibility checks, Tier-4 attack definitions, and release gates |
 
-- **Mattermark was a real company** (startup-data platform, 2012–2017, acquired
-  by FullContact in a fire sale and shut down). Different industry, long dead,
-  and `matter` + `mark` is close to a perfect semantic fit for legal document
-  marking. But a decade of TechCrunch, Crunchbase, and PitchBook results own
-  the search term, and Crunchbase still lists "Mattermark Holding Co" as an
-  active entity. Trademark abandonment is presumed after three consecutive
-  years of non-use under 15 U.S.C. § 1127, and it has been about eight — but
-  presumed is not cleared. Someone should check for live registrations and
-  whether FullContact retained the mark before this goes on a landing page.
-- **The licence is MIT and the repo is public.** For a leak-attribution engine
-  that means anyone can fork it commercially, and any recipient of a marked
-  document can read `src/codecs/` and strip the mark. That may be the right
-  call — open review is worth a lot for a security primitive — but it is a
-  deliberate one. Decide it deliberately; git history is permanent.
-
-## Layout
+## Repository layout
 
 | File | Role |
 |---|---|
-| `src/frame.ts` | Payload framing, base-b digits, magic-sync resynchronisation |
+| `src/frame.ts` | Payload framing, base-b digits, magic-sync resynchronization |
 | `src/crypto.ts` | HMAC-SHA256, Ed25519, and SHORT_ID token schemes |
-| `src/codecs/*.ts` | WS / ZW / HG codecs behind one swappable interface |
-| `src/orchestrator.ts` | Composition guard, per-channel payload sizing, `mark()` / `detect()` |
-| `src/transforms.ts` | Transport-transform taxonomy T01–T11 and composite chains |
-| `src/registry.ts` | Attribution ledger and evidence schema (prototype JSON store) |
-| `src/harness.ts` | Survival matrix engine (`runMatrix`) |
-| `src/corpus.ts` | Corpus manifest and loader |
-| `src/matrix.ts` | Runs the survival matrix across `corpus/` |
-| `src/formats/zip.ts` | Zero-dependency ZIP reader/writer (`node:zlib` + CRC-32) |
-| `src/formats/docx.ts` | DOCX text extract / reinject across all text-bearing parts |
-| `src/formats/pdf.ts` | PDF text extraction for detection + a demo PDF writer |
-| `src/formats/index.ts` | `markDocx()` / `detectDocx()` — the Slice 2 document API |
-| `src/ledger/*.ts` | Slice 3: encrypted, hash-chained, anchored `SecureRegistry` |
-| `corpus/` | 16 synthetic legal documents, 200 → 55k chars ([corpus/README.md](corpus/README.md)) |
+| `src/codecs/*.ts` | WS, ZW, and HG codecs behind one interface |
+| `src/orchestrator.ts` | Composition guard, payload sizing, `mark()` and `detect()` |
+| `src/transforms.ts` | Transform taxonomy T01-T11 and composite chains |
+| `src/formats/docx.ts` | DOCX text extraction and reinjection across text-bearing parts |
+| `src/formats/pdf.ts` | Public PDF facade for extraction, marking, detection, and fixtures |
+| `src/formats/pdf-reader.ts` | Visible-text and Mattermark-carrier extraction |
+| `src/formats/pdf-xref.ts` | Classic xref parsing and incremental-update primitives |
+| `src/formats/pdf-marker.ts` | Conservative invisible carrier insertion and `markPdf()` |
+| `src/formats/pdf-fixture.ts` | Spec-compliant PDF fixture writer for tests and demos |
+| `src/formats/index.ts` | DOCX and PDF document API |
+| `src/ledger/*.ts` | Encrypted, hash-chained `SecureRegistry`, historical checkpoints, and anchor providers |
+| `corpus/` | 16 synthetic legal documents, 200 to 55,103 characters |
+| `src/research/linguistic/` | Research-only model manifest, generator contracts, and Tier-4 attack matrix |
+| `docs/research/tier4-linguistic-layer.md` | Slice 4 research decision record |
 
-## Three deliberate deviations from the paper
+## Deliberate deviations from the source paper
 
-**1. Magic-sync framing.** The paper frames payloads as `len(BE16) || token`
-and relies on head-first selection so decoding always starts at digit 0. That
-breaks on excerpts, which is the dominant legal-leak shape — nobody leaks the
-whole file, they paste three paragraphs. We prepend `0xA5 0x5A || version ||
-scheme` and repeat the frame, and the decoder brute-forces every sub-byte digit
-alignment. 6 bytes of overhead buys excerpt attribution.
+### 1. Magic-sync framing
 
-**2. Per-channel payload sizing (SHORT_ID).** Measurement, not theory: the
-74-byte Ed25519 frame fits **exactly once** in the homoglyph channel of a
-1.5k-char memo. One head-first copy means any excerpt clipping the front of the
-document loses the only durable mark. So each channel now picks the largest
-frame it can repeat at least 3 times, falling back to a 12-byte registry
-pointer (`copy_uuid(4) || HMAC(k_org, id)[:8]`). High-capacity fragile channels
-carry the full self-verifying signature; low-capacity durable channels carry
-the repeated pointer.
+The paper frames a payload as `length || token` and assumes decoding starts at
+position zero. That fails when a leak is an excerpt. Mattermark prepends a magic
+marker, version, and scheme, repeats frames through available capacity, and
+brute-forces sub-byte alignment during recovery.
 
-Stated plainly: SHORT_ID is 64-bit forgery resistance, not 128-bit, and it is
-**not self-verifying** — it resolves only against the registry. It is only ever
-issued alongside a full-strength frame in another channel. Never ship it alone.
+Frame layout:
 
-**3. Attribution-derived identity.** `copy_id` is derived from
-`(matter, recipient, version, timestamp, nonce)` rather than a file path,
-because the question is *which recipient*, not *was a canary ingested*.
+```text
+magic(2) | version(1) | scheme(1) | length(2) | token(N)
+```
+
+The six-byte overhead buys position-independent resynchronization.
+
+### 2. Per-channel payload sizing
+
+A full Ed25519 frame may fit only once in the durable homoglyph channel of a
+short memo. Mattermark lets each channel select the largest frame it can repeat
+enough times for excerpt recovery:
+
+- full HMAC or Ed25519 token where capacity permits;
+- `SHORT_ID` where repeated full frames do not fit.
+
+`SHORT_ID` is a 12-byte registry pointer:
+
+```text
+copy_uuid(4) | HMAC(k_org, copy_identity)[0:8]
+```
+
+It has 64-bit forgery resistance and is not self-verifying. It is a corroborating
+registry pointer and must not be deployed as the only identity channel.
+
+### 3. Recipient-derived copy identity
+
+The copy identity is derived from:
+
+```text
+matter | recipient | version | issued_at | nonce
+```
+
+The product question is which recipient received the leaked copy, not whether a
+particular path was ingested.
 
 ## Composition guard
 
-The most important empirical result in the paper is a failure mode: improper
-layer composition drops Tier-3 recovery **from 97% to 0%** via cross-layer
-interference (§6.2). Naive "embed it everywhere for redundancy" makes the
-system worse. `assertComposable` enforces:
+Naively placing the same payload in every channel can make recovery worse.
+`assertComposable()` enforces:
 
-1. **Disjoint surfaces** — two codecs on the same surface overwrite each other.
-2. **Never WS beneath LM** — sanitizers *delete* whitespace rather than
-   normalising it, shifting the byte stream the linguistic decoder depends on.
-3. **At least one Tier-2 survivor** — a WS-only or ZW-only mark is decorative;
-   it dies to routine platform sanitization. The stack is rejected outright.
+1. disjoint character surfaces;
+2. no whitespace channel beneath a future linguistic channel;
+3. at least one Tier-2 survivor unless the caller explicitly accepts a
+   search-preserving, non-durable mark.
 
-## Measured results
+The default stack is `WS + ZW + HG`.
 
-The reference case: 1,522-char privileged memo, WS+ZW+HG, both schemes. `Y` =
-token recovered and attributed. This is the one document the original numbers
-were measured on — `npm run matrix` runs the same measurement across the whole
-[corpus](corpus/README.md) (see "Across the corpus" below).
+## Measured symbolic survival
 
-| stack | T0 | T1 | T2 | T3 | T1+2 | T1+2+3 | T11 | 50% excerpt | 20% excerpt |
+Reference case: 1,522-character privileged memo, both token schemes. `Y` means a
+token was recovered and attributed.
+
+| Stack | T0 | T1 | T2 | T3 | T1+2 | T1+2+3 | T11 | 50% excerpt | 20% excerpt |
 |---|---|---|---|---|---|---|---|---|---|
 | HG | Y | Y | Y | . | Y | . | . | Y | . |
 | ZW+HG | Y | Y | Y | . | Y | . | . | Y | Y* |
 | WS+ZW+HG | Y | Y | Y | . | Y | . | Y | Y | Y* |
 
-\* HMAC only; Ed25519 loses the 20% excerpt case.
+`*` HMAC only; Ed25519 loses the 20% excerpt case in the reference memo.
 
-Channel survival, per measurement:
+Channel behavior:
 
-- **WS** dies at T05 (NFKC folds every alphabet member to U+0020). Survives
-  T11, which is its one distinctive contribution.
-- **ZW** dies at T07 (Cf strip) — that is **Tier 2**, not Tier 3 as the paper's
-  Table 4 indicates. All four alphabet members are general category Cf. If the
-  paper's Cf strip preserved some of them, their implementation differs from
-  ours; we report what we measured.
-- **HG** is the only Tier-2 survivor and carries the whole "full coverage
-  through Tier 2" claim. Dies at T09/T10.
-- **Tier 3 defeats everything.** A steganography-aware adversary who folds
-  confusables and strips non-ASCII wins against a symbolic-only stack. This is
-  expected and matches the paper. Only a linguistic layer changes it.
-- **T12 (LLM paraphrase) is NOT MEASURED.** It needs a model, and faking it
-  with a synonym shuffle would produce a dishonest number.
+- **WS** dies when NFKC folds its space alphabet to ordinary spaces.
+- **ZW** dies when format characters are stripped.
+- **HG** is the symbolic Tier-2 survivor and dies when confusables are folded or
+  non-ASCII characters are removed.
+- **Tier 3 defeats the symbolic stack.** This is expected, measured, and not
+  hidden behind an aggregate score.
+- **LLM paraphrase is not assigned a synthetic number.** Slice 4 defines the
+  real evaluation required for that claim.
 
-### Across the corpus
+Across the 16-document corpus, the current stack durably marks 15 of 16 fixtures.
+The 200-character filing notice is below the durable capacity floor. Fifteen are
+attributable from a 50% excerpt and thirteen from a 20% excerpt. Larger documents
+improve repetition and excerpt recovery, but do not defeat a steganography-aware
+sanitizer.
 
-Survival on one 1.5k memo is not survival on a 40-page brief with tables,
-citations, and footnotes. `corpus/` holds 16 synthetic legal documents spanning
-200 → 55,103 characters (notice, emails, memo, letters, NDA, deposition, motion,
-MSA, expert report, settlement, complaint, appellate brief, regulatory comment).
-`npm run matrix` runs the full matrix over all of them. Measured on this repo's
-harness, WS+ZW+HG, both schemes:
+Run `npm run matrix` for the complete per-document output.
 
-- **Durably markable: 15 of 16.** Only the 200-char filing notice falls below
-  the durability floor — and durability is document-*dependent*, not a length
-  cutoff: the 390-char scheduling email clears it because it is letter-dense,
-  while a same-length number/table block would not.
-- **Attributable from a 50% excerpt: 15 of 16. From a 20% excerpt: 13 of 16.**
-  Excerpt resilience rises with document size; deep excerpts of the brief, the
-  MSA, and the expert report stay attributable where the smaller documents do
-  not.
-- **Tier 3 still defeats every document.** Size buys durability and excerpt
-  resilience; it does not buy resistance to a steganography-aware adversary.
-  That result is uniform across the corpus, exactly as on the memo.
+## The homoglyph channel is a disclosed choice
 
-The point is that a single number on a single memo hid all of this. The corpus
-makes the matrix mean something.
+HG substitutes Cyrillic confusables for Latin letters. The page looks unchanged,
+but exact-match search, spellcheck, and some e-discovery indexing can break. For
+litigation work product, that may be disqualifying.
 
-## Known limits
-
-- **Minimum document size ~400 characters.** A 280-char document cannot fit
-  even a short frame in the homoglyph channel; it marks at Tier 1 and dies at
-  Tier 2. Short documents are not durably markable. The engine reports this
-  rather than silently degrading.
-- **Excerpt threshold.** Attribution needs a window containing two consecutive
-  frame lengths of eligible positions — roughly 45–50% of a 1.5k document,
-  falling as document length rises. Below that, no recovery.
-- **HG breaks exact-match search — kept, but as an explicit option.** Cyrillic
-  substitutions replace Latin letters in place, so they defeat naive Ctrl-F,
-  spellcheck, and some e-discovery keyword indexing, and the altered words look
-  identical on screen. For litigation work product that is a real operational
-  cost and **may be disqualifying** — e-discovery keyword search over the
-  marked copy is central to the practice, and a silently corrupted index is
-  worse than no mark. See ["The homoglyph channel"](#the-homoglyph-channel-a-disclosed-option) below.
-- **No Reed-Solomon yet.** Frame repetition handles excerpting; RS would handle
-  *partial character corruption* within a frame. The version byte reserves
-  space for it.
-
-## The homoglyph channel: a disclosed option
-
-**Decision: keep HG, but make it an option, and disclose the cost.**
-
-HG is the only symbolic channel that survives Tier-2 sanitization, so it is what
-makes a mark *durable*. It earns that durability by substituting Cyrillic
-look-alikes for Latin letters — which is exactly what breaks exact-match search,
-spellcheck, and e-discovery keyword indexing on the marked copy. For a litigator
-whose workflow depends on keyword search over produced documents, a silently
-corrupted index can be **disqualifying**. We are not going to pretend that cost
-away, and we are not going to force it on every user.
-
-So the engine treats HG as a deliberate, disclosed choice:
-
-- **It is on by default** (default stack `WS+ZW+HG`), because durability is the
-  point of the product — but `mark()` now returns a `warnings[]` array, and
-  whenever HG actually substitutes glyphs it carries a plain-language notice
-  that exact-match / e-discovery search is broken and *may be disqualifying for
-  litigation work product*. The demo and the matrix print it.
-- **It can be turned down** with `maxHomoglyphDensity` (cap the fraction of
-  eligible glyphs altered, trading excerpt resilience for searchability).
-- **It can be turned off** — pass `allowNonDurable: true` and a stack without
-  HG (e.g. `WS+ZW`). The composition guard then accepts a **search-preserving,
-  Tier-1-only, non-durable** mark instead of rejecting it. The visible letters
-  of every word stay intact (zero homoglyph substitutions), so keyword search is
-  not corrupted; the trade is that the mark dies to routine platform
-  sanitization. `mark()` flags the result non-durable and says so in
-  `warnings[]`. Never silently degrade — report.
+The engine therefore reports the trade:
 
 ```ts
-// durable, but breaks search (default):
-mark(text, id, issuer);                        // WS+ZW+HG; warnings[] carries the HG notice
+// Durable symbolic stack. warnings[] discloses search impact.
+mark(text, identity, issuer);
 
-// search-preserving, but non-durable (deliberate opt-out):
-mark(text, id, issuer, { codecs: ['WS', 'ZW'], allowNonDurable: true });
+// Search-preserving, Tier-1-only stack.
+mark(text, identity, issuer, {
+  codecs: ['WS', 'ZW'],
+  allowNonDurable: true,
+});
 ```
 
-`npm run matrix` quantifies the trade on real documents: on the 1.5k memo the
-durable stack makes ~240 homoglyph substitutions and the appellate brief ~8,600;
-the search-safe stack makes zero. Choose per matter, with the cost in view.
+`maxHomoglyphDensity` can cap substitutions, trading excerpt resilience for less
+search disruption.
 
-## Document formats (Slice 2)
+PDF marking behaves differently: the ordinary visible text is untouched. The
+homoglyphs exist only in a separate invisible carrier. Ordinary visible-text
+search still has the original glyphs, although a text extractor can expose the
+hidden carrier.
 
-The engine marks strings; legal work product is DOCX. `src/formats/` does the
-extract → mark → reinject round-trip on a real DOCX **in place**:
+## Document formats
+
+### DOCX
+
+Mattermark marks all recognized text-bearing OOXML parts as one payload:
+
+- document body;
+- footnotes and endnotes;
+- headers and footers;
+- comments.
 
 ```ts
 import { markDocx, detectDocx } from './src/formats/index.js';
 
-const { bytes, result } = markDocx(docxBuffer, identity, issuer, { codecs: ['WS', 'ZW', 'HG'] });
-// deliver `bytes`; later, on a recovered copy:
-const found = detectDocx(recoveredBuffer, ['WS', 'ZW', 'HG']);
+const marked = markDocx(docxBuffer, identity, issuer, {
+  codecs: ['WS', 'ZW', 'HG'],
+});
+
+const detection = detectDocx(recoveredDocx, ['WS', 'ZW', 'HG']);
 ```
 
-- A DOCX is a ZIP of OOXML parts. `src/formats/zip.ts` reads and writes ZIP with
-  **no dependencies** — Node's built-in `zlib` for DEFLATE and a hand-rolled
-  CRC-32 — so the "Node built-ins only" promise still holds.
-- **Every text-bearing part is marked** — body, footnotes, endnotes, headers,
-  footers, comments. Their text is concatenated in a fixed order, marked as one
-  payload, and redistributed back across all their runs; all non-text parts are
-  preserved byte-for-byte. The redistribution is lossless, accounting for the
-  zero-width codec's inserted characters.
-- `npm run docx-demo` builds DOCX copies of the memo and the 40-page appellate
-  brief, marks them, and attributes them back — surviving Tier 1–2 and deep
-  excerpting, exactly as the plain-text harness measures.
+The DOCX adapter is a zero-dependency ZIP and OOXML implementation. Non-text
+parts are preserved, and marked text is redistributed across the original runs.
 
-**PDF: detection yes, marking no — and that split is not a shortcut.** A PDF
-cannot be *marked* in place with these codecs: a PDF positions glyphs, so a
-zero-width insertion, a wider space, or a confusable with different metrics needs
-the glyph to exist in the (usually subsetted) embedded font and shifts the
-visible layout. That is a font/layout problem, a separate slice. But a document
-marked as text (or as a DOCX) and then *exported* to PDF keeps its marks in the
-PDF's text layer, so a leaked PDF is still attributable:
+### PDF marking
+
+PDFs position glyphs and frequently embed subset fonts, so editing existing text
+operators is unsafe. Mattermark does not mutate those operators. It appends an
+incremental revision containing:
+
+- a blank Type 3 glyph program;
+- zero glyph widths;
+- a `ToUnicode` CMap carrying the marked Unicode text;
+- text rendering mode 3, which renders no pixels;
+- one shared carrier stream referenced by each page.
 
 ```ts
-import { detectPdf } from './src/formats/pdf.js';
-const found = detectPdf(recoveredPdfBuffer, ['WS', 'ZW', 'HG']);
+import { markPdf, detectPdf, extractPdfText } from './src/formats/index.js';
+
+const marked = markPdf(pdfBuffer, identity, issuer, {
+  codecs: ['WS', 'ZW', 'HG'],
+});
+
+const visibleText = extractPdfText(marked.bytes); // ordinary carrier excluded
+const detection = detectPdf(marked.bytes, ['WS', 'ZW', 'HG']);
 ```
 
-`src/formats/pdf.ts` reads the common, well-defined subset — classic `xref`
-objects, FlateDecode or unfiltered content streams, and text shown with Tj/TJ
-decoded through the font's ToUnicode CMap (Latin-1 fallback). **Out of
-envelope, and reported rather than silently mangled:** object-stream / xref-stream
-full-compression (PDF 1.5+), encryption, and scanned image PDFs with no text
-layer. It is validated against spec-compliant PDFs, not the full wild variety;
-`npm run docx-demo` shows a marked memo carried through a PDF text layer and
-recovered.
+Properties within the supported envelope:
 
-## Registry: encrypted, tamper-evident, anchored (Slice 3)
+- every original byte is an exact prefix of the marked file;
+- existing page content and embedded fonts are not edited;
+- ordinary text extraction excludes the Mattermark carrier;
+- carrier-aware detection recovers from the dedicated hidden stream;
+- all directly addressable pages reference the shared carrier;
+- unsupported structures fail closed.
 
-`src/registry.ts` is the plaintext prototype store. `src/ledger/` is the durable
-version — a single file, encrypted at rest, append-only and tamper-evident, with
-a Merkle root you can anchor:
+The implementation has been checked with independent PDF parsing and Ghostscript
+rendering on controlled fixtures. The original and marked fixture rendered to
+pixel-identical images.
+
+**Supported marking envelope:** classic xref tables and their `/Prev` revision
+chains, directly addressable page objects, direct or indirect page resources,
+direct or indirect font resource dictionaries, and `Contents` as an indirect
+reference or reference array. Marking follows indexed objects rather than
+object-like bytes that happen to appear inside streams or trailing data.
+
+**Rejected rather than repaired:** encryption, xref streams, hybrid-reference
+files, object streams, signed or certified PDFs, inherited or missing page
+resources, unsupported resource/content shapes, image-only PDFs with no
+extractable text, more than 255 distinct carrier characters, and a second
+Mattermark carrier.
+
+**Structure-dependence warning:** printing, rasterization, flattening, OCR
+replacement, optimization, or removal of invisible text can destroy the PDF
+carrier. Generic extraction, copy/paste, and assistive technology may expose or
+read the hidden text. PDF marking is file-level attribution, not print-level
+watermarking.
+
+## Registry and anchoring
+
+`src/registry.ts` remains the plaintext prototype. Use `SecureRegistry` for real
+evaluation:
 
 ```ts
-import { SecureRegistry, localAttestationAnchor } from './src/ledger/index.js';
+import {
+  SecureRegistry,
+  localAttestationAnchor,
+} from './src/ledger/index.js';
 
-const reg = SecureRegistry.openOrCreate('matter.reg', passphrase);
-reg.add(protectedCopy);                       // appends a hash-chained event, re-seals the file
-reg.recordInvestigation(tokenHex, event);     // append-only; the copy row's hash never changes
-const proof = reg.anchor(localAttestationAnchor(orgKeyPair));
+const registry = SecureRegistry.openOrCreate('matter.reg', passphrase);
+registry.add(protectedCopy);
+registry.recordInvestigation(tokenHex, investigationEvent);
+
+const localCheckpoint = registry.anchorCheckpoint(
+  localAttestationAnchor(orgKeyPair),
+);
 ```
 
-- **Encryption at rest** — AES-256-GCM under a scrypt-derived key. GCM's auth tag
-  doubles as an integrity check: a wrong passphrase or a flipped byte fails to
-  open rather than decrypting to garbage. Nothing (recipient, matter, token)
-  sits on disk in plaintext.
-- **Tamper-evident** — every event (a copy, or an investigation) commits to the
-  previous event's hash. An insider who has the passphrase, edits a past row, and
-  re-encrypts is still caught: recomputing the chain no longer reproduces the
-  stored head. State (rows, short-id index, investigations) is *replayed* from
-  the immutable event log.
-- **Anchoring, honestly** — the chain proves order and integrity *within* the
-  ledger. Proving a row is prior to a date *to a skeptic* needs a timestamp from
-  a party they trust. The `Anchor` interface is where OpenTimestamps, Rekor, or
-  an RFC 3161 TSA plug in; the built-in `localAttestationAnchor` signs the Merkle
-  root with the org key (non-repudiable as to the org, but `thirdPartyTime:
-  false` — its timestamp is self-asserted). Swap the anchor to change the trust
-  root; the mechanism is identical.
+The durable registry provides:
 
-**On SQLite:** the roadmap named SQLite. A real SQLite backend needs a native
-dependency or `node:sqlite` (Node 22.5+), both of which break the
-zero-dependency + Node-20 stance. The store is a sealed single file today, and
-the interface is narrow enough that a SQLite backend slots in behind it unchanged
-when those constraints relax — what SQLite was wanted for (a durable, single-file,
-encrypted, evidentiary store) is delivered.
+- AES-256-GCM encryption under a scrypt-derived key;
+- an append-only event log;
+- a hash chain binding each event to its predecessor;
+- replay-derived copy rows and investigation history;
+- a Merkle root suitable for external anchoring.
+
+### OpenTimestamps external anchor
+
+The local Ed25519 anchor proves what the organization signed, but its time is
+self-asserted. `openTimestampsCliAnchor()` creates a detached OpenTimestamps proof
+that can mature into a Bitcoin-attested time proof.
+
+The adapter uses the official `ots` command as an optional external executable.
+It adds no npm runtime dependency.
+
+```ts
+import {
+  SecureRegistry,
+  openTimestampsCliAnchor,
+} from './src/ledger/index.js';
+
+const registry = SecureRegistry.open('matter.reg', passphrase);
+const anchor = openTimestampsCliAnchor();
+
+// Usually pending immediately after submission.
+let checkpoint = registry.anchorCheckpoint(anchor);
+let status = anchor.inspect(checkpoint.proof);
+
+// Later, after calendar attestations can be upgraded into a Bitcoin proof.
+checkpoint = {
+  ...checkpoint,
+  proof: anchor.refresh(checkpoint.proof),
+};
+status = anchor.inspect(checkpoint.proof);
+
+if (
+  status.status === 'verified' &&
+  registry.verifyAnchorCheckpoint(anchor, checkpoint)
+) {
+  console.log(status.blockHeight, status.attestedAt);
+}
+```
+
+Proof lifecycle:
+
+1. `anchorCheckpoint()` records a versioned package containing the event count,
+   chain head, Merkle root, and provider proof.
+2. `commit()` writes a canonical statement binding the Merkle root and local
+   request time, then runs `ots stamp`.
+3. The detached `.ots` bytes are stored in `AnchorProof` as base64.
+4. A pending proof is not valid and does not yet claim third-party time.
+5. `refresh()` runs `ots upgrade` and returns a new proof object.
+6. `inspect()` runs `ots verify` and returns `verified` only for an explicit
+   successful Bitcoin block attestation.
+7. `verifyAnchorCheckpoint()` recomputes the recorded ledger prefix, so the
+   checkpoint remains usable after later events move the current root.
+
+The `AnchorProof.at` value remains the local request time. Only
+`AnchorInspection.attestedAt` on a verified proof is independently attested.
+Proof binding is checked before the external verifier runs, so changing the root
+or request time invalidates the proof locally. Store the complete checkpoint,
+not only the `.ots` bytes. A bare proof identifies a root, while the checkpoint
+identifies the exact ledger prefix that produced it.
+
+Rekor v1 was not selected as the first provider because its signed integrated
+time is not independently verifiable as a trusted timestamp. Rekor v2 uses a
+separate timestamp authority and can be added behind the same interface when its
+public-instance lifecycle is stable for this use case.
+
+OpenTimestamps references:
+
+- <https://github.com/opentimestamps/opentimestamps-client>
+- <https://opentimestamps.org/>
+
+## Slice 4: linguistic resistance research
+
+The production codec registry still contains only `WS`, `ZW`, and `HG`. The
+linguistic layer remains a research track because generation-time watermarking
+has a different contract, and because modifying existing legal language creates
+fidelity risk. `src/research/linguistic/` now provides a research-only
+`LinguisticGenerator` contract, a versioned `ModelManifest`, deterministic
+manifest hashing, fail-closed compatibility checks, and the minimum Tier-4
+attack matrix. It does not generate or rewrite text yet.
+
+The research decision record covers:
+
+- exact-model arithmetic coding as a reproducibility baseline;
+- SemStamp, k-SemStamp, SemaMark, PostMark, SWAN, DEW, and SAMark;
+- recipient-specific payload recovery versus statistical watermark detection;
+- model/tokenizer/runtime manifests and fail-closed compatibility;
+- error correction and sentence-level interleaving;
+- a Tier-4 paraphrase, translation, summarization, reorder, and excerpt suite;
+- legal redline gates for numbers, dates, parties, citations, quotations,
+  defined terms, modality, and negation.
+
+See [`docs/research/tier4-linguistic-layer.md`](docs/research/tier4-linguistic-layer.md).
+
+The recommended first implementation is generated synthetic canary text with a
+pinned model manifest and recoverable Mattermark frame. In-place rewriting of
+lawyer-authored work product is not a production feature.
 
 ## Roadmap
 
-- **Slice 2 (done)** — DOCX extract-mark-reinject across all text-bearing parts,
-  plus PDF *detection* via text extraction (`src/formats/`, `npm run docx-demo`).
-  Remaining, and genuinely hard: PDF *marking*, a glyph-layout problem as above.
-- **Slice 3 (done)** — encrypted, tamper-evident, anchored `SecureRegistry`
-  (`src/ledger/`, `npm run ledger-demo`). Remaining: an external anchor
-  integration (OpenTimestamps / Rekor) behind the `Anchor` interface, and a
-  SQLite backend once the dependency constraints allow.
-- **Slice 4 (research)** — linguistic layer for Tier-4 resistance. Note the
-  paper's own constraint: encoder and decoder must run an *identical* model,
-  and their choice of GPT-2 124M was for portability, not quality. This is a
-  research track, not a feature.
+- **Slice 1:** implemented and measured.
+- **Slice 2:** DOCX and conservative PDF marking/detection implemented. Expand
+  PDF coverage only with parser-backed fixtures and fail-closed handling.
+- **Slice 3:** encrypted registry and OpenTimestamps provider implemented.
+  Consider RFC 3161 and Rekor v2 providers; revisit SQLite when the Node 20 and
+  zero-dependency constraints change.
+- **Slice 4:** connect the research scaffold to an isolated experiment harness,
+  reproduce the arithmetic-coding baseline, add error correction, and measure
+  recipient-payload recovery under the documented Tier-4 suite.
 
-## Two non-technical blockers before this ships
+## Non-technical blockers before production
 
-**Active canaries are an ethics question, not a feature question.** The spec's
-item 3 (tracked resource / verification link) embeds a callback in a document
-sent to a third party. For the attorney market that is plausibly surreptitious
-tracking of opposing counsel, and several state bars have addressed undisclosed
-tracking bugs in email under the anti-deception and third-party-communication
-rules. The passive steganographic layer has no such problem — nothing phones
-home; detection happens only when *you* run the detector on a recovered
-artifact. Build passive-first; gate any active canary behind an explicit
-disclosure workflow (`ProtectedCopy.activeCanary.disclosedToRecipient` exists
-for exactly this) and get a real ethics memo before it appears in a demo.
+### Name clearance
 
-**Innamark is patent-encumbered.** Fraunhofer ISST's underlying algorithm is
-associated with patent applications. Nothing in this codebase derives from it —
-WS/ZW/HG here are implemented from the paper's descriptions and from Unicode
-primitives — but keep it that way, and run freedom-to-operate before borrowing
-anything from that implementation.
+Mattermark was previously used by a startup-data company. The semantic fit does
+not substitute for trademark clearance. Check live registrations and retained
+rights before public commercial use.
+
+### Public implementation
+
+This repository is MIT-licensed and public. A recipient can read the codec
+alphabets and strip a mark. Open review has security value, but this is a
+conscious product decision, not an accidental one.
+
+### Active canaries
+
+Mattermark currently uses passive marks. Adding a callback or tracked resource
+to a document sent to a third party raises professional-responsibility and
+anti-deception questions. Keep active canaries gated behind explicit disclosure
+and a real ethics analysis.
+
+### Freedom to operate
+
+Do not copy patent-encumbered implementations. The current WS, ZW, HG, DOCX,
+PDF, and ledger code is implemented from public specifications and research
+ideas, not from a proprietary marking product.

@@ -4,78 +4,156 @@ Read this before deploying Mattermark against anything that matters.
 
 ## What the cryptography guarantees
 
-Tokens are minted with HMAC-SHA256 (128-bit) or Ed25519 (~128-bit). An
-adversary cannot forge a token that resolves to a different recipient without
-the organisation key. Attribution, when a token is recovered, is sound.
+Tokens are minted with HMAC-SHA256 (128-bit truncated tag) or Ed25519
+(approximately 128-bit security). An adversary cannot forge a token that
+resolves to a different recipient without the organization key. Attribution,
+when a token is recovered and verified, is sound.
 
-`SHORT_ID` is the exception and is weaker by design: 64-bit forgery resistance
-and no self-verification. It resolves only against the registry, and it is only
-ever issued alongside a full-strength frame in a higher-capacity channel. Do
-not deploy a configuration that carries SHORT_ID alone.
+`SHORT_ID` is weaker by design: 64-bit forgery resistance and no
+self-verification. It resolves only against the registry and is intended to be
+issued alongside a full-strength frame in another channel. Do not deploy a
+configuration that carries SHORT_ID alone.
 
-## What the steganography does NOT guarantee
+## What the steganography does not guarantee
 
 **This is not a covert channel against a motivated adversary.** Measured
-survival, with this repo's own harness:
+survival in this repository:
 
 | Adversary capability | Result |
 |---|---|
-| Benign handling (copy-paste, reflow, smart quotes) | survives |
-| Platform sanitization (NFKC, whitespace collapse, Cf strip) | survives, via homoglyph channel only |
-| Targeted stripping (zero-width removal + confusable folding + non-ASCII strip) | **total loss** |
-| LLM paraphrase | **assume total loss** (not measured) |
+| Benign handling, copy/paste, reflow, smart quotes | survives |
+| Platform sanitization, NFKC, whitespace collapse, format-character strip | survives through HG only |
+| Targeted zero-width removal, confusable folding, non-ASCII strip | total symbolic loss |
+| LLM paraphrase | assume loss until the Slice-4 benchmark measures otherwise |
 
-Anyone who suspects a document is marked and runs three generic normalisation
-passes defeats every channel in this repo. That is inherent to symbolic
-steganography and is documented in the source paper. The mitigation is a
-linguistic layer, which is not implemented.
+Anyone who suspects a document is marked and runs generic normalization can
+defeat the symbolic channels. The linguistic research track may improve
+paraphrase resistance, but it is not implemented in the production codec stack
+and must not be described as a Tier-4 guarantee.
+
+See [`docs/research/tier4-linguistic-layer.md`](docs/research/tier4-linguistic-layer.md).
 
 ## This repository is public
 
-The exact codepoint alphabets are in `src/codecs/`. Publishing them means a
-recipient who reads this repo can detect and strip a mark. Weigh that against
-the value of open review before adding real deployments.
+The exact codepoint alphabets are in `src/codecs/`. A recipient can inspect and
+strip them. The source paper assumes an adversary who knows method families but
+not necessarily every parameter. A public implementation with hardcoded
+alphabets does not fully satisfy that assumption.
 
-Note that Raz et al. §3.2 assume an adversary who knows the method *families*
-but not the specific parameters. A public repo with hardcoded alphabets does
-not satisfy that assumption. Key-deriving the alphabets from `k_org` would
-partially restore it — though only partially, since blanket transforms (T08,
-T09, T10) do not care which specific codepoints were chosen. Treat this as a
-known limitation, not a solved problem.
+Key-derived alphabets could reduce parameter disclosure, but blanket transforms
+such as confusable folding and non-ASCII stripping do not depend on knowing the
+alphabet. Treat open implementation as a known limitation.
+
+## Registry and anchoring
+
+Registry files are evidence. They contain recipient identities, matter
+references, and token material. `.gitignore` excludes them.
+
+Use `SecureRegistry` in `src/ledger/` rather than the plaintext prototype in
+`src/registry.ts`. The durable store is encrypted with AES-256-GCM under a
+scrypt-derived key and is append-only through a hash chain. Investigation
+history must be appended as events, not edited into existing rows.
+
+### Local attestation
+
+`localAttestationAnchor` signs the Merkle root and claimed time with the
+organization's Ed25519 key. It is non-repudiable as to the organization, but the
+time is self-asserted. It does not prove priority to a skeptical third party.
+
+### OpenTimestamps
+
+`openTimestampsCliAnchor` uses the official `ots` CLI to create and verify a
+detached proof. Operational requirements:
+
+- Treat a newly stamped proof as pending and unverified.
+- Preserve the entire versioned `AnchorCheckpoint`, including its event count,
+  chain head, Merkle root, and base64 `.ots` bytes.
+- Call `refresh()` later to upgrade calendar attestations.
+- Treat time as independently attested only when `inspect()` returns
+  `status: 'verified'` and a Bitcoin block height.
+- Do not treat `AnchorProof.at` as trusted time. It remains the local request
+  time. The verified `attestedAt` field is the external attestation.
+- Use `verifyAnchorCheckpoint()` for historical evidence. It recomputes the
+  recorded prefix even after later events move the registry's current root. A
+  checkpoint never anchors events appended after its `eventCount`.
+- Expect calendar and Bitcoin verification to require network access unless the
+  operator supplies local verification infrastructure.
+
+The adapter verifies that the canonical statement still binds the proof's root
+and request time before invoking the CLI. A changed digest, time, proof format,
+or malformed detached proof fails locally.
+
+Rekor v1 is not used as the priority anchor because its integrated time is not
+an independently verifiable trusted timestamp. A future Rekor v2 adapter should
+validate the separate timestamp-authority material and discover active public
+instances rather than hardcoding an endpoint.
+
+## PDF marking cautions
+
+PDF marking is deliberately fail-closed and supports only a conservative subset.
+It appends an invisible Type 3 text carrier rather than editing existing glyph
+operators or embedded fonts.
+
+Within the supported envelope, the original file is an exact byte prefix and the
+ordinary visible text layer is unchanged. That does not make the carrier
+indestructible.
+
+The PDF carrier can be removed by:
+
+- printing or rasterization;
+- flattening or PDF optimization;
+- OCR replacement;
+- removal of invisible text, unused fonts, or incremental revisions;
+- deliberate deletion of `/MattermarkCarrier` objects;
+- reconstruction of pages into a new PDF.
+
+The implementation rejects encryption, xref streams, hybrid-reference files,
+object streams, signed or certified documents, inherited page resources,
+unsupported page resource/content shapes, image-only files, and already marked
+files. Do not bypass those checks by rewriting the parser to
+“best effort” an unknown PDF. Use a full PDF engine and independent render
+comparison before broadening the envelope.
+
+The hidden carrier can be exposed by generic text extraction, copy/paste, or
+assistive technology. It is passive, but it is not invisible to forensic
+inspection. Do not mark an already signed or certified PDF: any incremental
+change can invalidate signature or certification evidence, so Mattermark rejects
+those files.
+
+## Homoglyph marking cautions
+
+HG replaces Latin letters with Cyrillic confusables. In ordinary text and DOCX,
+this can break exact-match search, spellcheck, and e-discovery indexing while
+looking identical on screen. For litigation work product, that may be
+disqualifying.
+
+`mark()` returns a warning whenever HG is active. `maxHomoglyphDensity` caps the
+substitution rate. `allowNonDurable` permits a search-preserving `WS + ZW` mark
+that keeps visible letters intact but dies to routine sanitization.
+
+PDF marking keeps the ordinary page glyphs untouched because HG is applied only
+to the separate hidden carrier. The carrier itself may still appear in extracted
+text and may be removed by sanitization.
 
 ## Operational cautions
 
-- **Registry files are evidence.** They contain recipient identities, matter
-  references, and token material. `.gitignore` excludes them. `src/registry.ts`
-  is a plaintext prototype store — do not deploy it against real matters. Use
-  `SecureRegistry` (`src/ledger/`): a single file, encrypted at rest with
-  AES-256-GCM under a scrypt-derived key, and append-only via a hash chain so an
-  edited or reordered row is detectable by recomputation. Keep appending
-  investigation events; never mutate rows in place. Note the honest anchoring
-  limit: the built-in local attestation is non-repudiable as to the org but its
-  timestamp is self-asserted — provable-prior-to-a-skeptic needs an external
-  anchor (OpenTimestamps / Rekor / RFC 3161) behind the `Anchor` interface.
-- **Homoglyph marking breaks exact-match search, and it is optional.** Cyrillic
-  substitutions replace Latin letters in place: they defeat Ctrl-F, spellcheck,
-  and some e-discovery keyword indexing while looking identical on screen. For
-  litigation work product this can be **disqualifying**, because keyword search
-  over the marked copy is central to the practice and a silently corrupted index
-  is worse than an absent mark. HG is therefore a disclosed choice, not a
-  mandate: `mark()` surfaces the search-impact warning in its `warnings[]`
-  whenever HG is active; `maxHomoglyphDensity` caps the substitution rate; and
-  `allowNonDurable` permits a search-preserving `WS+ZW` mark that keeps every
-  visible letter intact, at the cost of durability (it dies to Tier-2
-  sanitization). Pick per matter with the trade in view. See the homoglyph
-  section in `README.md`.
-- **Active canaries are not implemented and should not be added casually.**
-  Embedding a callback in a document sent to a third party raises professional
-  responsibility questions distinct from anything technical in this repo. The
-  `activeCanary.disclosedToRecipient` field exists to force that decision;
-  it is not legal advice and does not substitute for an ethics opinion.
-- **Dual use.** A covert document-marking tool is also a covert tracking tool.
-  The MIT licence places no restriction on downstream use.
+- **Protect organization keys and passphrases.** A stolen HMAC key enables token
+  forgery. A stolen registry passphrase exposes recipient and matter metadata.
+- **Back up anchor checkpoints separately.** Losing the versioned checkpoint or
+  detached OpenTimestamps proof loses the external priority evidence even if the
+  ledger remains intact.
+- **Record tool versions.** For evidentiary use, retain Mattermark version,
+  runtime version, marking options, hashes, and verification output.
+- **Do not mutate evidence.** Work from forensic copies and retain the original
+  recovered artifact before running extraction or normalization.
+- **Active canaries are not implemented and should not be added casually.** A
+  callback in a document sent to a third party raises professional-responsibility
+  questions. `activeCanary.disclosedToRecipient` forces the disclosure decision;
+  it does not replace an ethics opinion.
+- **Dual use.** A covert document-marking tool can also be used as a covert
+  tracking tool. The MIT license does not restrict downstream use.
 
 ## Reporting
 
-Open a private security advisory via the repository's Security tab rather than
-a public issue.
+Open a private security advisory through the repository's Security tab rather
+than a public issue.
