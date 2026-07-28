@@ -65,6 +65,32 @@ npm run ledger-demo  # Slice 3: encrypted, tamper-evident, anchored registry
 npm test             # typecheck + the node:test suite
 ```
 
+## Install
+
+Once published to a registry, Mattermark runs as a plain CLI with no clone and
+no `tsx` at runtime:
+
+```bash
+npx mattermark init --org "Devlin & Cole LLP"   # run without installing
+npm install -g mattermark && mattermark --help  # or install globally
+```
+
+`npm run build` compiles the TypeScript to plain-ESM `dist/` (`tsc -p
+tsconfig.build.json`); the base `tsconfig` stays `noEmit`, so `npm run typecheck`
+and `npm test` are unaffected. The `bin` (`mattermark` → `dist/bin.js`, with a
+`#!/usr/bin/env node` shebang) runs under plain `node`. `prepack` builds before
+pack/publish, so the published tarball ships a fresh `dist/`; `files` whitelists
+`dist` plus LICENSE/README/SECURITY/NOTICE. The library is exposed via `exports`:
+
+```ts
+import { openWorkspace } from 'mattermark';
+```
+
+`dist/` is gitignored and the build runs on `prepack` (not `prepare`), so
+**installing straight from a git ref would not build** — registry install or
+`npx mattermark` is the supported path. In a clone, dev still runs through `tsx`:
+`npm run cli -- <command>`.
+
 ## How attribution works
 
 In plain terms, for readers who do not need the internals:
@@ -136,6 +162,7 @@ Two things to settle before this gets any traction:
 | `src/formats/zip.ts` | Zero-dependency ZIP reader/writer (`node:zlib` + CRC-32) |
 | `src/formats/docx.ts` | DOCX text extract / reinject across all text-bearing parts |
 | `src/formats/pdf.ts` | PDF text extraction for detection + a demo PDF writer |
+| `src/formats/pdf-mark.ts` | Opt-in PDF marking by rebuilding the text layer (WS+ZW, non-durable) |
 | `src/formats/index.ts` | `markDocx()` / `detectDocx()` — the Slice 2 document API |
 | `src/ledger/*.ts` | Slice 3: encrypted, hash-chained, anchored `SecureRegistry` |
 | `src/workspace.ts` | Slice 4: the shared operations layer — vault, `protect` / `identify` / `report` |
@@ -323,13 +350,13 @@ const found = detectDocx(recoveredBuffer, ['WS', 'ZW', 'HG']);
   brief, marks them, and attributes them back — surviving Tier 1–2 and deep
   excerpting, exactly as the plain-text harness measures.
 
-**PDF: detection yes, marking no — and that split is not a shortcut.** A PDF
-cannot be *marked* in place with these codecs: a PDF positions glyphs, so a
+**PDF: detection always; marking only by rebuilding the text layer, opt-in.** A
+PDF cannot be *marked in place* with these codecs: a PDF positions glyphs, so a
 zero-width insertion, a wider space, or a confusable with different metrics needs
 the glyph to exist in the (usually subsetted) embedded font and shifts the
-visible layout. That is a font/layout problem, a separate slice. But a document
-marked as text (or as a DOCX) and then *exported* to PDF keeps its marks in the
-PDF's text layer, so a leaked PDF is still attributable:
+visible layout. That in-place, arbitrary-font/layout problem is still out of
+scope. But a document marked as text (or as a DOCX) and then *exported* to PDF
+keeps its marks in the PDF's text layer, so a leaked PDF is still attributable:
 
 ```ts
 import { detectPdf } from './src/formats/pdf.js';
@@ -344,6 +371,32 @@ full-compression (PDF 1.5+), encryption, and scanned image PDFs with no text
 layer. It is validated against spec-compliant PDFs, not the full wild variety;
 `npm run docx-demo` shows a marked memo carried through a PDF text layer and
 recovered.
+
+**Marking a PDF directly (`src/formats/pdf-mark.ts`, opt-in).** When a
+text-layer PDF is all you have, `markPdf` will mark it — but honestly about how.
+It extracts the text layer, marks it, and **rebuilds a fresh single-page PDF**
+whose text layer is the marked text, using its own font and ToUnicode CMap. The
+text layer round-trips exactly (`extractPdfText(markPdf(...).bytes)` returns the
+marked text; `detectPdf` recovers the token), but the original pagination,
+fonts, images, and glyph positioning are **discarded**. The output is an
+*attributable text-layer artifact, not a pixel-faithful copy* of the source —
+surfaced in `result.warnings`, never silently.
+
+```ts
+import { markPdf, detectPdf } from './src/formats/pdf-mark.js';
+const { bytes, result } = markPdf(pdfBuffer, identity, issuer); // WS+ZW; result.warnings carries the normalized-layer notice
+```
+
+The channel profile is **WS+ZW only**: search-preserving and therefore
+**non-durable** (Tier-1 — survives benign copy-paste, dies to routine
+sanitization). **HG is refused**, not silently dropped — the rebuilt
+non-embedded font has no guaranteed Cyrillic/confusable coverage, so a homoglyph
+would render as a missing-glyph box. For durability, mark the DOCX/text source.
+`markPdf` throws (emitting no PDF) on: non-PDF input; out-of-envelope PDFs
+(encrypted / object-stream / full-compression); no extractable text layer
+(scanned/image PDFs); an HG or LM request; or marked text with more than 255
+distinct characters (the rebuild font's limit). It inherits `extractPdfText`'s
+envelope exactly.
 
 ## Registry: encrypted, tamper-evident, anchored (Slice 3)
 
@@ -371,11 +424,9 @@ const proof = reg.anchor(localAttestationAnchor(orgKeyPair));
   the immutable event log.
 - **Anchoring, honestly** — the chain proves order and integrity *within* the
   ledger. Proving a row is prior to a date *to a skeptic* needs a timestamp from
-  a party they trust. The `Anchor` interface is where OpenTimestamps, Rekor, or
-  an RFC 3161 TSA plug in; the built-in `localAttestationAnchor` signs the Merkle
-  root with the org key (non-repudiable as to the org, but `thirdPartyTime:
-  false` — its timestamp is self-asserted). Swap the anchor to change the trust
-  root; the mechanism is identical.
+  a party they trust. Two anchors ship today (`localAttestationAnchor`,
+  `openTimestampsAnchor`); see ["Proving priority"](#proving-priority-anchoring)
+  below. Swap the anchor to change the trust root; the mechanism is identical.
 
 **On SQLite:** the roadmap named SQLite. A real SQLite backend needs a native
 dependency or `node:sqlite` (Node 22.5+), both of which break the
@@ -383,6 +434,51 @@ zero-dependency + Node-20 stance. The store is a sealed single file today, and
 the interface is narrow enough that a SQLite backend slots in behind it unchanged
 when those constraints relax — what SQLite was wanted for (a durable, single-file,
 encrypted, evidentiary store) is delivered.
+
+### Proving priority (anchoring)
+
+The hash chain proves the ledger's internal **order and integrity** — no row can
+be altered or reordered without detection. It does *not* prove to a skeptic that
+a row existed before a given date: that needs a timestamp from a party the
+skeptic trusts. An **anchor** over the ledger's Merkle root fixes its state to a
+clock, and because the root commits to every event, **every anchor commits to
+every protected copy issued up to that moment**. Two anchors ship:
+
+- **`--local`** (`localAttestationAnchor`) — the vault's Ed25519 key signs the
+  digest. Instant and offline, non-repudiable *as to the firm*, but the time is
+  **self-asserted** (`thirdPartyTime: false`) — it proves nothing about priority
+  to someone who does not take the firm's word for the clock.
+- **`--opentimestamps`** (`openTimestampsAnchor`) — submits the Merkle root to
+  the public OpenTimestamps Bitcoin calendars (`thirdPartyTime: true`). The proof
+  stored is a **real, standard `.ots` `DetachedTimestampFile`**, interoperable
+  with any OpenTimestamps tool.
+
+**Pending is not confirmed.** A fresh OpenTimestamps proof is **pending** — a
+calendar promise, not yet in Bitcoin. Priority becomes provable to a third party
+only after the calendar upgrades the proof and the Bitcoin block confirms
+(minutes to hours). Our `verify()` is **offline and structural**: it confirms the
+proof is well-formed and commits to your digest — it does **not** reach Bitcoin.
+Confirming a Bitcoin attestation needs a block-header source
+(`confirmProofAgainstBitcoin`, with a trust root the caller supplies). Never read
+"well-formed" as "confirmed".
+
+```bash
+mattermark anchor --opentimestamps   # third-party time (needs network); proof is PENDING until Bitcoin confirms
+mattermark anchor --local            # instant, offline, self-asserted time
+mattermark anchor --list             # anchors recorded for this vault
+```
+
+```ts
+import { openTimestampsAnchor, localAttestationAnchor, confirmProofAgainstBitcoin } from './src/ledger/index.js';
+```
+
+Anchor proofs are stored as plaintext `anchors.json` in the vault — they are
+**meant to be shareable**, which is the point of an anchor. `npm run anchor-demo`
+runs the full flow against a hermetic calendar (offline, deterministic); the real
+`--opentimestamps` needs outbound network, but the demo and every test use an
+injected transport. The `AsyncAnchor` interface is ready for a Rekor or RFC 3161
+anchor to slot in behind the same contract later — that is an interface, not a
+shipped anchor.
 
 ## Product surface (Slice 4)
 
@@ -419,10 +515,12 @@ available at init time (`--scheme hmac`).
 init     [--org <name>] [--scheme ed25519|hmac]
 protect  <file> --matter <ref> --recipient <id> [--version <v>] [--out <path>]
          [--delivery email|secure-link|physical|portal|other] [--note <text>]
-         [--by <who>] [--search-safe] [--homoglyph-density <0..1>]
+         [--by <who>] [--search-safe] [--homoglyph-density <0..1>] [--rebuild-pdf]
 identify <file> [--record] [--by <who>] [--source <description>] [--json]
 list     [--matter <ref>] [--json]
 report   <token-or-short-id> [--out <file.md>] [--json]
+anchor   (--opentimestamps | --local) [--json]
+anchor   --list [--json]
 status   [--json]
 ui       [--port <n>] [--no-open]
 ```
@@ -434,9 +532,14 @@ All commands accept `--vault <dir>`.
   transform gauntlet — every composite chain in the taxonomy plus 50% and 20%
   excerpts — and records the measured survival in the registry row. The number
   in the evidence report is what *this* copy survived, not a corpus average.
-  PDF input is refused with guidance: mark the DOCX source instead — a marked
-  DOCX exported to PDF keeps its marks in the PDF text layer, and `identify`
-  reads them back.
+  **PDF input is refused by default** with guidance: mark the DOCX source instead
+  — a marked DOCX exported to PDF keeps its marks in the PDF text layer, and
+  `identify` reads them back. That remains best practice.
+- **`--rebuild-pdf`** opts in to marking a PDF directly, by **rebuilding its text
+  layer** (WS+ZW only). The rebuilt PDF keeps the marked text but **discards the
+  original pagination, fonts, images, and layout**, and the mark is non-durable;
+  it is a text-layer artifact, not a faithful copy. `protect` surfaces the
+  normalized-layer warning. Use it only when a text-layer PDF is all you have.
 - **`--search-safe`** marks with WS+ZW only, no homoglyphs: exact-match search,
   spellcheck, and e-discovery indexing are untouched, and the mark is
   explicitly **non-durable** (it dies to routine platform sanitization). The
@@ -454,8 +557,13 @@ All commands accept `--vault <dir>`.
   investigation event to the hash-chained ledger.
 - **`report`** produces the evidence report (Markdown or JSON): identity,
   original and protected SHA-256 hashes, embedded channels, issue-time survival
-  tests, investigation history, and ledger integrity (chain head, Merkle root),
-  framed for authentication under FRE 901(b)(9).
+  tests, investigation history, ledger integrity (chain head, Merkle root), and
+  any recorded external anchors, framed for authentication under FRE 901(b)(9).
+- **`anchor`** timestamps the ledger's Merkle root. `--local` signs it with the
+  vault key (instant, offline, self-asserted time); `--opentimestamps` submits it
+  to the OpenTimestamps Bitcoin calendars (third-party time, needs network, proof
+  starts **pending**). `--list` shows the anchors on record. See ["Proving
+  priority"](#proving-priority-anchoring).
 
 ### Local web UI
 
@@ -469,16 +577,25 @@ particular: do not port-forward it).
 ## Roadmap
 
 - **Slice 2 (done)** — DOCX extract-mark-reinject across all text-bearing parts,
-  plus PDF *detection* via text extraction (`src/formats/`, `npm run docx-demo`).
-  Remaining, and genuinely hard: PDF *marking*, a glyph-layout problem as above.
+  PDF *detection* via text extraction, and PDF *marking* within the extractor
+  envelope by rebuilding the text layer (`src/formats/`, `npm run docx-demo`).
+  Remaining, and genuinely hard: general *in-place* PDF marking for arbitrary
+  fonts and layout, the glyph-layout problem above — the rebuild is a text-layer
+  artifact, not a faithful copy.
 - **Slice 3 (done)** — encrypted, tamper-evident, anchored `SecureRegistry`
-  (`src/ledger/`, `npm run ledger-demo`). Remaining: an external anchor
-  integration (OpenTimestamps / Rekor) behind the `Anchor` interface, and a
-  SQLite backend once the dependency constraints allow.
+  (`src/ledger/`, `npm run ledger-demo`), now with an external anchor:
+  OpenTimestamps (Bitcoin calendars) behind the `Anchor`/`AsyncAnchor` interface
+  (`npm run anchor-demo`). Remaining: Rekor and RFC 3161 anchors, which slot into
+  the same `AsyncAnchor` contract, and a SQLite backend once the dependency
+  constraints allow.
 - **Slice 4 (done)** — the product surface: a passphrase-sealed workspace
   vault (`src/workspace.ts`), the CLI (`npm run cli`), and the local web UI
   (`npm run ui`). One passphrase seals the org key and the registry;
   protect/identify/report behave identically in both surfaces.
+- **Packaging (done)** — `npm run build` compiles to plain-ESM `dist/`, the
+  `mattermark` bin runs under plain `node` (no `tsx` at runtime), and `prepack`
+  ships a fresh `dist/`, so `npx mattermark` works once published. See
+  ["Install"](#install).
 - **Research** — linguistic layer for Tier-4 resistance. Note the
   paper's own constraint: encoder and decoder must run an *identical* model,
   and their choice of GPT-2 124M was for portability, not quality. This is a

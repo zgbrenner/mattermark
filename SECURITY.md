@@ -111,6 +111,49 @@ reaching the port. It is not multi-user software.
   from a document that was never marked, and the survival table above lists
   exactly which handling strips one.
 
+### Anchoring: what the chain proves vs. what an anchor adds
+
+The ledger's hash chain proves **internal order and integrity** — no past row
+can be altered or reordered without recomputation catching it. It does **not**
+prove to a skeptic that a row existed before a given date. An **anchor** over the
+Merkle root adds a timestamp; because the root commits to every event, an anchor
+commits to every protected copy issued up to that moment. Two anchors ship, and
+they make different claims:
+
+- **`--local` (Ed25519 attestation).** The vault key signs the digest. This is
+  genuine, non-repudiable evidence **as to the firm** — but the time is
+  **self-asserted** (`thirdPartyTime: false`). It proves nothing about priority
+  to an adversary who will not take the firm's word for the clock; the firm could
+  have signed any digest at any time and dated it as it liked.
+- **`--opentimestamps` (Bitcoin calendars).** Replaces the firm's word with
+  Bitcoin's (`thirdPartyTime: true`). But a **fresh proof is pending** — a
+  calendar promise, not yet in a block. **A pending proof proves nothing about
+  priority.** Priority becomes third-party-provable only after the calendar
+  upgrades the proof and the Bitcoin block confirms. Do not present a pending
+  anchor as if it established a date.
+- **`verify()` is structural only.** It confirms a stored proof is well-formed
+  and commits to the claimed digest — it is offline and does **not** reach
+  Bitcoin. Confirming that a Bitcoin attestation is real needs a block-header
+  source you trust (`confirmProofAgainstBitcoin`). Never equate "well-formed"
+  with "confirmed".
+- **`anchors.json` is non-secret by design.** Anchor proofs are stored as
+  plaintext in the vault and are meant to be shareable — that is the point of an
+  anchor. They contain the Merkle root and timestamp material, not recipient or
+  matter data.
+
+### Marking a PDF (`--rebuild-pdf`)
+
+Marking a PDF is **off by default**; `protect` refuses a PDF and points you to
+the DOCX/text source. That refusal stands as best practice. The `--rebuild-pdf`
+opt-in does not mark the PDF in place — it **rebuilds the text layer**, producing
+a **normalized text-layer artifact, not a faithful copy**: the original
+pagination, fonts, images, and glyph positioning are discarded (surfaced in
+`result.warnings`). The mark is **WS+ZW only and therefore non-durable** —
+Tier-1, dies to routine sanitization, exactly as `--search-safe` does — and **HG
+is refused** because the rebuilt non-embedded font has no guaranteed confusable
+coverage. Treat a rebuilt PDF as an attributable text layer, and mark the source
+document when durability or visual fidelity matters.
+
 ## Operational cautions
 
 - **Registry files are evidence.** They contain recipient identities, matter
@@ -122,10 +165,11 @@ reaching the port. It is not multi-user software.
   the workspace vault does this for you — a single file, encrypted at rest with
   AES-256-GCM under a scrypt-derived key, and append-only via a hash chain so an
   edited or reordered row is detectable by recomputation. Keep appending
-  investigation events; never mutate rows in place. Note the honest anchoring
-  limit: the built-in local attestation is non-repudiable as to the org but its
-  timestamp is self-asserted — provable-prior-to-a-skeptic needs an external
-  anchor (OpenTimestamps / Rekor / RFC 3161) behind the `Anchor` interface.
+  investigation events; never mutate rows in place. On anchoring, mind the trust
+  model above: the local attestation is non-repudiable as to the org but its
+  timestamp is self-asserted; `--opentimestamps` gives third-party (Bitcoin) time
+  but a fresh proof is pending until the block confirms. Rekor and RFC 3161 would
+  slot into the same `AsyncAnchor` contract but are not implemented.
 - **Homoglyph marking breaks exact-match search, and it is optional.** Cyrillic
   substitutions replace Latin letters in place: they defeat Ctrl-F, spellcheck,
   and some e-discovery keyword indexing while looking identical on screen. For
