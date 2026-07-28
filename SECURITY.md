@@ -43,12 +43,83 @@ partially restore it — though only partially, since blanket transforms (T08,
 T09, T10) do not care which specific codepoints were chosen. Treat this as a
 known limitation, not a solved problem.
 
+## The product surface (Slice 4)
+
+The workspace vault, the CLI, and the local web UI add new trust boundaries.
+Nothing below changes what the marks themselves survive — the table above
+applies unchanged, and `protect` records issue-time survival per copy so the
+evidence report carries measured numbers, not assumptions.
+
+### The vault and the passphrase
+
+`init` creates a vault directory holding `config.json` (non-secret metadata),
+`org.key` (the 32-byte org key, sealed with AES-256-GCM under a scrypt-derived
+key), and `registry.mmv` (the `SecureRegistry` event log, sealed the same
+way). One passphrase — minimum 8 characters, via `MATTERMARK_PASSPHRASE` or a
+hidden prompt — unlocks both.
+
+- **The passphrase is the root of trust.** Minting tokens, re-verifying
+  recovered ones, and reading the ledger all require it. Anyone who has the
+  passphrase and the vault directory has the whole workspace.
+- **There is no recovery.** No escrow, no reset, no back door. Losing the
+  passphrase loses the ability to attribute every copy ever issued from that
+  vault: the marked copies stay marked, but nothing can resolve or re-verify
+  them. Store the passphrase under the same key-management discipline as an
+  org signing key, and back up the vault directory — it is the evidence.
+- **scrypt slows offline guessing; it does not defeat it.** Anyone who copies
+  the vault can mount an unthrottled offline attack against the passphrase.
+  Eight characters is a floor, not a recommendation — use a real passphrase.
+- The vault contains recipient identities, matter references, and token
+  material (encrypted). It is evidence; keep it out of version control and
+  handle it accordingly.
+
+### The local web UI
+
+`npm run ui` binds to `127.0.0.1` only, and every request must carry a random
+URL token minted at startup. That is the entire authentication model, and it
+addresses exactly one threat: other local processes or pages in your browser
+reaching the port. It is not multi-user software.
+
+- **Do not port-forward, reverse-proxy, tunnel, or rebind it.** There is no
+  TLS, no accounts, no session management, no rate limiting. Exposing the port
+  exposes the unlocked workspace.
+- Anyone on the machine who obtains the URL token has full workspace access
+  for as long as the server runs.
+- Documents dropped into the UI are processed in-process; nothing leaves the
+  machine.
+
+### What a confidence grade does and does not prove
+
+`identify` grades every recovered mark:
+
+- **confirmed** — the full token was cryptographically re-verified against the
+  registry row's identity: the Ed25519 signature checked, or the HMAC
+  recomputed from the org key. The token is re-derived from the row identity
+  rather than trusted from the lookup, so a corrupted or misfiled registry row
+  cannot mis-attribute. This proves the recovered mark is the one this vault
+  minted for that recipient, matter, and version. It does **not** prove who
+  released the document: a confirmed match says whose *copy* surfaced, not
+  whose hands moved it — forwarding, a compromised recipient machine, and
+  shared mailboxes all produce the same confirmed match.
+- **corroborated** — a 12-byte short registry pointer recomputed from the row
+  identity. 64-bit forgery resistance and not self-verifying: corroborating
+  evidence only, never a standalone claim. Short IDs are only ever issued
+  alongside a full-strength frame in another channel.
+- **unrecognized** — a mark was recovered but no registry row resolves it:
+  another organisation's workspace, or a vault that no longer exists.
+- **Absence of a mark proves nothing.** A stripped mark is indistinguishable
+  from a document that was never marked, and the survival table above lists
+  exactly which handling strips one.
+
 ## Operational cautions
 
 - **Registry files are evidence.** They contain recipient identities, matter
-  references, and token material. `.gitignore` excludes them. `src/registry.ts`
-  is a plaintext prototype store — do not deploy it against real matters. Use
-  `SecureRegistry` (`src/ledger/`): a single file, encrypted at rest with
+  references, and token material. `.gitignore` excludes the engine-level
+  registry files, `*.mmv`, and the default `mattermark-vault/` directory; if
+  you relocate the vault with `--vault`, keep it excluded yourself.
+  `src/registry.ts` is a plaintext prototype store — do
+  not deploy it against real matters. Use `SecureRegistry` (`src/ledger/`) —
+  the workspace vault does this for you — a single file, encrypted at rest with
   AES-256-GCM under a scrypt-derived key, and append-only via a hash chain so an
   edited or reordered row is detectable by recomputation. Keep appending
   investigation events; never mutate rows in place. Note the honest anchoring

@@ -2,7 +2,7 @@
 
 [![CI](https://github.com/zgbrenner/mattermark/actions/workflows/ci.yml/badge.svg)](https://github.com/zgbrenner/mattermark/actions/workflows/ci.yml)
 
-**Recipient attribution and work-product fingerprinting. Slice 1: the engine.**
+**Recipient attribution and work-product fingerprinting.**
 
 Local-first work-product fingerprinting. Marks a per-recipient copy of a
 document with a cryptographically derived identifier embedded across
@@ -14,8 +14,50 @@ AI-Driven Malware Using Steganographic Canaries*, arXiv:2603.28655v1 (NYU
 Tandon, 30 Mar 2026), Mode A. Zero runtime dependencies — Node built-in crypto
 only. Runs entirely on-device.
 
+## Sixty seconds, end to end
+
+Every command runs as `npm run cli -- <command>`; alias it if you prefer
+(`alias mattermark='npx tsx src/cli.ts'`).
+
 ```bash
 npm install
+
+# 1. Create a vault. One passphrase seals the org key and the registry.
+npm run cli -- init --org "Devlin & Cole LLP"
+#   Passphrase (min 8 chars): ********
+#   Vault created at ./mattermark-vault (scheme: ed25519)
+#   Losing this passphrase loses the ability to attribute. There is no recovery.
+
+# 2. Mark a per-recipient copy on the way out.
+npm run cli -- protect brief.docx --matter M-2026-014 \
+  --recipient jane.doe@example.com --delivery email
+#   -> brief--jane-doe-example-com.docx
+#   channels WS+ZW+HG · issue-time survival: 6/9 transform tests (Tier 3 lost, as always)
+#   note: homoglyph marking breaks exact-match search on this copy (see SECURITY.md)
+
+# 3. A copy surfaces where it should not.
+npm run cli -- identify leaked.pdf --record --by g.devlin --source "posted to a forum"
+#   CONFIRMED — matter M-2026-014, recipient jane.doe@example.com, v1
+#   (Ed25519 token re-verified against the registry row; investigation recorded)
+
+# 4. Produce the evidence report.
+npm run cli -- report 9b3f2ac48e11d07c55aa61f0 --out evidence.md
+#   -> evidence.md: identity, hashes, issue-time survival, ledger integrity
+```
+
+Prefer a point-and-click UI? `npm run ui` serves a local web UI —
+localhost-only, drag-and-drop protect/identify, the copies table, and evidence
+reports. Nothing ever leaves the machine. See
+["Product surface (Slice 4)"](#product-surface-slice-4).
+
+Read [`SECURITY.md`](SECURITY.md) before deploying this against anything real.
+It states plainly what the marks do and do not survive.
+
+### Development
+
+The engine-level demos and the measurement harness still run directly:
+
+```bash
 npm run demo         # full walkthrough: mint -> mark -> transform -> attribute
 npm run matrix       # survival matrix across the real 16-document corpus/
 npm run docx-demo    # Slice 2: mark a real DOCX/PDF, attribute it back
@@ -23,8 +65,27 @@ npm run ledger-demo  # Slice 3: encrypted, tamper-evident, anchored registry
 npm test             # typecheck + the node:test suite
 ```
 
-Read [`SECURITY.md`](SECURITY.md) before deploying this against anything real.
-It states plainly what the marks do and do not survive.
+## How attribution works
+
+In plain terms, for readers who do not need the internals:
+
+When a document goes out, Mattermark makes a distinct copy for each recipient
+and works an invisible identifier into the text itself — character spacing,
+zero-width characters, look-alike letters — not metadata, so it travels with
+the words, even through copy-paste. Every recipient's copy is unique, and the
+identifier is recorded next to the recipient's name in a sealed, append-only
+ledger that never leaves your machine.
+
+If a copy later surfaces where it should not, you feed it back in. Mattermark
+reads the surviving identifier out of the text and resolves it against the
+ledger: this was the copy issued to this recipient, for this matter, on this
+date — with an evidence report you can hand to someone else.
+
+What it does not do: survive deliberate removal. Someone who suspects a mark
+and strips invisible characters and look-alike letters removes it entirely,
+and a full rewrite or LLM paraphrase defeats it too. The marks survive routine
+handling, not a determined adversary — [`SECURITY.md`](SECURITY.md) states
+exactly what was measured.
 
 ## What this is not
 
@@ -77,6 +138,9 @@ Two things to settle before this gets any traction:
 | `src/formats/pdf.ts` | PDF text extraction for detection + a demo PDF writer |
 | `src/formats/index.ts` | `markDocx()` / `detectDocx()` — the Slice 2 document API |
 | `src/ledger/*.ts` | Slice 3: encrypted, hash-chained, anchored `SecureRegistry` |
+| `src/workspace.ts` | Slice 4: the shared operations layer — vault, `protect` / `identify` / `report` |
+| `src/cli.ts` | Slice 4: the CLI (`npm run cli`) |
+| `src/ui/` | Slice 4: local web UI (`npm run ui`) — localhost-only, zero-dependency |
 | `corpus/` | 16 synthetic legal documents, 200 → 55k chars ([corpus/README.md](corpus/README.md)) |
 
 ## Three deliberate deviations from the paper
@@ -320,6 +384,88 @@ the interface is narrow enough that a SQLite backend slots in behind it unchange
 when those constraints relax — what SQLite was wanted for (a durable, single-file,
 encrypted, evidentiary store) is delivered.
 
+## Product surface (Slice 4)
+
+`src/workspace.ts` is the shared operations layer; the CLI (`src/cli.ts`) and
+the local web UI (`src/ui/`) are thin surfaces over it, so both behave
+identically.
+
+### The vault
+
+`init` creates a vault directory — default `./mattermark-vault`, overridable
+with `--vault <dir>` or the `MATTERMARK_VAULT` environment variable — holding
+three files:
+
+| File | Contents |
+|---|---|
+| `config.json` | Non-secret metadata: version, org name, token scheme |
+| `org.key` | The 32-byte org key, sealed with AES-256-GCM under a scrypt-derived key |
+| `registry.mmv` | The `SecureRegistry`: encrypted, append-only, hash-chained event log with a Merkle root |
+
+One passphrase (minimum 8 characters) seals both the org key and the registry:
+one secret to manage, one prompt to answer. Supply it via the
+`MATTERMARK_PASSPHRASE` environment variable or the hidden prompt.
+
+**Losing the passphrase loses the ability to attribute. There is no recovery
+path — no escrow, no reset.** Every copy ever issued from that vault becomes
+unresolvable. Treat the passphrase like the org's signing key, because it is.
+
+The default token scheme is `ed25519` (self-verifying tokens); `hmac` is
+available at init time (`--scheme hmac`).
+
+### CLI
+
+```
+init     [--org <name>] [--scheme ed25519|hmac]
+protect  <file> --matter <ref> --recipient <id> [--version <v>] [--out <path>]
+         [--delivery email|secure-link|physical|portal|other] [--note <text>]
+         [--by <who>] [--search-safe] [--homoglyph-density <0..1>]
+identify <file> [--record] [--by <who>] [--source <description>] [--json]
+list     [--matter <ref>] [--json]
+report   <token-or-short-id> [--out <file.md>] [--json]
+status   [--json]
+ui       [--port <n>] [--no-open]
+```
+
+All commands accept `--vault <dir>`.
+
+- **`protect`** takes TXT or DOCX and writes a marked copy (suggested name
+  `doc--recipient-slug.ext`). At issue time it runs the marked copy through the
+  transform gauntlet — every composite chain in the taxonomy plus 50% and 20%
+  excerpts — and records the measured survival in the registry row. The number
+  in the evidence report is what *this* copy survived, not a corpus average.
+  PDF input is refused with guidance: mark the DOCX source instead — a marked
+  DOCX exported to PDF keeps its marks in the PDF text layer, and `identify`
+  reads them back.
+- **`--search-safe`** marks with WS+ZW only, no homoglyphs: exact-match search,
+  spellcheck, and e-discovery indexing are untouched, and the mark is
+  explicitly **non-durable** (it dies to routine platform sanitization). The
+  default mode includes HG and surfaces the search-impact disclosure at protect
+  time. `--homoglyph-density` caps the substitution rate in between.
+- **`identify`** takes TXT, DOCX, or PDF and grades any match:
+  - `confirmed` — the full token was cryptographically re-verified against the
+    registry row's identity (Ed25519 signature or HMAC recompute);
+  - `corroborated` — a 12-byte short registry pointer recomputed from the row
+    identity (64-bit; corroborating evidence, not a standalone claim);
+  - `unrecognized` — a mark was recovered but no registry row resolves it.
+
+  Tokens are re-derived from the row identity rather than trusting the lookup,
+  so a corrupted or misfiled row cannot mis-attribute. `--record` appends an
+  investigation event to the hash-chained ledger.
+- **`report`** produces the evidence report (Markdown or JSON): identity,
+  original and protected SHA-256 hashes, embedded channels, issue-time survival
+  tests, investigation history, and ledger integrity (chain head, Merkle root),
+  framed for authentication under FRE 901(b)(9).
+
+### Local web UI
+
+`npm run ui` starts a zero-dependency server bound to `127.0.0.1` only; a
+random URL token minted at startup is required on every request. Drag-and-drop
+protect and identify, the copies table, and evidence reports. Nothing ever
+leaves the machine. It is single-user by design — see the UI threat model in
+[`SECURITY.md`](SECURITY.md) before doing anything clever with it (in
+particular: do not port-forward it).
+
 ## Roadmap
 
 - **Slice 2 (done)** — DOCX extract-mark-reinject across all text-bearing parts,
@@ -329,7 +475,11 @@ encrypted, evidentiary store) is delivered.
   (`src/ledger/`, `npm run ledger-demo`). Remaining: an external anchor
   integration (OpenTimestamps / Rekor) behind the `Anchor` interface, and a
   SQLite backend once the dependency constraints allow.
-- **Slice 4 (research)** — linguistic layer for Tier-4 resistance. Note the
+- **Slice 4 (done)** — the product surface: a passphrase-sealed workspace
+  vault (`src/workspace.ts`), the CLI (`npm run cli`), and the local web UI
+  (`npm run ui`). One passphrase seals the org key and the registry;
+  protect/identify/report behave identically in both surfaces.
+- **Research** — linguistic layer for Tier-4 resistance. Note the
   paper's own constraint: encoder and decoder must run an *identical* model,
   and their choice of GPT-2 124M was for portability, not quality. This is a
   research track, not a feature.

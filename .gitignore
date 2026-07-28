@@ -9,6 +9,8 @@ dist/
 *.registry.json
 registry.json
 *.reg
+*.mmv
+mattermark-vault/
 /data/
 
 # Key material. Obvious, but this repo mints HMAC and Ed25519 keys.
