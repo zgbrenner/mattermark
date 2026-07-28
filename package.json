@@ -10,6 +10,8 @@
   },
   "engines": { "node": ">=20" },
   "scripts": {
+    "cli": "tsx src/cli.ts",
+    "ui": "tsx src/cli.ts ui",
     "demo": "tsx src/demo.ts",
     "matrix": "tsx src/matrix.ts",
     "docx-demo": "tsx src/formats/demo.ts",
