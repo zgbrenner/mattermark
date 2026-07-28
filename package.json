@@ -9,6 +9,17 @@
     "url": "git+https://github.com/zgbrenner/mattermark.git"
   },
   "engines": { "node": ">=20" },
+  "bin": { "mattermark": "dist/bin.js" },
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": ["dist", "LICENSE", "README.md", "SECURITY.md", "NOTICE.md"],
   "scripts": {
     "cli": "tsx src/cli.ts",
     "ui": "tsx src/cli.ts ui",
@@ -16,7 +27,10 @@
     "matrix": "tsx src/matrix.ts",
     "docx-demo": "tsx src/formats/demo.ts",
     "ledger-demo": "tsx src/ledger/demo.ts",
+    "anchor-demo": "tsx src/ledger/anchor-demo.ts",
     "typecheck": "tsc --noEmit",
+    "build": "tsc -p tsconfig.build.json",
+    "prepack": "npm run build",
     "test": "npm run typecheck && node --import tsx --test test/*.test.ts"
   },
   "devDependencies": {

@@ -27,7 +27,7 @@ import {
   verifyChain,
 } from './hashchain.js';
 import { seal, unseal } from './vault.js';
-import type { Anchor, AnchorProof } from './anchor.js';
+import type { Anchor, AnchorProof, AsyncAnchor } from './anchor.js';
 
 interface CopyPayload {
   copy: ProtectedCopy;
@@ -130,7 +130,7 @@ export class SecureRegistry {
     return this.events.length;
   }
 
-  /** Anchor the current Merkle root through the given anchor. */
+  /** Anchor the current Merkle root through the given (synchronous) anchor. */
   anchor(anchor: Anchor, at = new Date().toISOString()): AnchorProof {
     return anchor.commit(this.merkleRoot(), at);
   }
@@ -138,6 +138,20 @@ export class SecureRegistry {
   /** An anchor proof is valid iff it verifies AND commits to the current root. */
   verifyAnchor(anchor: Anchor, proof: AnchorProof): boolean {
     return proof.digest === this.merkleRoot() && anchor.verify(proof);
+  }
+
+  /**
+   * Anchor the current Merkle root through a network-backed anchor (an
+   * OpenTimestamps calendar, a transparency log, an RFC 3161 TSA). Same
+   * semantics as anchor(), but awaits the third party.
+   */
+  anchorAsync(anchor: AsyncAnchor, at = new Date().toISOString()): Promise<AnchorProof> {
+    return anchor.commit(this.merkleRoot(), at);
+  }
+
+  /** A network anchor proof is valid iff it verifies AND commits to the current root. */
+  async verifyAnchorAsync(anchor: AsyncAnchor, proof: AnchorProof): Promise<boolean> {
+    return proof.digest === this.merkleRoot() && (await anchor.verify(proof));
   }
 
   /* ------------------------------ internals ------------------------------ */
@@ -178,5 +192,7 @@ export class SecureRegistry {
   }
 }
 
-export type { Anchor, AnchorProof } from './anchor.js';
-export { localAttestationAnchor } from './anchor.js';
+export type { Anchor, AnchorProof, AsyncAnchor } from './anchor.js';
+export { localAttestationAnchor, isAsyncAnchor } from './anchor.js';
+export { openTimestampsAnchor, confirmProofAgainstBitcoin } from './opentimestamps.js';
+export type { HttpTransport, HttpRequest, HttpResponse } from './opentimestamps.js';
