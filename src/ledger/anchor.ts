@@ -40,6 +40,30 @@ export interface Anchor {
 }
 
 /**
+ * The async counterpart for anchors that must reach a network service (an
+ * OpenTimestamps calendar, a Rekor transparency log, an RFC 3161 TSA). Same
+ * contract, same proof shape — only the timing differs, because a third party's
+ * timestamp cannot be produced offline. `upgrade` is optional: some anchors
+ * (OpenTimestamps) issue a pending promise first and a stronger proof later.
+ */
+export interface AsyncAnchor {
+  readonly name: string;
+  readonly thirdPartyTime: boolean;
+  /** discriminates AsyncAnchor from the synchronous Anchor at runtime */
+  readonly async: true;
+  commit(digest: string, at: string): Promise<AnchorProof>;
+  verify(proof: AnchorProof): Promise<boolean>;
+  /** Fetch a stronger proof if one is now available; returns the input unchanged otherwise. */
+  upgrade?(proof: AnchorProof): Promise<AnchorProof>;
+  /** One-line human summary of how strong a given proof currently is. */
+  describe?(proof: AnchorProof): string;
+}
+
+export function isAsyncAnchor(a: Anchor | AsyncAnchor): a is AsyncAnchor {
+  return (a as Partial<AsyncAnchor>).async === true;
+}
+
+/**
  * A local, offline anchor: the organisation signs the digest and claimed time
  * with its Ed25519 key. Non-repudiable as to the org, but the time is
  * self-asserted (thirdPartyTime = false). Use an external anchor when priority

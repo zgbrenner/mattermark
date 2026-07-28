@@ -166,7 +166,7 @@ test('protecting a PDF fails with 400 and an actionable message', async () => {
     });
     assert.equal(res.status, 400);
     const body = (await res.json()) as { error: string };
-    assert.match(body.error, /Mark the DOCX source/);
+    assert.match(body.error, /mark the DOCX\/text source|rebuildPdf/i);
   });
 });
 

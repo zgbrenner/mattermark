@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, createHash } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { rmSync } from 'node:fs';
@@ -15,6 +15,10 @@ import {
 } from '../src/workspace.js';
 import { textToDocx } from '../src/formats/index.js';
 import { buildTextPdf } from '../src/formats/pdf.js';
+import { deriveEd25519 } from '../src/crypto.js';
+import { localAttestationAnchor } from '../src/ledger/anchor.js';
+import { openTimestampsAnchor } from '../src/ledger/opentimestamps.js';
+import { serializeTimestamp } from '../src/ledger/ots.js';
 import { SAMPLE } from './helpers.js';
 
 const PASS = 'correct horse battery staple';
@@ -126,12 +130,32 @@ test('search-safe mode embeds no homoglyphs and reports non-durable', () => {
   });
 });
 
-test('protect refuses PDFs with an actionable message', () => {
+test('protect refuses PDFs by default with an actionable message', () => {
   withWorkspace((ws) => {
     assert.throws(
-      () => ws.protect({ name: 'x.pdf', bytes: buildTextPdf('hello') }, { matter: 'M', recipient: 'r' }),
-      /Mark the DOCX source/,
+      () => ws.protect({ name: 'x.pdf', bytes: buildTextPdf(SAMPLE) }, { matter: 'M', recipient: 'r@x.com' }),
+      /pass rebuildPdf/,
     );
+  });
+});
+
+test('protect --rebuildPdf marks a PDF text layer and it attributes back', () => {
+  withWorkspace((ws) => {
+    const out = ws.protect(
+      { name: 'brief.pdf', bytes: buildTextPdf(SAMPLE) },
+      { matter: 'M-PDF', recipient: 'dana@x.com', rebuildPdf: true },
+    );
+    assert.equal(out.format, 'pdf');
+    assert.equal(out.suggestedName, 'brief--dana-x-com.pdf');
+    assert.equal(sniffFormat(out.bytes), 'pdf');
+    // WS+ZW only, non-durable, with the normalized-layer disclosure
+    assert.equal(out.result.durable, false);
+    assert.ok(out.result.warnings.some((w) => w.includes('NORMALIZED TEXT-LAYER PDF')));
+    assert.ok(!out.result.layers.some((l) => l.codec === 'HG' && l.embedded));
+
+    const found = ws.identify({ name: 'leak.pdf', bytes: out.bytes });
+    assert.equal(found.format, 'pdf');
+    assert.equal(found.attribution?.copy?.identity.recipientId, 'dana@x.com');
   });
 });
 
@@ -237,4 +261,58 @@ test('status and report expose a verified ledger and render to markdown', () => 
     assert.equal(ws.report(out.copy.shortIdHex).copy.tokenHex, out.copy.tokenHex);
     assert.throws(() => ws.report('deadbeef'), /no protected copy/);
   });
+});
+
+test('anchorLedger with the local attestation records a verifiable, self-asserted anchor', async () => {
+  const dir = tmpDir();
+  try {
+    const ws = initWorkspace(dir, PASS);
+    ws.protect({ name: 'm.txt', bytes: Buffer.from(SAMPLE, 'utf8') }, { matter: 'M-1', recipient: 'a@x.com' });
+    const kp = deriveEd25519(randomBytes(32));
+    const anchor = localAttestationAnchor(kp);
+
+    const stored = await ws.anchorLedger(anchor);
+    assert.equal(stored.proof.digest, stored.merkleRoot);
+    assert.equal(stored.thirdPartyTime, false);
+    assert.ok(await ws.verifyStoredAnchor(anchor, stored));
+
+    // persists across reopen and shows up in status + report
+    const reopened = openWorkspace(dir, PASS);
+    assert.equal(reopened.status().anchors, 1);
+    assert.equal(reopened.listAnchors()[0].proof.digest, stored.merkleRoot);
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('anchorLedger with OpenTimestamps stores a pending, third-party-time proof', async () => {
+  const dir = tmpDir();
+  try {
+    const ws = initWorkspace(dir, PASS);
+    ws.protect({ name: 'm.txt', bytes: Buffer.from(SAMPLE, 'utf8') }, { matter: 'M-1', recipient: 'a@x.com' });
+
+    // hermetic calendar: hashes the digest and returns a pending attestation
+    const transport = async (req: { method: string; url: string; body?: Buffer }) => {
+      if (req.method === 'POST' && req.url.endsWith('/digest')) {
+        const uri = req.url.replace(/\/digest$/, '');
+        const hashed = createHash('sha256').update(req.body!).digest();
+        const ts = { msg: req.body!, attestations: [], ops: [{ op: 0x08, next: { msg: hashed, attestations: [{ kind: 'pending' as const, uri }], ops: [] } }] };
+        return { status: 200, body: serializeTimestamp(ts) };
+      }
+      return { status: 404, body: Buffer.alloc(0) };
+    };
+    const anchor = openTimestampsAnchor({ calendars: ['https://cal.test'], transport });
+
+    const stored = await ws.anchorLedger(anchor);
+    assert.equal(stored.proof.anchor, 'opentimestamps');
+    assert.equal(stored.thirdPartyTime, true);
+    assert.match(stored.describe ?? '', /pending/);
+    assert.ok(await ws.verifyStoredAnchor(anchor, stored));
+
+    const md = renderReportMarkdown(ws.report(ws.list()[0].tokenHex));
+    assert.ok(md.includes('opentimestamps'));
+    assert.ok(md.includes('External anchors'));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
 });

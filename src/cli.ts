@@ -32,6 +32,7 @@ import {
 } from './workspace.js';
 import type { LayerReport } from './orchestrator.js';
 import type { DeliveryMethod, ProtectedCopy } from './registry.js';
+import { openTimestampsAnchor } from './ledger/opentimestamps.js';
 
 /* -------------------------------- plumbing -------------------------------- */
 
@@ -184,7 +185,7 @@ async function openVault(dir: string): Promise<Workspace> {
 /* -------------------------------- formatting ------------------------------ */
 
 function row(label: string, value: string): string {
-  return `  ${label.padEnd(15)}${value}`;
+  return `  ${label.padEnd(17)}${value}`;
 }
 
 /** Word-wrap prose to a fixed width with a two-space indent. */
@@ -289,6 +290,7 @@ async function cmdProtect(args: string[]): Promise<void> {
     by: { type: 'string' },
     'search-safe': { type: 'boolean' },
     'homoglyph-density': { type: 'string' },
+    'rebuild-pdf': { type: 'boolean' },
     vault: { type: 'string' },
   });
   const file = onePositional(positionals, 'protect', '<file>');
@@ -325,6 +327,7 @@ async function cmdProtect(args: string[]): Promise<void> {
         deliveryNote: values.note as string | undefined,
         searchSafe: values['search-safe'] === true,
         maxHomoglyphDensity: density,
+        rebuildPdf: values['rebuild-pdf'] === true,
       },
     );
   } catch (err) {
@@ -550,6 +553,88 @@ async function cmdStatus(args: string[]): Promise<void> {
   console.log(row('Chain verified', st.chainOk ? green('yes') : red('NO — do not rely on this ledger')));
   console.log(row('Chain head', st.head));
   console.log(row('Merkle root', st.merkleRoot));
+  console.log(row('Anchors', String(st.anchors)));
+}
+
+async function cmdAnchor(args: string[]): Promise<void> {
+  const { values, positionals } = parseOrUsage(args, {
+    opentimestamps: { type: 'boolean' },
+    ots: { type: 'boolean' },
+    local: { type: 'boolean' },
+    list: { type: 'boolean' },
+    json: { type: 'boolean' },
+    vault: { type: 'string' },
+  });
+  noPositionals(positionals, 'anchor');
+  const ws = await openVault(vaultDirOf(values));
+
+  if (values.list === true) {
+    const anchors = ws.listAnchors();
+    if (values.json === true) {
+      console.log(JSON.stringify(anchors, null, 2));
+      return;
+    }
+    if (anchors.length === 0) {
+      console.log('No anchors recorded yet. Run `mattermark anchor --opentimestamps` to timestamp the ledger.');
+      return;
+    }
+    console.log(
+      table(
+        ['RECORDED', 'ANCHOR', 'THIRD-PARTY TIME', 'STATUS'],
+        anchors.map((a) => [
+          a.recordedAt.slice(0, 19).replace('T', ' '),
+          a.proof.anchor,
+          a.thirdPartyTime ? 'yes' : 'no',
+          a.describe ?? '—',
+        ]),
+      ),
+    );
+    return;
+  }
+
+  const useOts = values.opentimestamps === true || values.ots === true;
+  const useLocal = values.local === true;
+  if (useOts === useLocal) {
+    throw new UsageError('choose exactly one anchor: --opentimestamps (third-party time) or --local (self-asserted)');
+  }
+
+  const anchor = useOts ? openTimestampsAnchor() : ws.localAnchor();
+
+  let stored;
+  try {
+    stored = await ws.anchorLedger(anchor);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    if (useOts) {
+      throw new CliError(
+        `Could not reach an OpenTimestamps calendar: ${msg}. Check the machine's network access and try again; ` +
+          'the ledger is unchanged.',
+      );
+    }
+    throw asFriendly(err);
+  }
+
+  if (values.json === true) {
+    console.log(JSON.stringify(stored, null, 2));
+    return;
+  }
+  console.log(`Anchored the ledger Merkle root through ${bold(stored.proof.anchor)}.`);
+  console.log('');
+  console.log(row('Merkle root', stored.merkleRoot));
+  console.log(row('Recorded', stored.recordedAt));
+  console.log(row('Third-party time', stored.thirdPartyTime ? green('yes') : yellow('no (self-asserted)')));
+  if (stored.describe) console.log(row('Status', stored.describe));
+  if (useOts) {
+    console.log('');
+    console.log(
+      wrap(
+        'This is a PENDING OpenTimestamps proof — a calendar promise, not yet in Bitcoin. ' +
+          'Re-run `mattermark anchor --opentimestamps` later, or upgrade the stored proof with any ' +
+          'OpenTimestamps tool, once the aggregation block confirms (usually within a few hours). ' +
+          'Only then is priority provable to a third party.',
+      ),
+    );
+  }
 }
 
 /** Contract of src/ui/server.ts, which is optional at runtime. */
@@ -605,7 +690,7 @@ async function cmdUi(args: string[]): Promise<void> {
 
 const USAGE = `Usage: mattermark <command> [options]
 
-Commands: init, protect, identify, list, report, status, ui, help
+Commands: init, protect, identify, list, report, anchor, status, ui, help
 Global:   --vault <dir> (or MATTERMARK_VAULT); MATTERMARK_PASSPHRASE skips the prompt
 
 Run \`mattermark help\` for a plain-English overview, or
@@ -627,6 +712,7 @@ Commands:
   identify  Identify who a leaked document was issued to
   list      See every protected copy on record
   report    Produce an evidence report for one protected copy
+  anchor    Timestamp the ledger so its records provably predate a dispute
   status    Check the vault and the integrity of its ledger
   ui        Open the point-and-click web interface
   help      Show help for one command, e.g. \`mattermark help protect\`
@@ -687,6 +773,11 @@ Options:
                            (a deliberate, disclosed trade-off)
   --homoglyph-density <d>  Cap the confusable-character substitution rate,
                            0 to 1 (lower = more searchable, less resilient)
+  --rebuild-pdf            Allow marking a PDF by REBUILDING its text layer.
+                           Off by default: the rebuilt PDF keeps the text but
+                           discards the original layout, fonts, and images, and
+                           the mark is non-durable. Prefer marking the DOCX/text
+                           source and exporting to PDF.
 
 Examples:
   mattermark protect brief.docx --matter M-2026-0141 --recipient jdoe@opposing.com --delivery email
@@ -736,13 +827,37 @@ Options:
 Example:
   mattermark report 9b3f2ac48e11d07c55aa61f0 --out evidence.md`,
 
+  anchor: `Timestamp the ledger so its records provably predate a dispute.
+
+Usage: mattermark anchor (--opentimestamps | --local) [--json]
+       mattermark anchor --list [--json]
+
+The ledger's hash chain proves its records are in order and unaltered, but not
+that they existed before a given date. An anchor fixes the ledger's current
+state to a clock:
+
+  --opentimestamps  Submit to the OpenTimestamps calendars, which commit your
+                    ledger into Bitcoin. Priority becomes provable to anyone who
+                    trusts Bitcoin. Needs network access; the fresh proof is
+                    PENDING until the Bitcoin block confirms (usually hours).
+  --local           Sign with the vault's own key. Instant and offline, but the
+                    time is your own word (self-asserted), not a third party's.
+  --list            Show the anchors already recorded for this vault.
+
+Every anchor commits to every protected copy issued up to that moment.
+
+Example:
+  mattermark anchor --opentimestamps
+  mattermark anchor --list`,
+
   status: `Check the vault and the integrity of its ledger.
 
 Usage: mattermark status [--json]
 
 Shows the organization, scheme, number of protected copies and ledger
-events, and whether the hash chain verifies. "Chain verified: NO" means the
-ledger was altered outside this tool — do not rely on it.`,
+events, whether the hash chain verifies, and how many anchors are recorded.
+"Chain verified: NO" means the ledger was altered outside this tool — do not
+rely on it.`,
 
   ui: `Open the point-and-click web interface.
 
@@ -789,6 +904,7 @@ async function main(argv: string[]): Promise<number> {
       case 'identify': await cmdIdentify(rest); return 0;
       case 'list': await cmdList(rest); return 0;
       case 'report': await cmdReport(rest); return 0;
+      case 'anchor': await cmdAnchor(rest); return 0;
       case 'status': await cmdStatus(rest); return 0;
       case 'ui': await cmdUi(rest); return 0;
       default: throw new UsageError(`Unknown command: ${cmd}`);

@@ -45,14 +45,18 @@ import {
   DeliveryMethod,
 } from './registry.js';
 import { SecureRegistry } from './ledger/index.js';
+import type { Anchor, AnchorProof, AsyncAnchor } from './ledger/anchor.js';
+import { isAsyncAnchor, localAttestationAnchor } from './ledger/anchor.js';
 import { seal, unseal } from './ledger/vault.js';
 import { markDocx, readDocxText, MarkDocxResult } from './formats/index.js';
 import { extractPdfText } from './formats/pdf.js';
+import { markPdf } from './formats/pdf-mark.js';
 
 export const WORKSPACE_VERSION = 1;
 export const CONFIG_FILE = 'config.json';
 export const ORG_KEY_FILE = 'org.key';
 export const REGISTRY_FILE = 'registry.mmv';
+export const ANCHORS_FILE = 'anchors.json';
 
 export type SchemeName = 'ed25519' | 'hmac';
 
@@ -102,6 +106,16 @@ export interface ProtectOptions {
   searchSafe?: boolean;
   /** Cap on homoglyph substitution density in [0,1]; ignored in searchSafe mode. */
   maxHomoglyphDensity?: number;
+  /**
+   * Opt in to marking a PDF by REBUILDING its text layer. Off by default,
+   * because the rebuilt PDF is a normalized text-layer artifact — the original
+   * pagination, fonts, images, and glyph positioning are discarded. The mark is
+   * WS+ZW only (search-preserving, non-durable); homoglyphs are refused because
+   * the rebuilt font has no guaranteed confusable coverage. Best practice
+   * remains: mark the DOCX/text source and export to PDF. Only use this when a
+   * text-layer PDF is all you have and you accept the reconstruction.
+   */
+  rebuildPdf?: boolean;
 }
 
 export interface ProtectOutcome {
@@ -109,7 +123,7 @@ export interface ProtectOutcome {
   bytes: Buffer;
   /** suggested output filename, e.g. `brief--opposing-counsel.docx` */
   suggestedName: string;
-  format: Extract<DocFormat, 'docx' | 'text'>;
+  format: DocFormat;
   result: MarkResult;
   /** the evidence row as recorded in the sealed registry */
   copy: ProtectedCopy;
@@ -154,6 +168,19 @@ export interface WorkspaceStatus {
   chainOk: boolean;
   head: string;
   merkleRoot: string;
+  anchors: number;
+}
+
+export interface StoredAnchor {
+  proof: AnchorProof;
+  /** the Merkle root this proof commits to (the ledger state when anchored) */
+  merkleRoot: string;
+  /** number of ledger events at anchoring time */
+  events: number;
+  recordedAt: string;
+  thirdPartyTime: boolean;
+  /** anchor's own human summary of proof strength at record time, if any */
+  describe?: string;
 }
 
 export function initWorkspace(
@@ -214,11 +241,14 @@ export class Workspace {
 
   protect(input: { name: string; bytes: Buffer }, opts: ProtectOptions): ProtectOutcome {
     const format = sniffFormat(input.bytes);
-    if (format === 'pdf') {
+    if (format === 'pdf' && !opts.rebuildPdf) {
       throw new Error(
-        'PDF marking is not supported: faithful reinjection is a glyph-layout problem ' +
-          '(see README). Mark the DOCX source instead — a marked DOCX exported to PDF ' +
-          'keeps its marks in the PDF text layer, and identify reads them back.',
+        'PDF marking is off by default: marking a PDF requires REBUILDING its text ' +
+          'layer, which discards the original pagination, fonts, images, and layout. ' +
+          'Best practice is to mark the DOCX/text source and export to PDF — a marked ' +
+          'DOCX keeps its marks in the PDF text layer, and identify reads them back. ' +
+          'If a text-layer PDF is all you have and you accept a normalized text-layer ' +
+          'artifact, pass rebuildPdf to proceed (WS+ZW only, non-durable).',
       );
     }
     if (!opts.matter.trim() || !opts.recipient.trim()) {
@@ -233,7 +263,14 @@ export class Workspace {
     let bytes: Buffer;
     let result: MarkResult;
     let originalText: string;
-    if (format === 'docx') {
+    if (format === 'pdf') {
+      // Opt-in text-layer rebuild. markPdf forces WS+ZW and surfaces the
+      // normalized-artifact warning; the source hash is over the original bytes.
+      originalText = extractPdfText(input.bytes);
+      const marked = markPdf(input.bytes, identity, this.issuer, { codecs: ['WS', 'ZW'] });
+      bytes = marked.bytes;
+      result = marked.result;
+    } else if (format === 'docx') {
       originalText = readDocxText(input.bytes);
       const marked: MarkDocxResult = markDocx(input.bytes, identity, this.issuer, markOpts);
       bytes = marked.bytes;
@@ -254,7 +291,7 @@ export class Workspace {
       shortIdHex: result.shortIdHex,
       scheme: result.scheme,
       identity,
-      originalHash: sha256Hex(format === 'docx' ? input.bytes : Buffer.from(originalText, 'utf8')),
+      originalHash: sha256Hex(format === 'text' ? Buffer.from(originalText, 'utf8') : input.bytes),
       protectedHash: sha256Hex(bytes),
       generatedBy: opts.generatedBy ?? 'unknown',
       generatedAt: identity.issuedAt,
@@ -267,7 +304,7 @@ export class Workspace {
     this.registry.add(copy);
 
     const stem = basename(input.name, extname(input.name)) || 'document';
-    const ext = format === 'docx' ? '.docx' : extname(input.name) || '.txt';
+    const ext = format === 'docx' ? '.docx' : format === 'pdf' ? '.pdf' : extname(input.name) || '.txt';
     return {
       bytes,
       suggestedName: `${stem}--${slug(opts.recipient)}${ext}`,
@@ -406,7 +443,63 @@ export class Workspace {
       chainOk: this.registry.verify(),
       head: this.registry.head(),
       merkleRoot: this.registry.merkleRoot(),
+      anchors: this.listAnchors().length,
     };
+  }
+
+  /* ------------------------------- anchoring ----------------------------- */
+
+  /**
+   * Anchor the ledger's current Merkle root through an anchor and persist the
+   * proof. A synchronous anchor (the local Ed25519 attestation) resolves
+   * immediately; a network anchor (OpenTimestamps) awaits the third party.
+   * Storing the proof is what lets you later prove the ledger — and therefore
+   * every protected copy committed before this point — predates a dispute.
+   */
+  async anchorLedger(anchor: Anchor | AsyncAnchor, at = new Date().toISOString()): Promise<StoredAnchor> {
+    const root = this.registry.merkleRoot();
+    const proof = isAsyncAnchor(anchor)
+      ? await this.registry.anchorAsync(anchor, at)
+      : this.registry.anchor(anchor, at);
+    const stored: StoredAnchor = {
+      proof,
+      merkleRoot: root,
+      events: this.registry.eventCount(),
+      recordedAt: at,
+      thirdPartyTime: anchor.thirdPartyTime,
+      describe: isAsyncAnchor(anchor) && anchor.describe ? anchor.describe(proof) : undefined,
+    };
+    const all = this.listAnchors();
+    all.push(stored);
+    writeFileSync(join(this.dir, ANCHORS_FILE), JSON.stringify(all, null, 2) + '\n', 'utf8');
+    return stored;
+  }
+
+  /**
+   * The vault's own local attestation anchor: the org's Ed25519 key over the
+   * digest. Non-repudiable as to the org, but self-asserted time. Use an
+   * OpenTimestamps anchor when priority must be provable to a third party.
+   */
+  localAnchor(): Anchor {
+    return localAttestationAnchor(deriveEd25519(this.orgKey));
+  }
+
+  /** Every anchor proof recorded for this vault, oldest first. */
+  listAnchors(): StoredAnchor[] {
+    const p = join(this.dir, ANCHORS_FILE);
+    if (!existsSync(p)) return [];
+    return JSON.parse(readFileSync(p, 'utf8')) as StoredAnchor[];
+  }
+
+  /**
+   * Re-verify a stored anchor proof: it must be well-formed for its anchor AND
+   * still commit to the digest it claims. Note a proof commits to the root as it
+   * was WHEN anchored; if the ledger has grown since, that is expected and the
+   * proof still stands for the earlier state.
+   */
+  async verifyStoredAnchor(anchor: Anchor | AsyncAnchor, stored: StoredAnchor): Promise<boolean> {
+    if (stored.proof.digest !== stored.merkleRoot) return false;
+    return anchor.verify(stored.proof); // boolean or Promise<boolean>; this method awaits either
   }
 
   /* ------------------------------- report -------------------------------- */
@@ -425,6 +518,7 @@ export class Workspace {
         merkleRoot: this.registry.merkleRoot(),
         events: this.registry.eventCount(),
       },
+      anchors: this.listAnchors(),
     };
   }
 }
@@ -434,6 +528,7 @@ export interface EvidenceReport {
   workspace: { orgName: string; scheme: SchemeName };
   copy: ProtectedCopy;
   ledger: { chainOk: boolean; head: string; merkleRoot: string; events: number };
+  anchors: StoredAnchor[];
 }
 
 /** Render an evidence report as human-readable Markdown. */
@@ -505,7 +600,33 @@ export function renderReportMarkdown(r: EvidenceReport): string {
     `authenticate under FRE 901(b)(9) (process or system producing an accurate`,
     `result).`,
     ``,
+    `## External anchors`,
+    ``,
   );
+  if (r.anchors.length === 0) {
+    lines.push(
+      `No external anchors recorded. The hash chain proves internal order and`,
+      `integrity, but priority to a skeptical third party requires an anchor`,
+      `(e.g. \`mattermark anchor --opentimestamps\`).`,
+    );
+  } else {
+    lines.push(
+      `| Recorded | Anchor | Third-party time | Merkle root | Status |`,
+      `| --- | --- | --- | --- | --- |`,
+      ...r.anchors.map(
+        (a) =>
+          `| ${a.recordedAt} | ${a.proof.anchor} | ${a.thirdPartyTime ? 'yes' : 'no (self-asserted)'} | \`${a.merkleRoot.slice(0, 16)}…\` | ${
+            a.describe ?? '—'
+          } |`,
+      ),
+      ``,
+      `An anchor over a Merkle root proves every event committed at or before that`,
+      `root — and therefore every protected copy issued up to then — existed when`,
+      `the anchor was made. A third-party-time anchor (OpenTimestamps → Bitcoin)`,
+      `makes that priority provable to anyone who trusts the anchor's clock.`,
+    );
+  }
+  lines.push(``);
   return lines.join('\n');
 }
 
