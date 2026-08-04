@@ -6,34 +6,73 @@ on:
   pull_request:
   workflow_dispatch:
 
-# TDD produces many small commits. Keep only the newest run for a branch so
-# obsolete matrices do not consume minutes or leave the actual head waiting.
+permissions:
+  contents: read
+
+# Keep only the newest run for a branch or pull request. This is especially
+# important for the repository's test-first workflow, which produces many small
+# commits while a change is being developed.
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  compatibility:
+    name: Node ${{ matrix.node }} compatibility
+    runs-on: ubuntu-24.04
+    timeout-minutes: 15
     strategy:
       fail-fast: false
       matrix:
         node: ['20', '22', '24']
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
         with:
           node-version: ${{ matrix.node }}
+          cache: npm
 
-      - name: Install
-        run: npm ci
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Tests
+      - name: Run test suite
         run: node --import tsx --test test/*.test.ts
+
+  quality-gate:
+    name: Full quality gate
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Verify lockfile is synchronized
+        run: |
+          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+          git diff --exit-code -- package-lock.json
 
       - name: Survival harness
         run: npm run demo
@@ -50,8 +89,23 @@ jobs:
       - name: Anchor pipeline
         run: npm run anchor-demo
 
-      - name: Build package
+      - name: Build distributable package
         run: npm run build
 
       - name: Inspect package tarball
         run: npm pack --dry-run
+
+  gate:
+    name: CI gate
+    if: always()
+    needs: [compatibility, quality-gate]
+    runs-on: ubuntu-24.04
+    timeout-minutes: 2
+    steps:
+      - name: Require every verification job
+        env:
+          COMPATIBILITY: ${{ needs.compatibility.result }}
+          QUALITY_GATE: ${{ needs.quality-gate.result }}
+        run: |
+          test "$COMPATIBILITY" = success
+          test "$QUALITY_GATE" = success
