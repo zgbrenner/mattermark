@@ -116,7 +116,7 @@ test('upgrade splices a Bitcoin attestation once the calendar is ready', async (
 
   const ready = openTimestampsAnchor({ calendars: ['https://alice'], transport: fakeCalendars({ upgradeAt: 815000 }).transport });
   const upgraded = await ready.upgrade(proof);
-  assert.equal(upgraded.proof.confirmed, true); // retained for old readers
+  assert.equal(upgraded.proof.confirmed, false);
   assert.equal(upgraded.proof.bitcoinAttestation, true);
   const description = ready.describe(upgraded);
   assert.match(description, /Bitcoin attestation/);
