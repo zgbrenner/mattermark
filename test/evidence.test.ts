@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { createHash } from 'node:crypto';
+import { createHash, sign as signBytes } from 'node:crypto';
 
 import {
   createEvidenceStatement,
@@ -107,6 +107,33 @@ test('signature and semantic tampering are rejected independently', () => {
   assert.equal(result.signatureValid, true);
   assert.equal(result.subjectValid, false);
   assert.equal(result.valid, false);
+});
+
+test('v1 rejects ambiguous multi-signature envelopes', () => {
+  const f = bundle();
+  const duplicated = structuredClone(f.bundle);
+  duplicated.envelope.signatures.push({ ...duplicated.envelope.signatures[0] });
+  const result = verifyEvidenceBundle(duplicated);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => /exactly one signature/i.test(error)));
+});
+
+test('v1 rejects signed JSON that is valid but not canonical', () => {
+  const f = bundle();
+  const statement = createEvidenceStatement(f.input);
+  const payload = Buffer.from(JSON.stringify(statement, null, 2), 'utf8');
+  const noncanonical = structuredClone(f.bundle);
+  noncanonical.envelope.payload = payload.toString('base64');
+  noncanonical.envelope.signatures[0].sig = signBytes(
+    null,
+    dssePAE(noncanonical.envelope.payloadType, payload),
+    f.kp.privateKey,
+  ).toString('base64');
+
+  const result = verifyEvidenceBundle(noncanonical);
+  assert.equal(result.signatureValid, true);
+  assert.equal(result.valid, false);
+  assert.ok(result.errors.some((error) => /canonical/i.test(error)));
 });
 
 test('copy event and Merkle proof are bound to the statement copy', () => {
