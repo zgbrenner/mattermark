@@ -1,0 +1,85 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: Existing version tag to publish
+        required: true
+        type: string
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+          ref: ${{ github.event_name == 'workflow_dispatch' && inputs.tag || github.ref }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Verify release
+        run: |
+          npm run typecheck
+          node --import tsx --test test/*.test.ts
+          npm run matrix
+          npm run docx-demo
+          npm run ledger-demo
+          npm run anchor-demo
+          npm run build
+
+      - name: Build npm tarball and checksum
+        id: pack
+        run: |
+          file=$(npm pack --silent)
+          echo "file=$file" >> "$GITHUB_OUTPUT"
+          sha256sum "$file" > "$file.sha256"
+
+      - name: Resolve and validate release tag
+        id: tag
+        env:
+          DISPATCH_TAG: ${{ inputs.tag }}
+        run: |
+          if [ "${{ github.event_name }}" = workflow_dispatch ]; then
+            tag="$DISPATCH_TAG"
+          else
+            tag="$GITHUB_REF_NAME"
+          fi
+          test "v$(node -p "require('./package.json').version")" = "$tag"
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+      - name: Publish or update GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          TARBALL: ${{ steps.pack.outputs.file }}
+        run: |
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$TARBALL" "$TARBALL.sha256" --clobber
+          else
+            gh release create "$TAG" "$TARBALL" "$TARBALL.sha256" \
+              --verify-tag \
+              --generate-notes \
+              --title "Mattermark $TAG"
+          fi
