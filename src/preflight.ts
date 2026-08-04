@@ -174,24 +174,25 @@ export function preflightWorkspaceDocument(
     throw new Error('maxHomoglyphDensity must be between 0 and 1');
   }
   const format = sniffFormat(input.bytes);
-  const text = format === 'docx'
-    ? readDocxText(input.bytes)
-    : format === 'pdf'
-      ? extractPdfText(input.bytes)
-      : input.bytes.toString('utf8');
 
   if (format === 'pdf' && !opts.rebuildPdf) {
     return {
       name: input.name,
       format,
       sourceBytes: input.bytes.length,
-      sourceCharacters: Array.from(text).length,
+      sourceCharacters: 0,
       profiles: [],
       blockedReason:
         'Direct PDF marking is blocked because it would rebuild the text layer and discard layout. Mark the DOCX/text source instead, or explicitly request rebuilt-PDF analysis.',
       recommendation: 'Mark the editable source document and then export it to PDF.',
     };
   }
+
+  const text = format === 'docx'
+    ? readDocxText(input.bytes)
+    : format === 'pdf'
+      ? extractPdfText(input.bytes)
+      : input.bytes.toString('utf8');
 
   const profiles = format === 'pdf'
     ? [analyze(ws, input, format, 'search-safe', opts)]
