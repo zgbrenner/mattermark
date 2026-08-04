@@ -1,0 +1,31 @@
+name: Sync v0.2.0 hotfix with main
+
+on:
+  push:
+    branches: [fix/v0.2.0-release-hardening]
+    paths:
+      - .github/workflows/sync-v020-hotfix-with-main.yml
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: fix/v0.2.0-release-hardening
+          fetch-depth: 0
+
+      - name: Merge current main and remove this one-shot workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git fetch origin main
+          git merge --no-edit origin/main
+          rm .github/workflows/sync-v020-hotfix-with-main.yml
+          git add .github/workflows/sync-v020-hotfix-with-main.yml
+          git commit -m 'chore: remove one-shot main sync workflow'
+          git push origin HEAD:fix/v0.2.0-release-hardening
