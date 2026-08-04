@@ -55,7 +55,7 @@ A `.mattermark.json` bundle contains:
 - the raw Ed25519 public verification key and its SHA-256 fingerprint;
 - an optional observation of a recovered artifact.
 
-The bundle is transparent JSON so counsel, investigators, auditors, and independent tools can inspect it.
+The bundle is transparent JSON so counsel, investigators, auditors, and independent tools can inspect it. Version 1 requires exactly one signature and Mattermark's canonical JSON encoding. Verifiers reject ambiguous multi-signature envelopes and alternate JSON serializations even when those bytes carry a valid signature.
 
 ## Trust levels
 
