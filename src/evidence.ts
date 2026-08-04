@@ -184,7 +184,7 @@ export interface VerifyEvidenceOptions {
 
 export interface EvidenceVerificationResult {
   valid: boolean;
-  trust: 'invalid' | 'self-contained' | 'key-pinned' | 'key-pinned-and-externally-anchored';
+  trust: 'invalid' | 'self-contained' | 'key-pinned';
   keyid: string;
   keyPinned?: boolean;
   signatureValid: boolean;
@@ -634,6 +634,10 @@ export function verifyEvidenceBundle(
     statementRaw = JSON.parse(payload.toString('utf8'));
     if (stableStringify(statementRaw) !== payload.toString('utf8')) {
       errors.push('signed evidence payload must use the canonical JSON encoding');
+      const result = invalidResult(errors, warnings, keyid);
+      result.signatureValid = signatureValid;
+      result.keyPinned = keyPinned;
+      return result;
     }
   } catch {
     errors.push('signed payload is not valid JSON');

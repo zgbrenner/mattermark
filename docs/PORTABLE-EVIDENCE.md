@@ -55,7 +55,7 @@ A `.mattermark.json` bundle contains:
 - the raw Ed25519 public verification key and its SHA-256 fingerprint;
 - an optional observation of a recovered artifact.
 
-The bundle is transparent JSON so counsel, investigators, auditors, and independent tools can inspect it.
+The bundle is transparent JSON so counsel, investigators, auditors, and independent tools can inspect it. Version 1 requires exactly one signature and Mattermark's canonical JSON encoding. Verifiers reject ambiguous multi-signature envelopes and alternate JSON serializations even when those bytes carry a valid signature.
 
 ## Trust levels
 
@@ -63,7 +63,7 @@ Mattermark reports separate checks instead of collapsing everything into one vag
 
 - **Self-contained:** the signature and internal evidence relationships verify against the key embedded in the bundle.
 - **Key-pinned:** the same checks pass and the verifier was given the expected `sha256:<fingerprint>` through `--expect-key`.
-- **Key-pinned and externally anchored:** key pinning passes and the bundle carries a valid copy-specific inclusion path to an OpenTimestamps proof containing a Bitcoin attestation.
+- **External anchor status:** reported separately from the identity trust grade. A Bitcoin block-height attestation does not upgrade `key-pinned` until the commitment is checked against a trusted block header.
 
 An embedded key is not proof of organizational identity. The fingerprint must be exchanged or published through a trusted channel.
 
