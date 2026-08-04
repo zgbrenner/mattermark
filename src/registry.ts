@@ -44,6 +44,14 @@ export interface ProtectedCopy {
   originalHash: string;
   /** SHA-256 of the marked artifact as delivered */
   protectedHash: string;
+  /**
+   * Original and protected filenames. Optional so workspace-v1 ledgers written
+   * by Mattermark 0.1 remain readable without a migration. New issuances record
+   * both names so a portable evidence statement can name its immutable subject
+   * without relying on an external filename convention.
+   */
+  sourceName?: string;
+  protectedName?: string;
 
   /** who at the firm generated this copy */
   generatedBy: string;
