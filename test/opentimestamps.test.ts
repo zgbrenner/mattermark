@@ -21,7 +21,6 @@ import type { AnchorProof } from '../src/ledger/anchor.js';
 const sha256 = (b: Buffer) => createHash('sha256').update(b).digest();
 const ROOT = sha256(Buffer.from('a-merkle-root')).toString('hex');
 
-/** A calendar's canonical response: digest --sha256--> pending(self). */
 function calendarResponse(digest: Buffer, uri: string): Buffer {
   const hashed = sha256(digest);
   const ts: Timestamp = {
@@ -32,7 +31,6 @@ function calendarResponse(digest: Buffer, uri: string): Buffer {
   return serializeTimestamp(ts);
 }
 
-/** A transport that answers /digest submissions and, optionally, /timestamp upgrades. */
 function fakeCalendars(opts: { upgradeAt?: number } = {}): { transport: HttpTransport; posts: string[] } {
   const posts: string[] = [];
   const transport: HttpTransport = async (req) => {
@@ -43,7 +41,6 @@ function fakeCalendars(opts: { upgradeAt?: number } = {}): { transport: HttpTran
     }
     if (req.method === 'GET' && req.url.includes('/timestamp/')) {
       if (opts.upgradeAt === undefined) return { status: 404, body: Buffer.alloc(0) };
-      // commitment is the hex after /timestamp/
       const commitmentHex = req.url.split('/timestamp/')[1];
       const commitment = Buffer.from(commitmentHex, 'hex');
       const ext: Timestamp = { msg: commitment, attestations: [{ kind: 'bitcoin', height: opts.upgradeAt }], ops: [] };
@@ -88,7 +85,6 @@ test('anchor commit produces a valid, standard .ots proof that verifies offline'
   assert.equal(proof.anchor, 'opentimestamps');
   assert.equal(proof.digest, ROOT);
   assert.equal(typeof proof.proof.ots, 'string');
-  // the stored proof is a real detached .ots that re-parses
   const detached = deserializeDetached(Buffer.from(proof.proof.ots as string, 'base64'));
   assert.equal(detached.fileDigest.toString('hex'), ROOT);
 
@@ -113,21 +109,24 @@ test('upgrade splices a Bitcoin attestation once the calendar is ready', async (
   const anchor = openTimestampsAnchor({ calendars: ['https://alice'], transport: pending.transport });
   const proof = await anchor.commit(ROOT, '2026-07-28T00:00:00Z');
 
-  // still pending: the calendar answers 404, so upgrade leaves the proof pending
   const still = await anchor.upgrade(proof);
   assert.equal(still.proof.confirmed, false);
+  assert.equal(still.proof.bitcoinAttestation, false);
   assert.match(anchor.describe(still), /pending/);
 
-  // now the calendar has a block: upgrade splices bitcoin in
   const ready = openTimestampsAnchor({ calendars: ['https://alice'], transport: fakeCalendars({ upgradeAt: 815000 }).transport });
   const upgraded = await ready.upgrade(proof);
-  assert.equal(upgraded.proof.confirmed, true);
-  assert.match(ready.describe(upgraded), /Bitcoin block 815000/);
+  assert.equal(upgraded.proof.confirmed, true); // retained for old readers
+  assert.equal(upgraded.proof.bitcoinAttestation, true);
+  const description = ready.describe(upgraded);
+  assert.match(description, /Bitcoin attestation/);
+  assert.match(description, /815000/);
+  assert.match(description, /not independently confirmed/);
+  assert.doesNotMatch(description, /confirmed in Bitcoin/i);
   assert.equal(await ready.verify(upgraded), true);
 });
 
 test('confirmProofAgainstBitcoin checks the commitment against a header source', async () => {
-  // Build a proof that already carries a bitcoin attestation at a known commitment.
   const digest = Buffer.from(ROOT, 'hex');
   const detached = detachedFromAttestations(digest, [{ kind: 'bitcoin', height: 700123 }]);
   const proof: AnchorProof = {
