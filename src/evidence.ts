@@ -766,7 +766,8 @@ export function verifyEvidenceBundle(
     statementValid &&
     subjectValid &&
     currentLedgerProofValid &&
-    (keyPinned !== false);
+    (keyPinned !== false) &&
+    errors.length === 0;
   if (bundle.envelope.payloadType !== DSSE_PAYLOAD_TYPE) {
     errors.push(`DSSE payload type must be ${DSSE_PAYLOAD_TYPE}`);
   }

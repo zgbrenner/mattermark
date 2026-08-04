@@ -182,9 +182,9 @@ export function openTimestampsAnchor(opts: OpenTimestampsOptions = {}): AsyncAnc
       return proofFrom(next, proof.at, {
         pending: summary.pending.length > 0 && !bitcoinAttestation,
         bitcoinAttestation,
-        // Backward-compatible field retained for old readers. It means only
-        // that a Bitcoin attestation is present, not header-confirmed validity.
-        confirmed: bitcoinAttestation,
+        // Backward-compatible field retained for old readers. It remains false
+        // until a trusted block-header verification result can support it.
+        confirmed: false,
         upgraded,
       });
     },
