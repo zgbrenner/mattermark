@@ -13,6 +13,7 @@ import {
   ChainedEvent,
   EventCore,
 } from '../src/ledger/hashchain.js';
+import { verifyMerkleProof } from '../src/ledger/merkle-proof.js';
 import { seal, unseal } from '../src/ledger/vault.js';
 import { localAttestationAnchor } from '../src/ledger/anchor.js';
 import { SecureRegistry } from '../src/ledger/index.js';
@@ -185,6 +186,76 @@ test('SecureRegistry: anchor commits to the current root and verifies through th
     assert.equal(reg.verifyAnchor(anchor, proof), true);
     reg.add(row('cc', 'dd')); // root moves on
     assert.equal(reg.verifyAnchor(anchor, proof), false); // stale proof no longer matches
+  } finally {
+    rmSync(path, { force: true });
+  }
+});
+
+test('SecureRegistry: full token and short ID prove the same immutable copy event', () => {
+  const path = tmp();
+  try {
+    const reg = SecureRegistry.create(path, 'pw');
+    reg.add(row('aa', 'bb'));
+    reg.recordInvestigation('aa', { at: 't1', actor: 'x', kind: 'note', detail: 'later note' });
+    reg.add(row('cc', 'dd'));
+
+    const full = reg.proveCopy('aa');
+    const short = reg.proveCopy('bb');
+    assert.deepEqual(short, full);
+    assert.equal(full.event.type, 'copy');
+    assert.equal(full.event.seq, 0);
+    assert.equal((full.event.payload as { copy: ProtectedCopy }).copy.tokenHex, 'aa');
+    assert.deepEqual((full.event.payload as { copy: ProtectedCopy }).copy.investigations, []);
+    assert.equal(full.proof.treeSize, 3);
+    assert.equal(full.proof.root, reg.merkleRoot());
+    assert.equal(verifyMerkleProof(full.proof), true);
+  } finally {
+    rmSync(path, { force: true });
+  }
+});
+
+test('SecureRegistry: historical prefix proofs bind to rootAt(eventCount)', () => {
+  const path = tmp();
+  try {
+    const reg = SecureRegistry.create(path, 'pw');
+    reg.add(row('aa', 'bb')); // event 1
+    reg.recordInvestigation('aa', { at: 't1', actor: 'x', kind: 'note', detail: 'note' }); // event 2
+    reg.add(row('cc', 'dd')); // event 3
+
+    const one = reg.proveCopy('aa', 1);
+    assert.equal(one.proof.treeSize, 1);
+    assert.equal(one.proof.root, reg.rootAt(1));
+    assert.equal(verifyMerkleProof(one.proof), true);
+
+    const two = reg.proveCopy('aa', 2);
+    assert.equal(two.proof.treeSize, 2);
+    assert.equal(two.proof.root, reg.rootAt(2));
+    assert.equal(verifyMerkleProof(two.proof), true);
+
+    assert.notEqual(reg.rootAt(1), reg.rootAt(2));
+    assert.notEqual(reg.rootAt(2), reg.rootAt(3));
+    assert.equal(reg.rootAt(3), reg.merkleRoot());
+  } finally {
+    rmSync(path, { force: true });
+  }
+});
+
+test('SecureRegistry: copy proofs reject invalid prefixes and unknown tokens', () => {
+  const path = tmp();
+  try {
+    const reg = SecureRegistry.create(path, 'pw');
+    reg.add(row('aa', 'bb'));
+    reg.add(row('cc', 'dd'));
+
+    assert.throws(() => reg.rootAt(0), /event count/i);
+    assert.throws(() => reg.rootAt(-1), /event count/i);
+    assert.throws(() => reg.rootAt(1.5), /event count/i);
+    assert.throws(() => reg.rootAt(3), /event count/i);
+
+    assert.throws(() => reg.proveCopy('cc', 1), /predates the copy/i);
+    assert.throws(() => reg.proveCopy('missing'), /no registry row/i);
+    assert.throws(() => reg.proveCopy('aa', 0), /event count/i);
+    assert.throws(() => reg.proveCopy('aa', 3), /event count/i);
   } finally {
     rmSync(path, { force: true });
   }
