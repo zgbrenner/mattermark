@@ -16,6 +16,7 @@
 
 ### Correctness and security
 
+- Version 1 evidence bundles require one signature and canonical signed JSON, eliminating ambiguous envelope interpretations.
 - OpenTimestamps calendar promises are explicitly labeled pending.
 - Bitcoin block-height attestations remain unconfirmed and do not raise the bundle trust grade without trusted block-header verification.
 - Embedded evidence keys are explicitly distinguished from organizational identity.
