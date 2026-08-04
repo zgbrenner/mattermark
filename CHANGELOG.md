@@ -17,7 +17,7 @@
 ### Correctness and security
 
 - OpenTimestamps calendar promises are explicitly labeled pending.
-- Bitcoin block-height attestations are no longer described as independently confirmed without trusted block-header verification.
+- Bitcoin block-height attestations remain unconfirmed and do not raise the bundle trust grade without trusted block-header verification.
 - Embedded evidence keys are explicitly distinguished from organizational identity.
 - HMAC watermark tokens disclose that they are not publicly self-verifying.
 - Evidence bundles disclose sensitive matter and recipient metadata.
