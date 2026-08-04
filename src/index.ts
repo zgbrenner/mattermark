@@ -1,28 +1,35 @@
 /**
  * index.ts — the library entry point for `import ... from 'mattermark'`.
  *
- * The CLI (src/cli.ts, shipped as the `mattermark` bin) is the primary
- * surface, but the same operations layer is usable programmatically. This
- * module re-exports the public workspace API so downstream code can do:
- *
- *   import { openWorkspace, initWorkspace } from 'mattermark';
- *
- * Everything substantive lives in workspace.ts; this file only widens its
- * surface to package consumers. It deliberately does not pull in cli.ts,
- * whose top-level code runs the command line on import.
+ * The CLI is the primary surface, but every substantive operation is also
+ * available programmatically without importing a module that executes a
+ * command line at load time.
  */
 
 export * from './workspace.js';
+export * from './workspace-evidence.js';
+export * from './evidence.js';
+export * from './evidence-artifact.js';
+export * from './preflight.js';
 
-// Anchors: the local (offline) attestation and the OpenTimestamps (Bitcoin)
-// anchor, plus the interfaces so downstream code can supply its own.
+// Anchors and copy-specific Merkle proofs.
 export {
   localAttestationAnchor,
   openTimestampsAnchor,
   confirmProofAgainstBitcoin,
   isAsyncAnchor,
+  createMerkleProof,
+  verifyMerkleProof,
 } from './ledger/index.js';
-export type { Anchor, AsyncAnchor, AnchorProof, HttpTransport } from './ledger/index.js';
+export type {
+  Anchor,
+  AsyncAnchor,
+  AnchorProof,
+  HttpTransport,
+  MerkleInclusionProof,
+  MerkleProofStep,
+  LedgerEventInclusion,
+} from './ledger/index.js';
 
 // Document-format marking beyond the workspace's file dispatch.
 export { markDocx, detectDocx, readDocxText, textToDocx } from './formats/index.js';
