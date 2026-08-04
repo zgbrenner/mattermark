@@ -118,7 +118,7 @@ test('copy event and Merkle proof are bound to the statement copy', () => {
   assert.equal(result.valid, false);
 });
 
-test('OpenTimestamps Bitcoin attestations remain explicitly unconfirmed', () => {
+test('unconfirmed OpenTimestamps attestations do not upgrade the trust grade', () => {
   const base = makeInput();
   const root = Buffer.from(base.input.ledger.current.root, 'hex');
   const proof: AnchorProof = {
@@ -128,7 +128,7 @@ test('OpenTimestamps Bitcoin attestations remain explicitly unconfirmed', () => 
   const f = bundle({ anchor: proof });
   const result = verifyEvidenceBundle(f.bundle, { expectedKeyid: evidenceKeyInfo(f.kp.publicKeyRaw).keyid });
   assert.equal(result.valid, true, result.errors.join('; '));
-  assert.equal(result.trust, 'key-pinned-and-externally-anchored');
+  assert.equal(result.trust, 'key-pinned');
   assert.equal(result.anchorResults[0].proofStatus, 'ots-bitcoin-attestation-unconfirmed');
   assert.ok(result.warnings.some((w) => /trusted (?:Bitcoin )?block header/i.test(w)));
   assert.ok(result.warnings.some((w) => /not independently confirmed/i.test(w)));
