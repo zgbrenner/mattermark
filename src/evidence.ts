@@ -610,7 +610,7 @@ export function verifyEvidenceBundle(
     }
   }
 
-  let payload = Buffer.alloc(0);
+  let payload: ReturnType<typeof decodeCanonicalBase64> = Buffer.alloc(0) as ReturnType<typeof decodeCanonicalBase64>;
   let signatureValid = false;
   try {
     payload = decodeCanonicalBase64(bundle.envelope.payload, 'DSSE payload');
