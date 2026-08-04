@@ -27,22 +27,23 @@ jobs:
 
           evidence = Path('src/evidence.ts')
           text = evidence.read_text()
-
-          old_canonical = """    if (stableStringify(statementRaw) !== payload.toString('utf8')) {
-              errors.push('signed evidence payload must use the canonical JSON encoding');
-            }
-          """
-          new_canonical = """    if (stableStringify(statementRaw) !== payload.toString('utf8')) {
-              errors.push('signed evidence payload must use the canonical JSON encoding');
-              const result = invalidResult(errors, warnings, keyid);
-              result.signatureValid = signatureValid;
-              result.keyPinned = keyPinned;
-              return result;
-            }
-          """
+          old_canonical = (
+              "    if (stableStringify(statementRaw) !== payload.toString('utf8')) {\n"
+              "      errors.push('signed evidence payload must use the canonical JSON encoding');\n"
+              "    }\n"
+          )
+          new_canonical = (
+              "    if (stableStringify(statementRaw) !== payload.toString('utf8')) {\n"
+              "      errors.push('signed evidence payload must use the canonical JSON encoding');\n"
+              "      const result = invalidResult(errors, warnings, keyid);\n"
+              "      result.signatureValid = signatureValid;\n"
+              "      result.keyPinned = keyPinned;\n"
+              "      return result;\n"
+              "    }\n"
+          )
           if old_canonical in text:
               text = text.replace(old_canonical, new_canonical, 1)
-          elif 'return result;\n    }\n  } catch' not in text:
+          elif new_canonical not in text:
               raise SystemExit('canonical evidence block not found')
 
           text = text.replace(
@@ -61,8 +62,7 @@ jobs:
               raise SystemExit('OpenTimestamps legacy assertion not found')
           ots_test.write_text(ots_text)
 
-          workflow = Path('.github/workflows/repair-final-strictness.yml')
-          workflow.unlink()
+          Path('.github/workflows/repair-final-strictness.yml').unlink()
           PY
 
       - name: Commit repairs
