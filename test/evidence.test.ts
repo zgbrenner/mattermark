@@ -302,7 +302,7 @@ test('OpenTimestamps proofs are classified as pending or unconfirmed Bitcoin att
   const unpinned = verifyEvidenceBundle(bitcoinFixture.bundle);
   assert.equal(unpinned.anchorResults[0].proofStatus, 'ots-bitcoin-attestation-unconfirmed');
   assert.equal(unpinned.trust, 'self-contained');
-  assert.ok(unpinned.warnings.some((w) => /trusted block header/i.test(w)));
+  assert.ok(unpinned.warnings.some((w) => /trusted (?:Bitcoin )?block header/i.test(w)));
 
   const pinned = verifyEvidenceBundle(bitcoinFixture.bundle, {
     expectedKeyid: evidenceKeyInfo(bitcoinFixture.keyPair.publicKeyRaw).keyid,
