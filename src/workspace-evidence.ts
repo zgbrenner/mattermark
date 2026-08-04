@@ -58,10 +58,11 @@ function sha256(bytes: Buffer): string {
  * loads this module. Existing rows remain readable and fall back to token-based
  * subject names.
  */
-const PATCH = Symbol.for('mattermark.workspace-evidence.filename-patch');
-type PatchablePrototype = typeof Workspace.prototype & { [PATCH]?: boolean };
+type PatchablePrototype = typeof Workspace.prototype & {
+  __mattermarkEvidenceNamesPatched?: boolean;
+};
 const prototype = Workspace.prototype as PatchablePrototype;
-if (!prototype[PATCH]) {
+if (!prototype.__mattermarkEvidenceNamesPatched) {
   const originalProtect = prototype.protect;
   prototype.protect = function patchedProtect(
     input: { name: string; bytes: Buffer },
@@ -92,7 +93,7 @@ if (!prototype[PATCH]) {
       registry.add = originalAdd;
     }
   };
-  prototype[PATCH] = true;
+  prototype.__mattermarkEvidenceNamesPatched = true;
 }
 
 export function evidenceKeyForWorkspace(ws: Workspace): EvidenceKeyInfo {
