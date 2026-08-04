@@ -1,0 +1,78 @@
+name: Apply v0.2.0 release hardening
+
+on:
+  push:
+    branches: [fix/v0.2.0-release-hardening]
+    paths:
+      - .github/workflows/apply-v020-release-hardening.yml
+
+permissions:
+  contents: write
+
+jobs:
+  harden:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: fix/v0.2.0-release-hardening
+          fetch-depth: 0
+
+      - name: Apply exact verifier and documentation fixes
+        run: |
+          git pull --ff-only origin fix/v0.2.0-release-hardening
+          python3 - <<'PY'
+          from pathlib import Path
+
+          evidence = Path('src/evidence.ts')
+          text = evidence.read_text()
+          old = (
+              "    if (stableStringify(statementRaw) !== payload.toString('utf8')) {\n"
+              "      errors.push('signed evidence payload must use the canonical JSON encoding');\n"
+              "    }\n"
+          )
+          new = (
+              "    if (stableStringify(statementRaw) !== payload.toString('utf8')) {\n"
+              "      errors.push('signed evidence payload must use the canonical JSON encoding');\n"
+              "      const result = invalidResult(errors, warnings, keyid);\n"
+              "      result.signatureValid = signatureValid;\n"
+              "      result.keyPinned = keyPinned;\n"
+              "      return result;\n"
+              "    }\n"
+          )
+          if old not in text:
+              raise SystemExit('canonical verifier block not found')
+          text = text.replace(old, new, 1)
+          text = text.replace(
+              "trust: 'invalid' | 'self-contained' | 'key-pinned' | 'key-pinned-and-externally-anchored';",
+              "trust: 'invalid' | 'self-contained' | 'key-pinned';",
+          )
+          evidence.write_text(text)
+
+          docs = Path('docs/PORTABLE-EVIDENCE.md')
+          docs_text = docs.read_text()
+          old_grade = (
+              "- **Key-pinned and externally anchored:** key pinning passes and the bundle carries a valid "
+              "copy-specific inclusion path to an OpenTimestamps proof containing a Bitcoin attestation.\n"
+          )
+          new_grade = (
+              "- **External anchor status:** reported separately from the identity trust grade. A Bitcoin "
+              "block-height attestation does not upgrade `key-pinned` until the commitment is checked against "
+              "a trusted block header.\n"
+          )
+          if old_grade not in docs_text:
+              raise SystemExit('portable-evidence trust-grade text not found')
+          docs.write_text(docs_text.replace(old_grade, new_grade, 1))
+
+          Path('.github/workflows/apply-v020-release-hardening.yml').unlink()
+          PY
+
+      - name: Commit the hardening patch
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/evidence.ts docs/PORTABLE-EVIDENCE.md .github/workflows/apply-v020-release-hardening.yml
+          git commit -m 'fix: reject noncanonical evidence before v0.2.0 release'
+          git pull --rebase origin fix/v0.2.0-release-hardening
+          git push origin HEAD:fix/v0.2.0-release-hardening
