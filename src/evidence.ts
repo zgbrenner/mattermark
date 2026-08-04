@@ -768,15 +768,13 @@ export function verifyEvidenceBundle(
     errors.push(`DSSE payload type must be ${DSSE_PAYLOAD_TYPE}`);
   }
 
-  const externallyAnchored = anchorResults.some(
-    (anchor) =>
-      anchor.inclusionValid &&
-      anchor.proofStatus === 'ots-bitcoin-attestation-unconfirmed',
-  );
+  // A block-height attestation is useful evidence, but it is not an
+  // independently confirmed external timestamp until a trusted block header
+  // verifies the commitment. Do not upgrade the trust grade merely because
+  // an unconfirmed attestation is present.
   let trust: EvidenceVerificationResult['trust'] = 'invalid';
   if (coreValid) {
-    if (keyPinned === true && externallyAnchored) trust = 'key-pinned-and-externally-anchored';
-    else if (keyPinned === true) trust = 'key-pinned';
+    if (keyPinned === true) trust = 'key-pinned';
     else trust = 'self-contained';
   }
 
