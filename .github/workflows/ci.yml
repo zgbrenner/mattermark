@@ -6,6 +6,10 @@ on:
   pull_request:
   workflow_dispatch:
 
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,30 +30,30 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      # Unit + integration tests (node:test, zero deps): framing, crypto, the
-      # three codecs, the composition guard incl. the search-safe opt-out, the
-      # transform taxonomy, the registry, and the corpus loader.
+      # Unit + integration tests: framing, crypto, codecs, composition guard,
+      # transforms, registry, portable evidence, artifact verification,
+      # preflight, CLI behavior, packaging, and the real corpus loader.
       - name: Tests
         run: node --import tsx --test test/*.test.ts
 
-      # The demo exercises minting, all three codecs, the composition guard,
-      # the full transform taxonomy, excerpt recovery, and registry attribution
-      # end to end on the reference memo.
       - name: Survival harness (demo)
         run: npm run demo
 
-      # The matrix runs the same measurement across the real 16-document corpus
-      # (corpus/), so the survival numbers reflect briefs, contracts, and a
-      # 40-page appellate brief, not just one 1.5k memo. It fails loudly if a
-      # corpus file is missing.
       - name: Survival matrix (corpus)
         run: npm run matrix
 
-      # Slice 2: builds a real DOCX, marks it across all text-bearing parts,
-      # attributes it back, and shows PDF detection via text extraction.
       - name: Document pipeline (demo)
         run: npm run docx-demo
 
-      # Slice 3: encrypted, tamper-evident, anchored registry end to end.
       - name: Registry pipeline (demo)
         run: npm run ledger-demo
+
+      - name: External anchor pipeline (demo)
+        run: npm run anchor-demo
+
+      - name: Build package
+        run: npm run build
+
+      - name: Inspect package tarball
+        if: matrix.node == '20'
+        run: npm pack --dry-run
