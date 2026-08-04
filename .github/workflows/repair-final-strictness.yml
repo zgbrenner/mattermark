@@ -1,0 +1,75 @@
+name: Repair final strictness
+
+on:
+  push:
+    branches: [feat/portable-evidence-preflight]
+    paths:
+      - .github/workflows/repair-final-strictness.yml
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: feat/portable-evidence-preflight
+          fetch-depth: 0
+
+      - name: Apply final verifier repairs
+        run: |
+          git pull --ff-only origin feat/portable-evidence-preflight
+          python3 - <<'PY'
+          from pathlib import Path
+
+          evidence = Path('src/evidence.ts')
+          text = evidence.read_text()
+
+          old_canonical = """    if (stableStringify(statementRaw) !== payload.toString('utf8')) {
+              errors.push('signed evidence payload must use the canonical JSON encoding');
+            }
+          """
+          new_canonical = """    if (stableStringify(statementRaw) !== payload.toString('utf8')) {
+              errors.push('signed evidence payload must use the canonical JSON encoding');
+              const result = invalidResult(errors, warnings, keyid);
+              result.signatureValid = signatureValid;
+              result.keyPinned = keyPinned;
+              return result;
+            }
+          """
+          if old_canonical in text:
+              text = text.replace(old_canonical, new_canonical, 1)
+          elif 'return result;\n    }\n  } catch' not in text:
+              raise SystemExit('canonical evidence block not found')
+
+          text = text.replace(
+              "trust: 'invalid' | 'self-contained' | 'key-pinned' | 'key-pinned-and-externally-anchored';",
+              "trust: 'invalid' | 'self-contained' | 'key-pinned';",
+          )
+          evidence.write_text(text)
+
+          ots_test = Path('test/opentimestamps.test.ts')
+          ots_text = ots_test.read_text()
+          old_assert = "assert.equal(upgraded.proof.confirmed, true); // retained for old readers"
+          new_assert = "assert.equal(upgraded.proof.confirmed, false); // attestation is not trusted-header confirmation"
+          if old_assert in ots_text:
+              ots_text = ots_text.replace(old_assert, new_assert, 1)
+          elif new_assert not in ots_text:
+              raise SystemExit('OpenTimestamps legacy assertion not found')
+          ots_test.write_text(ots_text)
+
+          workflow = Path('.github/workflows/repair-final-strictness.yml')
+          workflow.unlink()
+          PY
+
+      - name: Commit repairs
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add src/evidence.ts test/opentimestamps.test.ts .github/workflows/repair-final-strictness.yml
+          git commit -m 'fix: enforce canonical evidence and conservative timestamp metadata'
+          git pull --rebase origin feat/portable-evidence-preflight
+          git push origin HEAD:feat/portable-evidence-preflight
