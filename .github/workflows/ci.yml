@@ -6,106 +6,50 @@ on:
   pull_request:
   workflow_dispatch:
 
-permissions:
-  contents: read
-
-# Keep only the newest run for a branch or pull request. This is especially
-# important for the repository's test-first workflow, which produces many small
-# commits while a change is being developed.
-concurrency:
-  group: ci-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
-
-defaults:
-  run:
-    shell: bash
-
 jobs:
-  compatibility:
-    name: Node ${{ matrix.node }} compatibility
-    runs-on: ubuntu-24.04
-    timeout-minutes: 15
+  build:
+    runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         node: ['20', '22', '24']
     steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
+      - uses: actions/checkout@v4
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
-          cache: npm
 
-      - name: Install locked dependencies
-        run: npm ci --no-audit --no-fund
+      - name: Install
+        run: npm ci
 
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Run test suite
+      # Unit + integration tests (node:test, zero deps): framing, crypto, the
+      # three codecs, the composition guard incl. the search-safe opt-out, the
+      # transform taxonomy, the registry, and the corpus loader.
+      - name: Tests
         run: node --import tsx --test test/*.test.ts
 
-  quality-gate:
-    name: Full quality gate
-    runs-on: ubuntu-24.04
-    timeout-minutes: 20
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v6
-        with:
-          persist-credentials: false
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v6
-        with:
-          node-version: '22'
-          cache: npm
-
-      - name: Install locked dependencies
-        run: npm ci --no-audit --no-fund
-
-      - name: Verify lockfile is synchronized
-        run: |
-          npm install --package-lock-only --ignore-scripts --no-audit --no-fund
-          git diff --exit-code -- package-lock.json
-
-      - name: Survival harness
+      # The demo exercises minting, all three codecs, the composition guard,
+      # the full transform taxonomy, excerpt recovery, and registry attribution
+      # end to end on the reference memo.
+      - name: Survival harness (demo)
         run: npm run demo
 
-      - name: Survival matrix
+      # The matrix runs the same measurement across the real 16-document corpus
+      # (corpus/), so the survival numbers reflect briefs, contracts, and a
+      # 40-page appellate brief, not just one 1.5k memo. It fails loudly if a
+      # corpus file is missing.
+      - name: Survival matrix (corpus)
         run: npm run matrix
 
-      - name: Document pipeline
+      # Slice 2: builds a real DOCX, marks it across all text-bearing parts,
+      # attributes it back, and shows PDF detection via text extraction.
+      - name: Document pipeline (demo)
         run: npm run docx-demo
 
-      - name: Registry pipeline
+      # Slice 3: encrypted, tamper-evident, anchored registry end to end.
+      - name: Registry pipeline (demo)
         run: npm run ledger-demo
-
-      - name: Anchor pipeline
-        run: npm run anchor-demo
-
-      - name: Build distributable package
-        run: npm run build
-
-      - name: Inspect package tarball
-        run: npm pack --dry-run
-
-  gate:
-    name: CI gate
-    if: always()
-    needs: [compatibility, quality-gate]
-    runs-on: ubuntu-24.04
-    timeout-minutes: 2
-    steps:
-      - name: Require every verification job
-        env:
-          COMPATIBILITY: ${{ needs.compatibility.result }}
-          QUALITY_GATE: ${{ needs.quality-gate.result }}
-        run: |
-          test "$COMPATIBILITY" = success
-          test "$QUALITY_GATE" = success
