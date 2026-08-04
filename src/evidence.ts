@@ -364,8 +364,8 @@ function assertBundleShell(value: unknown): MattermarkEvidenceBundle {
   const envelope = requireRecord(bundle.envelope, 'envelope');
   requireString(envelope.payloadType, 'envelope.payloadType');
   requireString(envelope.payload, 'envelope.payload');
-  if (!Array.isArray(envelope.signatures) || envelope.signatures.length === 0) {
-    throw new Error('envelope.signatures must contain at least one signature');
+  if (!Array.isArray(envelope.signatures) || envelope.signatures.length !== 1) {
+    throw new Error('version 1 envelope.signatures must contain exactly one signature');
   }
   for (let i = 0; i < envelope.signatures.length; i++) {
     const signature = requireRecord(envelope.signatures[i], `envelope.signatures[${i}]`);
@@ -632,6 +632,9 @@ export function verifyEvidenceBundle(
   let statementRaw: unknown;
   try {
     statementRaw = JSON.parse(payload.toString('utf8'));
+    if (stableStringify(statementRaw) !== payload.toString('utf8')) {
+      errors.push('signed evidence payload must use the canonical JSON encoding');
+    }
   } catch {
     errors.push('signed payload is not valid JSON');
     const result = invalidResult(errors, warnings, keyid);
