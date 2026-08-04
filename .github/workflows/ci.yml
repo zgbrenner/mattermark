@@ -6,33 +6,69 @@ on:
   pull_request:
   workflow_dispatch:
 
-# TDD produces many small commits. Keep only the newest run for a branch so
-# obsolete matrices do not consume minutes or leave the actual head waiting.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
-  build:
+  compatibility:
+    name: Node ${{ matrix.node }} compatibility
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     strategy:
       fail-fast: false
       matrix:
-        node: ['20', '22', '24']
+        node: ['20', '24']
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
+          cache: npm
 
-      - name: Install
-        run: npm ci
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
 
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Tests
+      - name: Build package
+        run: npm run build
+
+      - name: Run compiled CLI smoke test
+        run: node dist/bin.js help
+
+  validate:
+    name: Full validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Typecheck
+        run: npm run typecheck
+
+      - name: Full test suite
         run: node --import tsx --test test/*.test.ts
 
       - name: Survival harness
@@ -55,3 +91,12 @@ jobs:
 
       - name: Inspect package tarball
         run: npm pack --dry-run
+
+      - name: Upload compiled package
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: mattermark-dist-${{ github.sha }}
+          path: dist/
+          if-no-files-found: error
+          retention-days: 7
