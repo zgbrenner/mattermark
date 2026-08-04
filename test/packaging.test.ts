@@ -37,6 +37,16 @@ before(() => {
   assert.ok(existsSync(DIST_BIN), 'dist/bin.js should exist after build');
 });
 
+test('the package and lockfile advertise the same release version', () => {
+  const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')) as { version: string };
+  const lock = JSON.parse(readFileSync(join(ROOT, 'package-lock.json'), 'utf8')) as {
+    version: string;
+    packages: Record<string, { version?: string }>;
+  };
+  assert.equal(lock.version, pkg.version);
+  assert.equal(lock.packages['']?.version, pkg.version);
+});
+
 test('the compiled bin keeps its shebang so it is directly executable', () => {
   assert.equal(readFileSync(DIST_BIN, 'utf8').split('\n', 1)[0], '#!/usr/bin/env node');
 });
@@ -49,12 +59,15 @@ test('no compiled entry point imports tsx or a .ts path at runtime', () => {
   }
 });
 
-test('node dist/bin.js help prints usage and exits 0', () => {
+test('node dist/bin.js help prints the complete command surface and exits 0', () => {
   const res = runBin(['help']);
   assert.equal(res.error, undefined);
   assert.equal(res.status, 0, res.stderr);
   assert.match(res.stdout, /Usage: mattermark/);
   assert.match(res.stdout, /Commands:/);
+  for (const command of ['preflight', 'key', 'export', 'verify']) {
+    assert.match(res.stdout, new RegExp(`\\b${command}\\b`), `general help must list ${command}`);
+  }
 });
 
 test('compiled extended-command help is available', () => {
