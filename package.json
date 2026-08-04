@@ -1,7 +1,7 @@
 {
   "name": "mattermark",
-  "version": "0.1.0",
-  "description": "Local-first recipient attribution and work-product fingerprinting for legal and regulated professionals.",
+  "version": "0.2.0",
+  "description": "Local-first recipient attribution, preflight durability analysis, and portable signed evidence for legal and regulated professionals.",
   "type": "module",
   "license": "MIT",
   "repository": {
@@ -21,8 +21,8 @@
   },
   "files": ["dist", "LICENSE", "README.md", "SECURITY.md", "NOTICE.md"],
   "scripts": {
-    "cli": "tsx src/cli.ts",
-    "ui": "tsx src/cli.ts ui",
+    "cli": "tsx src/bin.ts",
+    "ui": "tsx src/bin.ts ui",
     "demo": "tsx src/demo.ts",
     "matrix": "tsx src/matrix.ts",
     "docx-demo": "tsx src/formats/demo.ts",
@@ -31,7 +31,8 @@
     "typecheck": "tsc --noEmit",
     "build": "tsc -p tsconfig.build.json",
     "prepack": "npm run build",
-    "test": "npm run typecheck && node --import tsx --test test/*.test.ts"
+    "test": "npm run typecheck && node --import tsx --test test/*.test.ts",
+    "verify-release": "npm test && npm run build && npm run demo && npm run matrix && npm run docx-demo && npm run ledger-demo && npm run anchor-demo && npm pack --dry-run"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

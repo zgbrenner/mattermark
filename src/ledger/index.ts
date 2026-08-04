@@ -26,6 +26,10 @@ import {
   merkleRoot,
   verifyChain,
 } from './hashchain.js';
+import {
+  createMerkleProof,
+  type MerkleInclusionProof,
+} from './merkle-proof.js';
 import { seal, unseal } from './vault.js';
 import type { Anchor, AnchorProof, AsyncAnchor } from './anchor.js';
 
@@ -35,6 +39,12 @@ interface CopyPayload {
 interface InvestigationPayload {
   tokenHex: string;
   event: InvestigationEvent;
+}
+
+/** A private ledger event plus the compact proof that it belongs to one root. */
+export interface LedgerEventInclusion {
+  event: ChainedEvent;
+  proof: MerkleInclusionProof;
 }
 
 export class SecureRegistry {
@@ -121,6 +131,59 @@ export class SecureRegistry {
     return merkleRoot(this.events.map((e) => e.hash));
   }
 
+  /**
+   * Recompute the Merkle root for an exact historical event prefix. Stored
+   * anchors name their event count, so a copy can later receive an inclusion
+   * proof against the same root without exposing the rest of the private log.
+   */
+  rootAt(eventCount: number): string {
+    if (
+      !Number.isInteger(eventCount) ||
+      eventCount < 1 ||
+      eventCount > this.events.length
+    ) {
+      throw new Error(
+        `event count must be an integer from 1 through ${this.events.length}, not ${eventCount}`,
+      );
+    }
+    return merkleRoot(this.events.slice(0, eventCount).map((e) => e.hash));
+  }
+
+  /**
+   * Prove that a protected-copy issuance event belongs to the current ledger or
+   * to an anchored historical prefix. A short ID resolves to the same immutable
+   * full-token copy event. The returned event is cloned so evidence export code
+   * cannot mutate the registry's in-memory chain by retaining a reference.
+   */
+  proveCopy(tokenHex: string, eventCount = this.events.length): LedgerEventInclusion {
+    const copy = this.resolve(tokenHex);
+    if (!copy) throw new Error(`no registry row resolves ${tokenHex}`);
+
+    // Validate before searching so an empty or impossible prefix fails with the
+    // same precise contract as rootAt().
+    this.rootAt(eventCount);
+
+    const index = this.events.findIndex(
+      (event) =>
+        event.type === 'copy' &&
+        (event.payload as CopyPayload).copy.tokenHex === copy.tokenHex,
+    );
+    if (index < 0) {
+      throw new Error(`registry row ${copy.tokenHex} has no copy event`);
+    }
+    if (index >= eventCount) {
+      throw new Error(
+        `event prefix ${eventCount} predates the copy event at index ${index}`,
+      );
+    }
+
+    const prefix = this.events.slice(0, eventCount);
+    return {
+      event: structuredClone(this.events[index]),
+      proof: createMerkleProof(prefix.map((event) => event.hash), index),
+    };
+  }
+
   /** Recompute the chain; false means the in-memory events were tampered with. */
   verify(): boolean {
     return verifyChain(this.events).ok;
@@ -196,3 +259,5 @@ export type { Anchor, AnchorProof, AsyncAnchor } from './anchor.js';
 export { localAttestationAnchor, isAsyncAnchor } from './anchor.js';
 export { openTimestampsAnchor, confirmProofAgainstBitcoin } from './opentimestamps.js';
 export type { HttpTransport, HttpRequest, HttpResponse } from './opentimestamps.js';
+export type { MerkleInclusionProof, MerkleProofStep } from './merkle-proof.js';
+export { createMerkleProof, verifyMerkleProof } from './merkle-proof.js';
