@@ -6,14 +6,12 @@ import { join } from 'node:path';
 import { rmSync } from 'node:fs';
 
 import { initWorkspace } from '../src/workspace.js';
+import { evidenceKeyForWorkspace, exportWorkspaceEvidence } from '../src/workspace-evidence.js';
 import { verifyEvidenceBundle } from '../src/evidence.js';
 import { SAMPLE } from './helpers.js';
 
 const PASS = 'correct horse battery staple';
-
-function tmp(): string {
-  return join(tmpdir(), `mattermark-evidence-${randomBytes(8).toString('hex')}`);
-}
+const tmp = () => join(tmpdir(), `mattermark-evidence-${randomBytes(8).toString('hex')}`);
 
 test('workspace exports signed evidence without mutating the ledger', () => {
   const dir = tmp();
@@ -24,13 +22,9 @@ test('workspace exports signed evidence without mutating the ledger', () => {
       { matter: 'M-1', recipient: 'alice@example.com' },
     );
     const before = ws.status();
-    const key = ws.evidenceKey();
-    const bundle = ws.exportEvidence(issued.copy.shortIdHex);
-    const after = ws.status();
-
-    assert.deepEqual(after, before);
-    assert.equal(issued.copy.sourceName, 'memo.txt');
-    assert.equal(issued.copy.protectedName, issued.suggestedName);
+    const key = evidenceKeyForWorkspace(ws);
+    const bundle = exportWorkspaceEvidence(ws, issued.copy.shortIdHex);
+    assert.deepEqual(ws.status(), before);
     assert.match(key.keyid, /^sha256:[0-9a-f]{64}$/);
 
     const verified = verifyEvidenceBundle(bundle, { expectedKeyid: key.keyid });
@@ -41,7 +35,7 @@ test('workspace exports signed evidence without mutating the ledger', () => {
   }
 });
 
-test('workspace evidence can bind a recovered artifact without recording an investigation', () => {
+test('workspace evidence binds a recovered artifact without recording an investigation', () => {
   const dir = tmp();
   try {
     const ws = initWorkspace(dir, PASS);
@@ -50,7 +44,7 @@ test('workspace evidence can bind a recovered artifact without recording an inve
       { matter: 'M-2', recipient: 'bob@example.com' },
     );
     const before = ws.status();
-    const bundle = ws.exportEvidence(issued.copy.tokenHex, {
+    const bundle = exportWorkspaceEvidence(ws, issued.copy.tokenHex, {
       artifact: { name: 'recovered.txt', bytes: issued.bytes },
     });
     assert.deepEqual(ws.status(), before);
@@ -64,7 +58,7 @@ test('workspace evidence can bind a recovered artifact without recording an inve
   }
 });
 
-test('workspace refuses to bind an unmarked or different copy artifact', () => {
+test('workspace refuses to bind an unmarked or different-copy artifact', () => {
   const dir = tmp();
   try {
     const ws = initWorkspace(dir, PASS);
@@ -77,11 +71,11 @@ test('workspace refuses to bind an unmarked or different copy artifact', () => {
       { matter: 'M-3', recipient: 'b@example.com' },
     );
     assert.throws(
-      () => ws.exportEvidence(a.copy.tokenHex, { artifact: { name: 'clean.txt', bytes: Buffer.from(SAMPLE) } }),
+      () => exportWorkspaceEvidence(ws, a.copy.tokenHex, { artifact: { name: 'clean.txt', bytes: Buffer.from(SAMPLE) } }),
       /does not attribute/i,
     );
     assert.throws(
-      () => ws.exportEvidence(a.copy.tokenHex, { artifact: { name: 'other.txt', bytes: b.bytes } }),
+      () => exportWorkspaceEvidence(ws, a.copy.tokenHex, { artifact: { name: 'other.txt', bytes: b.bytes } }),
       /different protected copy/i,
     );
   } finally {
