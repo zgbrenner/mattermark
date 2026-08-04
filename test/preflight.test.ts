@@ -3,9 +3,9 @@ import assert from 'node:assert/strict';
 import { randomBytes } from 'node:crypto';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
-import { rmSync } from 'node:fs';
+import { readFileSync, rmSync } from 'node:fs';
 
-import { initWorkspace } from '../src/workspace.js';
+import { initWorkspace, REGISTRY_FILE } from '../src/workspace.js';
 import { preflightWorkspaceDocument } from '../src/preflight.js';
 import { buildTextPdf } from '../src/formats/pdf.js';
 import { SAMPLE } from './helpers.js';
@@ -18,10 +18,12 @@ test('preflight compares durable and search-safe profiles without changing the v
   try {
     const ws = initWorkspace(dir, PASS);
     const before = ws.status();
+    const registryBefore = readFileSync(join(dir, REGISTRY_FILE));
     const outcome = preflightWorkspaceDocument(ws, {
       name: 'memo.txt', bytes: Buffer.from(SAMPLE),
     });
     assert.deepEqual(ws.status(), before);
+    assert.deepEqual(readFileSync(join(dir, REGISTRY_FILE)), registryBefore);
     assert.equal(outcome.format, 'text');
     assert.equal(outcome.profiles.length, 2);
     assert.equal(outcome.profiles[0].profile, 'durable');
@@ -52,6 +54,23 @@ test('normal PDF preflight is blocked honestly and rebuilt PDF is non-durable', 
     assert.equal(rebuilt.profiles.length, 1);
     assert.equal(rebuilt.profiles[0].durable, false);
     assert.ok(rebuilt.profiles[0].warnings.some((w) => /layout|normalized|non-durable/i.test(w)));
+  } finally {
+    rmSync(dir, { recursive: true, force: true });
+  }
+});
+
+test('blocked PDF preflight does not need a parseable text layer', () => {
+  const dir = tmp();
+  try {
+    const ws = initWorkspace(dir, PASS);
+    const malformedButClearlyPdf = Buffer.from('%PDF-1.7\nnot-a-complete-pdf', 'latin1');
+    const outcome = preflightWorkspaceDocument(ws, {
+      name: 'unreadable.pdf',
+      bytes: malformedButClearlyPdf,
+    });
+    assert.equal(outcome.format, 'pdf');
+    assert.equal(outcome.profiles.length, 0);
+    assert.match(outcome.blockedReason ?? '', /source document|rebuild/i);
   } finally {
     rmSync(dir, { recursive: true, force: true });
   }
