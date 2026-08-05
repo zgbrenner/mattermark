@@ -1,9 +1,9 @@
 name: Source Snapshot
 
 on:
-  push:
+  pull_request:
     branches:
-      - feat/linguistic-trace-v1
+      - main
     paths:
       - .github/workflows/source-snapshot.yml
 
