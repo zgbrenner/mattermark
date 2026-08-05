@@ -1,0 +1,28 @@
+name: Source Snapshot
+
+on:
+  push:
+    branches:
+      - feat/linguistic-trace-v1
+    paths:
+      - .github/workflows/source-snapshot.yml
+
+permissions:
+  contents: read
+
+jobs:
+  snapshot:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v5
+      - name: Package source tree
+        run: tar --exclude=.git -czf mattermark-source.tgz .
+      - name: Upload source snapshot
+        uses: actions/upload-artifact@v4
+        with:
+          name: mattermark-source
+          path: mattermark-source.tgz
+          if-no-files-found: error
+          retention-days: 1
